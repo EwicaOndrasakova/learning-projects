@@ -1,0 +1,1473 @@
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Jemné, rýchle prechody na všetkých interaktívnych a kartových prvkoch.
+     Zámerne krátke (120-180ms) a bez "odrazu", nech appka pôsobí plynulo, nie hravo-prehnane. */
+  button, .quick-chip, .day-chip, .filter-btn, .tab-btn, .avatar-option,
+  .badge, li.task, .cal-day, .success-card, .recent-login-item,
+  .text-field, .search-input, .priority-select, .tag-input, .notes-textarea,
+  .recurrence-select {
+    transition: background-color 0.15s ease, border-color 0.15s ease,
+                color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:active {
+    transform: scale(0.96);
+  }
+
+  .quick-chip:hover, .day-chip:hover {
+    transform: translateY(-1px);
+  }
+
+  .filter-btn:hover, .tab-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  li.task:hover {
+    box-shadow: 0 2px 10px rgba(150, 130, 200, 0.1);
+  }
+
+  /* Jemné zjavenie obsahu pri prepnutí záložky */
+  .view.active {
+    animation: viewFadeIn 0.22s ease;
+  }
+
+  @keyframes viewFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Jemné zjavenie riadku úlohy pri vykreslení zoznamu */
+  li.task {
+    animation: taskFadeIn 0.2s ease;
+  }
+
+  @keyframes taskFadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #fdf2f8 0%, #eef2ff 50%, #f0fdfa 100%);
+    margin: 0;
+    padding: 40px 16px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .app {
+    background: #ffffff;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(150, 130, 200, 0.15);
+    padding: 24px;
+    height: fit-content;
+  }
+
+  h1 {
+    text-align: center;
+    color: #6b5b95;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: #f6f3fb;
+    padding: 4px;
+    border-radius: 12px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #9b8fc0;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: #c9b6f0;
+    color: white;
+    box-shadow: 0 2px 8px rgba(180, 150, 230, 0.4);
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .input-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  #taskInput {
+    flex: 1 1 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 0 14px;
+    border: 2px solid #f0e9fa;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fdfcff;
+  }
+
+  #taskInput:focus {
+    outline: none;
+    border-color: #c9b6f0;
+  }
+
+  #dateInput {
+    flex: 1 1 auto;
+    height: 42px;
+    padding: 0 10px;
+    border: 2px solid #f0e9fa;
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fdfcff;
+    color: #8a80a8;
+  }
+
+  #dateInput:focus {
+    outline: none;
+    border-color: #c9b6f0;
+  }
+
+  #addBtn {
+    height: 42px;
+    background: #b8e0d2;
+    color: #2f6b52;
+    border: none;
+    padding: 0 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  #addBtn:hover {
+    background: #a3d6c4;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  /* --- Rýchle nápady (quick-add chipy) --- */
+  .quick-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .quick-chip {
+    background: #f6f3fb;
+    border: 1px solid #ede5fb;
+    color: #8a7ba8;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .quick-chip:hover {
+    background: #ede5fb;
+  }
+
+  /* --- Opakovanie úlohy --- */
+  .recurrence-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .recurrence-select {
+    flex: 1;
+    padding: 9px 10px;
+    border: 2px solid #f0e9fa;
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fdfcff;
+    color: #8a80a8;
+  }
+
+  .recurrence-select:focus {
+    outline: none;
+    border-color: #c9b6f0;
+  }
+
+  .custom-days-row {
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .custom-days-row.visible {
+    display: flex;
+  }
+
+  .day-chip {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 2px solid #f0e9fa;
+    background: #fdfcff;
+    color: #9b8fc0;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .day-chip.selected {
+    background: #c9b6f0;
+    border-color: #c9b6f0;
+    color: #ffffff;
+  }
+
+  .filter-btn {
+    flex: 1;
+    padding: 8px;
+    border: 2px solid #f0e9fa;
+    background: #fdfcff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #9b8fc0;
+    font-weight: 600;
+  }
+
+  .filter-btn.active {
+    background: #ffd6e0;
+    color: #b5495b;
+    border-color: #ffd6e0;
+  }
+
+  ul#taskList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li.task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    background: #faf8ff;
+    border: 1px solid #f0e9fa;
+  }
+
+  li.task.done {
+    background: #eefaf3;
+    border-color: #d6f2e2;
+  }
+
+  li.task.done .task-text {
+    text-decoration: line-through;
+    color: #a3c9b5;
+  }
+
+  .task-text {
+    flex: 1;
+    font-size: 14px;
+    word-break: break-word;
+    color: #5c5470;
+  }
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #b8e0d2;
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    color: #f4a6b7;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+  }
+
+  .delete-btn:hover {
+    color: #e8798f;
+  }
+
+  .empty-msg {
+    text-align: center;
+    color: #b5aed1;
+    font-size: 14px;
+    padding: 24px 0;
+  }
+
+  .stats {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #a89fc4;
+    font-weight: 600;
+  }
+
+  .cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .cal-header button {
+    border: none;
+    background: #f6f3fb;
+    color: #9b8fc0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .cal-header button:hover {
+    background: #ede5fb;
+  }
+
+  #calMonthLabel {
+    font-weight: 700;
+    color: #6b5b95;
+    font-size: 15px;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .cal-dow {
+    text-align: center;
+    font-size: 11px;
+    color: #b5aed1;
+    font-weight: 700;
+    padding-bottom: 4px;
+  }
+
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8a80a8;
+    background: #faf8ff;
+    border: 1px solid #f0e9fa;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .cal-day:hover {
+    background: #f0e9fa;
+  }
+
+  .cal-day.empty {
+    background: transparent;
+    border: none;
+    cursor: default;
+  }
+
+  .cal-day.empty:hover {
+    background: transparent;
+  }
+
+  .cal-day.today {
+    border: 2px solid #c9b6f0;
+  }
+
+  .cal-day.all-done {
+    background: #baead0;
+    color: #2f6b52;
+    border-color: #baead0;
+  }
+
+  .cal-day.partial {
+    background: #ffe8b3;
+    color: #8a6d1f;
+    border-color: #ffe8b3;
+  }
+
+  .cal-legend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #a89fc4;
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  /* --- Odznaky: kruhové "rings" v štýle Activity --- */
+
+  .rings-summary {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #faf8ff;
+    border: 1px solid #f0e9fa;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 22px;
+  }
+
+  .rings-summary svg {
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+    transform: rotate(-90deg);
+  }
+
+  .ring-track {
+    fill: none;
+    stroke-width: 8;
+  }
+
+  .ring-progress {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease;
+  }
+
+  .rings-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .rings-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b5b95;
+    font-weight: 600;
+  }
+
+  .rings-legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .rings-legend-value {
+    margin-left: auto;
+    color: #a89fc4;
+    font-weight: 700;
+  }
+
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .badge {
+    background: #faf8ff;
+    border: 1px solid #f0e9fa;
+    border-radius: 16px;
+    padding: 14px 6px 12px;
+    text-align: center;
+  }
+
+  .badge.unlocked {
+    background: #fffdfa;
+    border-color: #eee2fa;
+  }
+
+  .badge-ring {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 8px;
+    position: relative;
+  }
+
+  .badge-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .badge-ring-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #8a80a8;
+  }
+
+  .badge.unlocked .badge-ring-value {
+    color: #ffffff;
+  }
+
+  .ring-check-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-icon {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .badge-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b5b95;
+  }
+
+  .badge:not(.unlocked) .badge-name {
+    color: #b5aed1;
+  }
+
+  .badge-desc {
+    font-size: 10px;
+    color: #a89fc4;
+    margin-top: 2px;
+  }
+
+  /* --- Welcome obrazovka --- */
+  .welcome-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #fdf2f8 0%, #eef2ff 50%, #f0fdfa 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+
+  .welcome-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(150, 130, 200, 0.18);
+    padding: 32px 26px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .welcome-card h2 {
+    color: #6b5b95;
+    font-size: 22px;
+    margin: 0 0 6px;
+  }
+
+  .welcome-card p {
+    color: #a89fc4;
+    font-size: 13px;
+    margin: 0 0 22px;
+  }
+
+  .welcome-avatar-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+    transition: background 0.2s;
+  }
+
+  .field-label {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #8a80a8;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  .field-label:first-of-type {
+    margin-top: 0;
+  }
+
+  .text-field {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #f0e9fa;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fdfcff;
+    color: #5c5470;
+  }
+
+  .text-field:focus {
+    outline: none;
+    border-color: #c9b6f0;
+  }
+
+  .optional-tag {
+    font-weight: 400;
+    color: #cabee8;
+    text-transform: none;
+  }
+
+  .primary-btn {
+    width: 100%;
+    background: #c9b6f0;
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 22px;
+  }
+
+  .primary-btn:hover {
+    background: #b8a2e8;
+  }
+
+  .text-link-btn {
+    background: none;
+    border: none;
+    color: #b5aed1;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  /* --- Top bar s avatarom a burger menu --- */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .top-bar-profile {
+    display: none; /* Pozdrav "Ahoj, meno" je zatiaľ schovaný - dá sa kedykoľvek vrátiť */
+  }
+
+  .top-bar-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .top-bar-greeting {
+    font-size: 13px;
+    color: #8a80a8;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .top-bar-greeting strong {
+    color: #6b5b95;
+    font-size: 15px;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .burger-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: none;
+    background: #f6f3fb;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .burger-btn span {
+    width: 16px;
+    height: 2px;
+    background: #9b8fc0;
+    border-radius: 2px;
+  }
+
+  /* --- Prepínač jazyka SK/EN --- */
+  .lang-toggle {
+    display: flex;
+    background: #f6f3fb;
+    border-radius: 10px;
+    padding: 3px;
+    flex-shrink: 0;
+    gap: 2px;
+  }
+
+  .lang-btn {
+    border: none;
+    background: transparent;
+    color: #9b8fc0;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .lang-toggle-welcome {
+    width: fit-content;
+    margin: 0 0 8px auto;
+  }
+
+  .lang-btn.active {
+    background: #c9b6f0;
+    color: #ffffff;
+  }
+
+  /* --- Settings panel (nastavenia) --- */
+  .settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(107, 91, 149, 0.25);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 200;
+  }
+
+  .settings-overlay.open {
+    display: flex;
+  }
+
+  .settings-panel {
+    background: #ffffff;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 20px 20px 0 0;
+    padding: 24px;
+    box-shadow: 0 -8px 30px rgba(150, 130, 200, 0.2);
+  }
+
+  .settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .settings-header h3 {
+    color: #6b5b95;
+    font-size: 17px;
+    margin: 0;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: #b5aed1;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  /* --- Úspešnosť za týždeň / mesiac --- */
+  .success-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .success-card {
+    flex: 1;
+    background: #faf8ff;
+    border: 1px solid #f0e9fa;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .success-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #6b5b95;
+  }
+
+  .success-label {
+    font-size: 11px;
+    color: #a89fc4;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .rings-note {
+    font-size: 11px;
+    color: #b5aed1;
+    text-align: center;
+    margin: 10px 0 20px;
+  }
+
+  /* --- Hviezdička na dňoch, kde je splnené úplne všetko --- */
+  .day-star {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 15px;
+    height: 15px;
+    animation: starPop 0.35s ease;
+  }
+
+  .day-star svg {
+    width: 100%;
+    height: 100%;
+    fill: #f5c344;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+  }
+
+  @keyframes starPop {
+    0%   { transform: scale(0); opacity: 0; }
+    60%  { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* --- Animácia pri práve odomknutom odznaku --- */
+  @keyframes badgePop {
+    0%   { transform: scale(0.85); }
+    50%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .badge.just-unlocked {
+    animation: badgePop 0.5s ease;
+  }
+
+  /* --- Avatar postavičky na výber --- */
+  .avatar-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .avatar-option {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    padding: 2px;
+    transition: border-color 0.15s;
+  }
+
+  .avatar-option svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .avatar-option.selected {
+    border-color: #6b5b95;
+  }
+
+  /* --- Posledné prihlásenia --- */
+  .recent-logins {
+    margin-bottom: 18px;
+  }
+
+  .recent-logins-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #8a80a8;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .recent-logins-list {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .recent-login-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    width: 56px;
+  }
+
+  .recent-login-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b5b95;
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .recent-login-avatar svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .recent-login-name {
+    font-size: 10px;
+    color: #8a80a8;
+    font-weight: 600;
+    max-width: 56px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* --- Rozšírené možnosti pri pridávaní úlohy (priorita, tag, poznámka) --- */
+  .more-options-toggle {
+    background: none;
+    border: none;
+    color: #9b8fc0;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-bottom: 10px;
+  }
+
+  .more-options {
+    display: none;
+    margin-bottom: 14px;
+  }
+
+  .more-options.visible {
+    display: block;
+  }
+
+  .more-options-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .priority-select, .tag-input {
+    flex: 1;
+    padding: 9px 10px;
+    border: 2px solid #f0e9fa;
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fdfcff;
+    color: #5c5470;
+  }
+
+  .priority-select:focus, .tag-input:focus, .notes-textarea:focus {
+    outline: none;
+    border-color: #c9b6f0;
+  }
+
+  .notes-textarea {
+    width: 100%;
+    padding: 9px 10px;
+    border: 2px solid #f0e9fa;
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fdfcff;
+    color: #5c5470;
+    resize: vertical;
+    min-height: 44px;
+    font-family: inherit;
+  }
+
+  /* --- Mikrofón (hlasové pridávanie) --- */
+  .mic-btn {
+    background: #f6f3fb;
+    border: none;
+    color: #9b8fc0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mic-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mic-btn.listening {
+    background: #ffd6e0;
+    color: #d9576f;
+    animation: micPulse 1s ease-in-out infinite;
+  }
+
+  @keyframes micPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* --- Vyhľadávanie --- */
+  .search-row {
+    margin-bottom: 14px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #f0e9fa;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fdfcff;
+    color: #5c5470;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #c9b6f0;
+  }
+
+  /* --- Navigátor dní (Zoznam defaultne zobrazuje len vybraný deň) --- */
+  .day-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f6f3fb;
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 14px;
+  }
+
+  .day-nav.hidden {
+    display: none;
+  }
+
+  .day-nav button {
+    border: none;
+    background: #ffffff;
+    color: #9b8fc0;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .day-nav button:hover {
+    background: #ede5fb;
+    color: #6b5b95;
+  }
+
+  #dayNavLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b5b95;
+  }
+
+  /* --- Priorita a tag na položke úlohy --- */
+  li.task {
+    position: relative;
+    padding-left: 18px;
+    flex-wrap: wrap;
+  }
+
+  li.task::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 5px;
+    border-radius: 3px;
+    background: #e0d9f0;
+  }
+
+  li.task.priority-high::before { background: #ef5c7e; }
+  li.task.priority-medium::before { background: #f5b942; }
+  li.task.priority-low::before { background: #6bc4a3; }
+
+  li.task.priority-high:not(.done) { background: #fef5f7; }
+  li.task.priority-medium:not(.done) { background: #fefaf1; }
+  li.task.priority-low:not(.done) { background: #f5fbf8; }
+
+  .task-main-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .task-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: #8a5aa8;
+    background: #f0e3fa;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .task-expand-btn {
+    background: none;
+    border: none;
+    color: #b5aed1;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+  }
+
+  .edit-btn {
+    background: none;
+    border: none;
+    color: #b5aed1;
+    cursor: pointer;
+    padding: 2px 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .edit-btn:hover {
+    color: #8a80a8;
+  }
+
+  .edit-btn svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .edit-text-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 2px solid #e0d9f7;
+    border-radius: 8px;
+    font-size: 13px;
+    background: #ffffff;
+    color: #5c5470;
+    font-weight: 600;
+  }
+
+  .edit-form-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .edit-priority-select, .edit-tag-input {
+    flex: 1;
+    padding: 7px 8px;
+    border: 2px solid #e0d9f7;
+    border-radius: 8px;
+    font-size: 12px;
+    background: #ffffff;
+    color: #5c5470;
+  }
+
+  .edit-notes-textarea {
+    width: 100%;
+    padding: 7px 10px;
+    border: 2px solid #e0d9f7;
+    border-radius: 8px;
+    font-size: 12px;
+    background: #ffffff;
+    color: #5c5470;
+    resize: vertical;
+    min-height: 40px;
+    font-family: inherit;
+  }
+
+  .edit-form-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .edit-save-btn {
+    background: #b8e0d2;
+    color: #2f6b52;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .edit-cancel-btn {
+    background: #f6f3fb;
+    color: #9b8fc0;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .task-details {
+    display: none;
+    width: 100%;
+    margin-top: 8px;
+    padding-left: 30px;
+  }
+
+  .task-details.visible {
+    display: block;
+  }
+
+  .task-notes {
+    font-size: 12px;
+    color: #a89fc4;
+    background: #f6f3fb;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+  }
+
+  .subtask-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+  }
+
+  .subtask-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 13px;
+  }
+
+  .subtask-item.done .subtask-text {
+    text-decoration: line-through;
+    color: #b5aed1;
+  }
+
+  .subtask-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #b8e0d2;
+    cursor: pointer;
+  }
+
+  .subtask-text {
+    flex: 1;
+    color: #5c5470;
+  }
+
+  .subtask-delete {
+    background: none;
+    border: none;
+    color: #d3a8c9;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .subtask-add-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .subtask-add-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 2px solid #f0e9fa;
+    border-radius: 8px;
+    font-size: 12px;
+    background: #ffffff;
+  }
+
+  .subtask-add-btn {
+    background: #e0d9f7;
+    color: #6b5b95;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* --- Heatmapa aktivity --- */
+  .heatmap-section {
+    background: #faf8ff;
+    border: 1px solid #f0e9fa;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 22px;
+  }
+
+  .heatmap-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b5b95;
+    margin-bottom: 4px;
+  }
+
+  .heatmap-subtitle {
+    font-size: 11px;
+    color: #a89fc4;
+    margin-bottom: 18px;
+  }
+
+  .activity-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 90px;
+  }
+
+  .activity-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .activity-bar {
+    width: 100%;
+    max-width: 16px;
+    min-height: 4px;
+    border-radius: 5px 5px 2px 2px;
+    background: #f0e9fa;
+    transition: height 0.3s ease;
+  }
+
+  .activity-bar.level-1 { background: #dcf0e6; }
+  .activity-bar.level-2 { background: #b9e4cd; }
+  .activity-bar.level-3 { background: #5fbb8c; }
+
+  .activity-bar.today {
+    box-shadow: 0 0 0 2px #c9b6f0;
+  }
+
+  .activity-labels {
+    display: flex;
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  .activity-label {
+    flex: 1;
+    text-align: center;
+    font-size: 9px;
+    color: #b5aed1;
+    font-weight: 600;
+  }
+
+  .activity-label.today {
+    color: #6b5b95;
+    font-weight: 800;
+  }
+
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 14px;
+    font-size: 10px;
+    color: #b5aed1;
+  }
+
+  .heatmap-legend .activity-bar {
+    width: 12px;
+    height: 12px;
+    min-height: 0;
+    border-radius: 3px;
+  }

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do Tracker</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<!-- Uvítacia obrazovka - zobrazí sa vždy pri otvorení appky -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-card">
+    <div class="lang-toggle lang-toggle-welcome">
+      <button type="button" class="lang-btn" data-lang="sk">SK</button>
+      <button type="button" class="lang-btn active" data-lang="en">EN</button>
+    </div>
+    <div class="welcome-avatar-preview" id="welcomeAvatarPreview">TY</div>
+    <h2 data-i18n="welcomeTitle">Vitaj v To-Do Trackeri</h2>
+    <p data-i18n="welcomeSubtitle">Ako ťa mám volať?</p>
+
+    <div class="recent-logins" id="recentLoginsBox" style="display:none;">
+      <div class="recent-logins-label" data-i18n="recentLogins">Posledné prihlásenia</div>
+      <div class="recent-logins-list" id="recentLoginsList"></div>
+    </div>
+
+    <div class="field-label" data-i18n="fieldNickname">Prezývka</div>
+    <input type="text" class="text-field" id="welcomeNickname" data-i18n-placeholder="nicknamePlaceholder" placeholder="napr. Janka">
+
+    <div class="field-label" data-i18n="fieldAvatar">Postavička</div>
+    <div class="avatar-options" id="welcomeAvatarOptions"></div>
+
+    <div class="field-label"><span data-i18n="fieldEmail">Email</span> <span class="optional-tag" data-i18n="optionalTag">(voliteľné)</span></div>
+    <input type="email" class="text-field" id="welcomeEmail" data-i18n-placeholder="emailPlaceholder" placeholder="tvoj@email.sk">
+
+    <button class="primary-btn" id="welcomeContinueBtn" data-i18n="continueBtn">Pokračovať</button>
+    <button class="text-link-btn" id="welcomeSkipBtn" data-i18n="skipBtn">Preskočiť zatiaľ</button>
+  </div>
+</div>
+
+<div class="app">
+  <div class="top-bar">
+    <div class="top-bar-profile">
+      <div class="top-bar-avatar" id="topBarAvatar">TY</div>
+      <div class="top-bar-greeting"><span data-i18n="greetingHi">Ahoj</span><strong id="topBarName">Ty</strong></div>
+    </div>
+    <div class="lang-toggle" id="langToggle">
+      <button type="button" class="lang-btn active" data-lang="sk">SK</button>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
+  </div>
+
+  <h1 data-i18n="appTitle">Môj To-Do Tracker</h1>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="list" data-i18n="tabList">Zoznam</button>
+    <button class="tab-btn" data-tab="calendar" data-i18n="tabCalendar">Kalendár</button>
+    <button class="tab-btn" data-tab="badges" data-i18n="tabBadges">Prehľad</button>
+  </div>
+
+  <div class="view active" id="view-list">
+    <div class="input-row">
+      <input type="text" id="taskInput" data-i18n-placeholder="taskInputPlaceholder" placeholder="Napíš novú úlohu...">
+      <button type="button" class="mic-btn" id="micBtn" data-i18n-title="micTitle" title="Hlasové pridanie úlohy">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+      </button>
+      <input type="date" id="dateInput">
+      <button id="addBtn" data-i18n="addBtn">Pridať</button>
+    </div>
+
+    <button type="button" class="more-options-toggle" id="moreOptionsToggle" data-i18n="moreOptionsShow">+ Priorita, tag, poznámka</button>
+
+    <div class="more-options" id="moreOptionsBox">
+      <div class="more-options-row">
+        <select class="priority-select" id="prioritySelect">
+          <option value="low" data-i18n="priorityLow">Nízka priorita</option>
+          <option value="medium" selected data-i18n="priorityMedium">Stredná priorita</option>
+          <option value="high" data-i18n="priorityHigh">Vysoká priorita</option>
+        </select>
+        <input type="text" class="tag-input" id="tagInput" data-i18n-placeholder="tagPlaceholder" placeholder="Tag (napr. práca)">
+      </div>
+      <textarea class="notes-textarea" id="notesInput" data-i18n-placeholder="notesPlaceholder" placeholder="Poznámka k úlohe (voliteľné)"></textarea>
+    </div>
+
+    <div class="recurrence-row">
+      <select class="recurrence-select" id="recurrenceSelect">
+        <option value="none" data-i18n="recurrenceNone">Bez opakovania</option>
+        <option value="daily" data-i18n="recurrenceDaily">Každý deň</option>
+        <option value="weekly" data-i18n="recurrenceWeekly">Raz týždenne (rovnaký deň)</option>
+        <option value="custom" data-i18n="recurrenceCustom">Vlastné dni</option>
+      </select>
+    </div>
+
+    <div class="custom-days-row" id="customDaysRow">
+      <button type="button" class="day-chip" data-day="1" data-i18n="dayMon">Po</button>
+      <button type="button" class="day-chip" data-day="2" data-i18n="dayTue">Ut</button>
+      <button type="button" class="day-chip" data-day="3" data-i18n="dayWed">St</button>
+      <button type="button" class="day-chip" data-day="4" data-i18n="dayThu">Št</button>
+      <button type="button" class="day-chip" data-day="5" data-i18n="dayFri">Pi</button>
+      <button type="button" class="day-chip" data-day="6" data-i18n="daySat">So</button>
+      <button type="button" class="day-chip" data-day="0" data-i18n="daySun">Ne</button>
+    </div>
+
+    <div class="quick-suggestions" id="quickSuggestions"></div>
+
+    <div class="search-row">
+      <input type="text" class="search-input" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Hľadať v úlohách...">
+    </div>
+
+    <div class="day-nav" id="dayNav">
+      <button type="button" id="prevDayBtn" data-i18n-arialabel="prevDay" aria-label="Predchádzajúci deň">‹</button>
+      <span id="dayNavLabel">Dnes</span>
+      <button type="button" id="nextDayBtn" data-i18n-arialabel="nextDay" aria-label="Nasledujúci deň">›</button>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all" data-i18n="filterAll">Všetky</button>
+      <button class="filter-btn" data-filter="active" data-i18n="filterActive">Aktívne</button>
+      <button class="filter-btn" data-filter="done" data-i18n="filterDone">Hotové</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="view" id="view-calendar">
+    <div class="cal-header">
+      <button id="prevMonth">‹</button>
+      <span id="calMonthLabel"></span>
+      <button id="nextMonth">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-legend">
+      <span><span class="legend-dot" style="background:#baead0;"></span><span data-i18n="calLegendFull">Celý deň splnený</span></span>
+      <span><span class="legend-dot" style="background:#ffe8b3;"></span><span data-i18n="calLegendPartial">Čiastočne splnený</span></span>
+    </div>
+  </div>
+
+  <div class="view" id="view-badges">
+    <div class="rings-summary">
+      <svg viewBox="0 0 96 96">
+        <circle class="ring-track" cx="48" cy="48" r="42" stroke="#dcf3e7" />
+        <circle class="ring-progress" id="ringToday" cx="48" cy="48" r="42" stroke="#4caf82" />
+        <circle class="ring-track" cx="48" cy="48" r="30" stroke="#ffe9d6" />
+        <circle class="ring-progress" id="ringStreak" cx="48" cy="48" r="30" stroke="#f5a25a" />
+        <circle class="ring-track" cx="48" cy="48" r="18" stroke="#e6ddfa" />
+        <circle class="ring-progress" id="ringTotal" cx="48" cy="48" r="18" stroke="#a98be0" />
+      </svg>
+      <div class="rings-legend">
+        <div class="rings-legend-item">
+          <span class="rings-legend-dot" style="background:#4caf82;"></span>
+          <span data-i18n="ringsToday">Dnešné úlohy</span>
+          <span class="rings-legend-value" id="legendToday">0/0</span>
+        </div>
+        <div class="rings-legend-item">
+          <span class="rings-legend-dot" style="background:#f5a25a;"></span>
+          <span data-i18n="ringsStreak">Séria dní v rade</span>
+          <span class="rings-legend-value" id="legendStreak">0</span>
+        </div>
+        <div class="rings-legend-item">
+          <span class="rings-legend-dot" style="background:#a98be0;"></span>
+          <span data-i18n="ringsTotal">Splnené spolu</span>
+          <span class="rings-legend-value" id="legendTotal">0</span>
+        </div>
+      </div>
+    </div>
+    <p class="rings-note" data-i18n="ringsNote">Séria dní v rade = koľko dní po sebe máš úplne všetky úlohy splnené.</p>
+
+    <div class="success-stats">
+      <div class="success-card">
+        <div class="success-value" id="weeklySuccessValue">–</div>
+        <div class="success-label" data-i18n="successWeekly">Úspešnosť za týždeň</div>
+      </div>
+      <div class="success-card">
+        <div class="success-value" id="monthlySuccessValue">–</div>
+        <div class="success-label" data-i18n="successMonthly">Úspešnosť za mesiac</div>
+      </div>
+    </div>
+
+    <div class="badges-grid" id="badgesGrid"></div>
+
+    <div class="heatmap-section">
+      <div class="heatmap-title" data-i18n="heatmapTitle">Aktivita za posledných 14 dní</div>
+      <div class="heatmap-subtitle" data-i18n="heatmapSubtitle">Výška stĺpca = koľko % úloh si v ten deň splnila.</div>
+
+      <div class="activity-chart" id="activityChart"></div>
+      <div class="activity-labels" id="activityLabels"></div>
+
+      <div class="heatmap-legend">
+        <span data-i18n="heatmapLess">menej</span>
+        <span class="activity-bar" style="height:12px;"></span>
+        <span class="activity-bar level-1" style="height:12px;"></span>
+        <span class="activity-bar level-2" style="height:12px;"></span>
+        <span class="activity-bar level-3" style="height:12px;"></span>
+        <span data-i18n="heatmapMore">viac</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings panel - otvára sa cez burger menu -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-panel">
+    <div class="settings-header">
+      <h3 data-i18n="settingsTitle">Nastavenia profilu</h3>
+      <button class="close-btn" id="settingsCloseBtn">✕</button>
+    </div>
+
+    <div class="welcome-avatar-preview" id="settingsAvatarPreview" style="margin-top: 14px;">TY</div>
+
+    <div class="field-label" data-i18n="fieldNickname">Prezývka</div>
+    <input type="text" class="text-field" id="settingsNickname" data-i18n-placeholder="nicknamePlaceholder" placeholder="napr. Janka">
+
+    <div class="field-label" data-i18n="fieldAvatar">Postavička</div>
+    <div class="avatar-options" id="settingsAvatarOptions"></div>
+
+    <div class="field-label"><span data-i18n="fieldEmail">Email</span> <span class="optional-tag" data-i18n="optionalTag">(voliteľné)</span></div>
+    <input type="email" class="text-field" id="settingsEmail" data-i18n-placeholder="emailPlaceholder" placeholder="tvoj@email.sk">
+
+    <button class="primary-btn" id="settingsSaveBtn" data-i18n="settingsSave">Uložiť</button>
+  </div>
+</div>
+
+<script src="../js/script.js"></script>
+
+</body>
+</html>
