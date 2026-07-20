@@ -231,13 +231,13 @@
   }
 
   .day-chip {
-    width: 34px;
-    height: 34px;
+    width: 42px;
+    height: 42px;
     border-radius: 10px;
     border: 2px solid #f0e9fa;
     background: #fdfcff;
     color: #9b8fc0;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -301,10 +301,11 @@
   }
 
   .checkbox {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     accent-color: #b8e0d2;
+    flex-shrink: 0;
   }
 
   .delete-btn {
@@ -313,7 +314,7 @@
     color: #f4a6b7;
     cursor: pointer;
     font-size: 18px;
-    padding: 4px 8px;
+    padding: 8px 10px;
   }
 
   .delete-btn:hover {
@@ -346,8 +347,8 @@
     border: none;
     background: #f6f3fb;
     color: #9b8fc0;
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
@@ -741,8 +742,8 @@
   }
 
   .burger-btn {
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
     border-radius: 10px;
     border: none;
     background: #f6f3fb;
@@ -839,7 +840,7 @@
     font-size: 22px;
     cursor: pointer;
     line-height: 1;
-    padding: 4px;
+    padding: 10px;
   }
 
   /* --- Úspešnosť za týždeň / mesiac --- */
@@ -1129,8 +1130,8 @@
     border: none;
     background: #ffffff;
     color: #9b8fc0;
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 15px;
@@ -1197,7 +1198,7 @@
     color: #b5aed1;
     cursor: pointer;
     font-size: 11px;
-    padding: 2px 6px;
+    padding: 8px 6px;
     flex-shrink: 0;
   }
 
@@ -1206,7 +1207,7 @@
     border: none;
     color: #b5aed1;
     cursor: pointer;
-    padding: 2px 4px;
+    padding: 8px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -1340,10 +1341,11 @@
   }
 
   .subtask-checkbox {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     accent-color: #b8e0d2;
     cursor: pointer;
+    flex-shrink: 0;
   }
 
   .subtask-text {
@@ -1357,6 +1359,7 @@
     color: #d3a8c9;
     cursor: pointer;
     font-size: 13px;
+    padding: 6px 8px;
   }
 
   .subtask-add-row {
