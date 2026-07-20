@@ -449,6 +449,10 @@
     border: 2px solid #c9b6f0;
   }
 
+  .cal-day.selected {
+    box-shadow: 0 0 0 2px #6b5b95 inset;
+  }
+
   .cal-day.all-done {
     background: #a8e6c9;
     color: #1f9d6c;
@@ -477,6 +481,78 @@
     border-radius: 3px;
     margin-right: 4px;
     vertical-align: middle;
+  }
+
+  /* --- Náhľad úloh pre vybraný deň v Calendar view (len na čítanie, klik prenesie do Zoznamu) --- */
+  .cal-day-preview {
+    display: none;
+    margin-top: 18px;
+    scroll-margin-top: 16px;
+  }
+
+  .cal-day-preview.visible {
+    display: block;
+  }
+
+  .cal-day-preview-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b5b95;
+    margin-bottom: 8px;
+  }
+
+  .cal-day-preview-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cal-day-preview-item {
+    position: relative;
+    padding: 7px 10px 7px 14px;
+    border-radius: 8px;
+    background: #faf8ff;
+    border: 1px solid #f0e9fa;
+    font-size: 13px;
+    color: #5c5470;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cal-day-preview-item:hover {
+    background: #f0e9fa;
+  }
+
+  .cal-day-preview-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 4px;
+    border-radius: 2px;
+    background: #e0d9f0;
+  }
+
+  .cal-day-preview-item.priority-high::before { background: #ef5c7e; }
+  .cal-day-preview-item.priority-medium::before { background: #f5b942; }
+  .cal-day-preview-item.priority-low::before { background: #4cd28f; }
+
+  .cal-day-preview-item.done {
+    text-decoration: line-through;
+    color: #7ec9a8;
+  }
+
+  .cal-day-preview-empty {
+    text-align: center;
+    color: #b5aed1;
+    font-size: 13px;
+    padding: 10px 0;
   }
 
   /* --- Odznaky: kruhové "rings" v štýle Activity --- */

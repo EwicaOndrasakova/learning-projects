@@ -37,6 +37,24 @@ Testované vždy cez Playwright (Chromium) na `localhost:8791`, pokiaľ nie je u
 
 ## Zatiaľ neriešené / vedomé medzery (neboli explicitne vyžiadané)
 - Chýba export/import úloh (JSON zálohovanie) – appka žije len v localStorage jedného prehliadača/zariadenia.
+- Zmazanie úlohy je okamžité a nezvratné – žiadne potvrdenie ani undo.
+- Podúlohy sa nedajú premenovať (len pridať/odškrtnúť/zmazať).
+- Úlohy sa v zozname nezoraďujú podľa priority (len podľa poradia pridania).
+- Chýbajú aria-labels na ikonových tlačidlách (✕, ceruzka, ▼).
 - Dark mode (`prefers-color-scheme`) nie je implementovaný.
 - PWA/"Pridať na plochu" meta tagy (apple-touch-icon, theme-color, manifest.json) chýbajú.
 - Globálny scope v `script.js` (žiadny IIFE/module wrap) – kozmetický code-quality bod, nie funkčný bug.
+
+## Implementované z minulej spätnej väzby
+- **Náhľad úloh pod kalendárom v Calendar view (IMPLEMENTOVANÉ).** Klik na deň v kalendári už neprepína na List
+  view - ostáva v Calendar view, deň sa zvýrazní (`.cal-day.selected`, fialový box-shadow rámik) a pod kalendárom
+  (`#calDayPreview`) sa zobrazí kompaktný, len-na-čítanie zoznam úloh pre ten deň (`renderCalDayPreview()`),
+  s plynulým scrollom (`scrollIntoView({behavior:'smooth'})`) k nemu. Riadky sú menšie/jednoduchšie než v List
+  view - len farebný pásik podľa priority + text (`white-space:nowrap` + ellipsis pri dlhom texte), žiadny
+  checkbox/edit/delete. Klik na konkrétnu úlohu v náhľade prenesie do List view na ten istý deň, kde sa dá
+  upravovať/mazať ako doteraz. Prázdny deň ukáže rovnaké "Žiadne úlohy tu nie sú"/"No tasks here" hlásenie ako
+  List view. Vybraný deň (`calPreviewDate`) ostáva zvýraznený a náhľad zostáva viditeľný aj pri prepnutí mesiaca
+  (label vždy jednoznačne ukazuje dátum, aj keď mriežka kalendára ukazuje iný mesiac).
+  Overené: klik na deň nezmení tab, klik na úlohu prenesie do List view a nastaví správny deň, prázdny deň,
+  dlhý text úlohy sa skráti ellipsis bez pretečenia na 320px, prepnutie mesiaca s aktívnym náhľadom nespadne,
+  SK aj EN preklad (dátumový label aj "no tasks" hláška).

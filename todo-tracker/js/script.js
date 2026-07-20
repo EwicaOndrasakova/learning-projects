@@ -264,6 +264,7 @@
   let tasks = safeParse('tasks:' + profileStorageKey(profile ? profile.nickname : ''), []);
   let currentFilter = 'all';
   let calDate = new Date();
+  let calPreviewDate = null; // ktorý deň má práve otvorený náhľad úloh v Calendar view
 
   // Migrácia: staršie úlohy (vytvorené pred pridaním dátumového políčka)
   // nemuseli mať uložený dátum – bez neho by ich kalendár nevedel priradiť k žiadnemu dňu.
@@ -906,6 +907,7 @@
       cell.className = 'cal-day';
 
       if (key === today) cell.classList.add('today');
+      if (key === calPreviewDate) cell.classList.add('selected');
 
       let starHtml = '';
       if (dayTasks.length > 0) {
@@ -920,17 +922,51 @@
       }
       cell.innerHTML = day + starHtml;
 
-      // Klik na deň ťa prenesie priamo do Zoznamu s úlohami pre ten deň
+      // Klik na deň zostane v Calendar view a ukáže náhľad úloh pod kalendárom -
+      // do Zoznamu (kde sa dá upravovať/mazať) sa prechádza až kliknutím na konkrétnu úlohu v náhľade
       cell.addEventListener('click', () => {
-        viewDate = key;
-        updateDayNav();
-        dateInput.value = key;
-        activateTab('list');
-        render();
+        calPreviewDate = key;
+        renderCalendar();
+        document.getElementById('calDayPreview').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       calGrid.appendChild(cell);
     }
+
+    if (calPreviewDate) renderCalDayPreview(calPreviewDate);
+  }
+
+  // Náhľad úloh pre vybraný deň v Calendar view - len na čítanie; klik na konkrétnu
+  // úlohu prenesie do Zoznamu (List view) na ten istý deň, kde sa dá upravovať/mazať
+  function renderCalDayPreview(dateKey) {
+    const box = document.getElementById('calDayPreview');
+    const label = document.getElementById('calDayPreviewLabel');
+    const list = document.getElementById('calDayPreviewList');
+
+    box.classList.add('visible');
+    label.textContent = formatDayLabel(dateKey);
+
+    const dayTasks = tasks.filter(tk => tk.date === dateKey);
+    list.innerHTML = '';
+
+    if (dayTasks.length === 0) {
+      list.innerHTML = `<li class="cal-day-preview-empty">${t('emptyList')}</li>`;
+      return;
+    }
+
+    dayTasks.forEach(tk => {
+      const li = document.createElement('li');
+      li.className = 'cal-day-preview-item priority-' + (tk.priority || 'medium') + (tk.done ? ' done' : '');
+      li.textContent = tk.text;
+      li.addEventListener('click', () => {
+        viewDate = dateKey;
+        updateDayNav();
+        dateInput.value = dateKey;
+        activateTab('list');
+        render();
+      });
+      list.appendChild(li);
+    });
   }
 
   document.getElementById('prevMonth').addEventListener('click', () => {
