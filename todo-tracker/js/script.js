@@ -38,6 +38,8 @@
       filterAll: 'Všetky',
       filterActive: 'Aktívne',
       filterDone: 'Hotové',
+      bulkAllBtn: 'Označiť všetky',
+      bulkNoneBtn: 'Zrušiť všetky',
       emptyList: 'Žiadne úlohy tu nie sú',
       calLegendFull: 'Celý deň splnený',
       calLegendPartial: 'Čiastočne splnený',
@@ -120,6 +122,8 @@
       filterAll: 'All',
       filterActive: 'Active',
       filterDone: 'Done',
+      bulkAllBtn: 'Check all',
+      bulkNoneBtn: 'Uncheck all',
       emptyList: 'No tasks here',
       calLegendFull: 'Fully completed day',
       calLegendPartial: 'Partially completed',
@@ -597,6 +601,18 @@
     tasks = tasks.map(task =>
       task.id === id ? { ...task, done: !task.done } : task
     );
+    saveTasks();
+    render();
+    renderCalendar();
+    renderBadges();
+  }
+
+  // Označí/zruší ako hotové len úlohy, ktoré sú práve zobrazené (rešpektuje
+  // hľadanie, filter Aktívne/Hotové aj vybraný deň) - nie úplne všetky úlohy v appke.
+  function setFilteredTasksDone(done) {
+    const visibleIds = new Set(getFilteredTasks().map(tk => tk.id));
+    if (visibleIds.size === 0) return;
+    tasks = tasks.map(task => visibleIds.has(task.id) ? { ...task, done } : task);
     saveTasks();
     render();
     renderCalendar();
@@ -1152,6 +1168,9 @@
     if (e.key === 'Enter') addTask();
   });
 
+  document.getElementById('bulkAllBtn').addEventListener('click', () => setFilteredTasksDone(true));
+  document.getElementById('bulkNoneBtn').addEventListener('click', () => setFilteredTasksDone(false));
+
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
@@ -1175,7 +1194,7 @@
     { id: 'cat',   name: 'Mačka',  color: '#f5829e' },
     { id: 'fox',   name: 'Líška',  color: '#f5a25a' },
     { id: 'bear',  name: 'Medveď', color: '#a98be0' },
-    { id: 'bunny', name: 'Zajko',  color: '#7bc9a8' },
+    { id: 'bunny', name: 'Zajko',  color: '#5fd6a0' },
     { id: 'owl',   name: 'Sova',   color: '#6fb3e0' },
   ];
 

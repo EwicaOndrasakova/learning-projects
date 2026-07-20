@@ -152,8 +152,8 @@
 
   #addBtn {
     height: 42px;
-    background: #b8e0d2;
-    color: #2f6b52;
+    background: #a8e6c9;
+    color: #1f9d6c;
     border: none;
     padding: 0 18px;
     border-radius: 10px;
@@ -164,7 +164,7 @@
   }
 
   #addBtn:hover {
-    background: #a3d6c4;
+    background: #8fdbb8;
   }
 
   .filters {
@@ -266,6 +266,30 @@
     border-color: #ffd6e0;
   }
 
+  /* --- Hromadné označenie/zrušenie zobrazených úloh --- */
+  .bulk-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .bulk-btn {
+    background: none;
+    border: none;
+    color: #9b8fc0;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+
+  .bulk-btn:hover {
+    background: #f6f3fb;
+    color: #6b5b95;
+  }
+
   ul#taskList {
     list-style: none;
     padding: 0;
@@ -284,13 +308,13 @@
   }
 
   li.task.done {
-    background: #eefaf3;
-    border-color: #d6f2e2;
+    background: #eafaf3;
+    border-color: #c8f2e0;
   }
 
   li.task.done .task-text {
     text-decoration: line-through;
-    color: #a3c9b5;
+    color: #7ec9a8;
   }
 
   .task-text {
@@ -304,7 +328,7 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
-    accent-color: #b8e0d2;
+    accent-color: #a8e6c9;
     flex-shrink: 0;
   }
 
@@ -413,9 +437,9 @@
   }
 
   .cal-day.all-done {
-    background: #baead0;
-    color: #2f6b52;
-    border-color: #baead0;
+    background: #a8e6c9;
+    color: #1f9d6c;
+    border-color: #a8e6c9;
   }
 
   .cal-day.partial {
@@ -1169,11 +1193,11 @@
 
   li.task.priority-high::before { background: #ef5c7e; }
   li.task.priority-medium::before { background: #f5b942; }
-  li.task.priority-low::before { background: #6bc4a3; }
+  li.task.priority-low::before { background: #4cd28f; }
 
   li.task.priority-high:not(.done) { background: #fef5f7; }
   li.task.priority-medium:not(.done) { background: #fefaf1; }
-  li.task.priority-low:not(.done) { background: #f5fbf8; }
+  li.task.priority-low:not(.done) { background: #f3fdf8; }
 
   .task-main-row {
     display: flex;
@@ -1279,8 +1303,8 @@
   }
 
   .edit-save-btn {
-    background: #b8e0d2;
-    color: #2f6b52;
+    background: #a8e6c9;
+    color: #1f9d6c;
     border: none;
     padding: 7px 14px;
     border-radius: 8px;
@@ -1343,7 +1367,7 @@
   .subtask-checkbox {
     width: 20px;
     height: 20px;
-    accent-color: #b8e0d2;
+    accent-color: #a8e6c9;
     cursor: pointer;
     flex-shrink: 0;
   }
@@ -1435,9 +1459,9 @@
     transition: height 0.3s ease;
   }
 
-  .activity-bar.level-1 { background: #dcf0e6; }
-  .activity-bar.level-2 { background: #b9e4cd; }
-  .activity-bar.level-3 { background: #5fbb8c; }
+  .activity-bar.level-1 { background: #cdf3e2; }
+  .activity-bar.level-2 { background: #8fdbb8; }
+  .activity-bar.level-3 { background: #2ecc82; }
 
   .activity-bar.today {
     box-shadow: 0 0 0 2px #c9b6f0;

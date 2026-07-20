@@ -121,6 +121,11 @@
       <button class="filter-btn" data-filter="done" data-i18n="filterDone">Hotové</button>
     </div>
 
+    <div class="bulk-actions">
+      <button type="button" class="bulk-btn" id="bulkAllBtn" data-i18n="bulkAllBtn">Označiť všetky</button>
+      <button type="button" class="bulk-btn" id="bulkNoneBtn" data-i18n="bulkNoneBtn">Zrušiť všetky</button>
+    </div>
+
     <ul id="taskList"></ul>
 
     <div class="stats" id="stats"></div>
@@ -134,7 +139,7 @@
     </div>
     <div class="cal-grid" id="calGrid"></div>
     <div class="cal-legend">
-      <span><span class="legend-dot" style="background:#baead0;"></span><span data-i18n="calLegendFull">Celý deň splnený</span></span>
+      <span><span class="legend-dot" style="background:#a8e6c9;"></span><span data-i18n="calLegendFull">Celý deň splnený</span></span>
       <span><span class="legend-dot" style="background:#ffe8b3;"></span><span data-i18n="calLegendPartial">Čiastočne splnený</span></span>
     </div>
   </div>
@@ -142,8 +147,8 @@
   <div class="view" id="view-badges">
     <div class="rings-summary">
       <svg viewBox="0 0 96 96">
-        <circle class="ring-track" cx="48" cy="48" r="42" stroke="#dcf3e7" />
-        <circle class="ring-progress" id="ringToday" cx="48" cy="48" r="42" stroke="#4caf82" />
+        <circle class="ring-track" cx="48" cy="48" r="42" stroke="#d7f5e6" />
+        <circle class="ring-progress" id="ringToday" cx="48" cy="48" r="42" stroke="#2ecc82" />
         <circle class="ring-track" cx="48" cy="48" r="30" stroke="#ffe9d6" />
         <circle class="ring-progress" id="ringStreak" cx="48" cy="48" r="30" stroke="#f5a25a" />
         <circle class="ring-track" cx="48" cy="48" r="18" stroke="#e6ddfa" />
@@ -151,7 +156,7 @@
       </svg>
       <div class="rings-legend">
         <div class="rings-legend-item">
-          <span class="rings-legend-dot" style="background:#4caf82;"></span>
+          <span class="rings-legend-dot" style="background:#2ecc82;"></span>
           <span data-i18n="ringsToday">Dnešné úlohy</span>
           <span class="rings-legend-value" id="legendToday">0/0</span>
         </div>
