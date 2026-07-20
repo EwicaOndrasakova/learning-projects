@@ -26,6 +26,19 @@ Testované vždy cez Playwright (Chromium) na `localhost:8791`, pokiaľ nie je u
 - **Zelená farba appky zmenená** (menej tmavá/zamazaná, sviežejší odtieň) – zmenené v `css/style.css`, `html/index.html`
   (ring farby), `js/script.js` (farba zajka-avatara). Vizuálne overené screenshotmi: tlačidlo Pridať, checkbox,
   hotová úloha, kalendár "celý deň splnený", prstenec "Dnešné úlohy" aj heatmapa aktivity – všade sviežia zelená.
+- **Poradie Uložiť zmeny/Zrušiť pri editácii úlohy prehodené** – "Zrušiť" teraz vľavo, "Uložiť zmeny" (zelené,
+  primárna akcia) vpravo. Overené vizuálne screenshotom.
+- **Plynulá animácia rozbaľovania detailu úlohy** (▼ tlačidlo) – `.task-details` teraz prechádza cez
+  `max-height`/`opacity`/`margin-top` transition namiesto okamžitého `display:none/block`. DÔLEŽITÉ: click handler
+  na `.task-expand-btn` už nevolá celý `render()` (ktorý by DOM element zničil a znova vytvoril rovno v cieľovom
+  stave bez animácie) - namiesto toho priamo prepína `.visible` triedu na existujúcom elemente. Overené: rovnaký
+  DOM node ostáva zachovaný cez `sameNode === true` test pred/po kliku.
+- **Toast notifikácie** (`#toastContainer`, fixed dole na strede, tmavo-fialová bublina, autoskrytie po ~2.2s) –
+  pridané po pridaní úlohy, zmazaní úlohy, uložení zmien úlohy (edit form) a uložení profilu (Nastavenia).
+  Overené: text aj SK/EN preklad správny, `showToast()` vytvorí element s triedou `visible` cez
+  `requestAnimationFrame` (nutné pre CSS transition), vizuálne overené screenshotom pri simulovanom trvalom stave
+  (keďže skutočný beh má len ~2.2s, čo je pod hranicou spoľahlivého zachytenia cez viacero Playwright tool-call
+  round-tripov - mechanika overená priamo cez DOM/computed styles, nie len screenshotom).
 
 ## Staršie, stále platné overenia (z prvého kola review)
 - XSS escapovanie (text úlohy, tag, poznámka, podúlohy) – bezpečné, overené `<script>`, `"`, `'`.

@@ -60,6 +60,10 @@
       editTitle: 'Upraviť úlohu',
       saveBtn: 'Uložiť zmeny',
       cancelBtn: 'Zrušiť',
+      toastTaskAdded: 'Úloha pridaná',
+      toastTaskDeleted: 'Úloha zmazaná',
+      toastChangesSaved: 'Zmeny uložené',
+      toastProfileSaved: 'Profil uložený',
       today: 'Dnes', tomorrow: 'Zajtra', yesterday: 'Včera',
       dowFull: ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'],
       dowShort: ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'],
@@ -144,6 +148,10 @@
       editTitle: 'Edit task',
       saveBtn: 'Save changes',
       cancelBtn: 'Cancel',
+      toastTaskAdded: 'Task added',
+      toastTaskDeleted: 'Task deleted',
+      toastChangesSaved: 'Changes saved',
+      toastProfileSaved: 'Profile saved',
       today: 'Today', tomorrow: 'Tomorrow', yesterday: 'Yesterday',
       dowFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       dowShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -234,6 +242,27 @@
     } catch (e) {
       // Dáta ostávajú aspoň v pamäti (v premennej tasks/profile/...) pre aktuálnu session
     }
+  }
+
+  // Krátke potvrdenie akcie (pridanie/zmazanie/uloženie...), nech je jasné, že sa niečo stalo
+  let toastTimeoutId = null;
+  function showToast(message) {
+    const container = document.getElementById('toastContainer');
+    container.innerHTML = '';
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    // Trieda sa musí pridať až v ďalšom frame, inak prehliadač prechod jednoducho preskočí
+    requestAnimationFrame(() => toast.classList.add('visible'));
+
+    clearTimeout(toastTimeoutId);
+    toastTimeoutId = setTimeout(() => {
+      toast.classList.remove('visible');
+      setTimeout(() => toast.remove(), 300);
+    }, 2200);
   }
 
   // Vracia kľúč, pod ktorým sú v localStorage uložené úlohy/šablóny/odznaky patriace
@@ -566,6 +595,7 @@
     render();
     renderCalendar();
     renderBadges();
+    showToast(t('toastTaskAdded'));
   }
 
   // Rýchle pridanie úlohy z prednastavených nápadov (bez opakovania, na aktuálne zvolený dátum)
@@ -674,6 +704,7 @@
     render();
     renderCalendar();
     renderBadges();
+    showToast(t('toastTaskDeleted'));
   }
 
   function getFilteredTasks() {
@@ -747,8 +778,8 @@
               </div>
               <textarea class="edit-notes-textarea" placeholder="${t('notesPlaceholder')}">${escapeHtml(task.notes || '')}</textarea>
               <div class="edit-form-actions">
-                <button type="button" class="edit-save-btn">${t('saveBtn')}</button>
                 <button type="button" class="edit-cancel-btn">${t('cancelBtn')}</button>
+                <button type="button" class="edit-save-btn">${t('saveBtn')}</button>
               </div>
             </div>
           ` : `
@@ -791,13 +822,18 @@
           render();
         });
 
-        li.querySelector('.task-expand-btn').addEventListener('click', () => {
-          if (expandedTaskIds.has(task.id)) {
-            expandedTaskIds.delete(task.id);
-          } else {
+        li.querySelector('.task-expand-btn').addEventListener('click', (e) => {
+          const willExpand = !expandedTaskIds.has(task.id);
+          if (willExpand) {
             expandedTaskIds.add(task.id);
+          } else {
+            expandedTaskIds.delete(task.id);
           }
-          render();
+          // Prepneme len triedu na existujúcom elemente (namiesto celého render()),
+          // nech CSS prechod na .task-details má na čom plynulo animovať - kompletné
+          // prekreslenie zoznamu by vytvorilo nový element rovno v cieľovom stave bez animácie.
+          li.querySelector('.task-details').classList.toggle('visible', willExpand);
+          e.currentTarget.textContent = willExpand ? '▲' : (subtasks.length ? `${subDone}/${subtasks.length} ▼` : '▼');
         });
 
         if (isEditing) {
@@ -811,6 +847,7 @@
               notes: li.querySelector('.edit-notes-textarea').value.trim()
             });
             editingTaskId = null;
+            showToast(t('toastChangesSaved'));
           };
           li.querySelector('.edit-save-btn').addEventListener('click', saveEdit);
           li.querySelector('.edit-cancel-btn').addEventListener('click', () => {
@@ -1501,4 +1538,5 @@
   document.getElementById('settingsSaveBtn').addEventListener('click', () => {
     saveProfile(settingsNickname.value, settingsEmail.value, settingsSelectedAvatar);
     closeSettings();
+    showToast(t('toastProfileSaved'));
   });
