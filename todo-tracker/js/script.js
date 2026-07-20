@@ -298,7 +298,8 @@
   const addBtn = document.getElementById('addBtn');
   const taskList = document.getElementById('taskList');
   const stats = document.getElementById('stats');
-  const bulkToggleBtn = document.getElementById('bulkToggleBtn');
+  const bulkAllBtn = document.getElementById('bulkAllBtn');
+  const bulkNoneBtn = document.getElementById('bulkNoneBtn');
   const filterBtns = document.querySelectorAll('.filter-btn');
   const tabBtns = document.querySelectorAll('.tab-btn');
   const recurrenceSelect = document.getElementById('recurrenceSelect');
@@ -713,10 +714,9 @@
     const filtered = getFilteredTasks();
     taskList.innerHTML = '';
 
-    // Tlačidlo sa mení podľa toho, či sú už všetky zobrazené úlohy hotové -
-    // "Všetky" (označí ich) alebo "Žiadne" (zruší ich), namiesto dvoch samostatných tlačidiel.
-    const allFilteredDone = filtered.length > 0 && filtered.every(tk => tk.done);
-    bulkToggleBtn.textContent = allFilteredDone ? t('bulkNoneBtn') : t('bulkAllBtn');
+    // Keď nie sú žiadne (zobrazené) úlohy, hromadné "Všetky"/"Žiadne" nemajú čo robiť
+    bulkAllBtn.disabled = filtered.length === 0;
+    bulkNoneBtn.disabled = filtered.length === 0;
 
     if (filtered.length === 0) {
       taskList.innerHTML = `<li class="empty-msg">${t('emptyList')}</li>`;
@@ -1174,11 +1174,8 @@
     if (e.key === 'Enter') addTask();
   });
 
-  bulkToggleBtn.addEventListener('click', () => {
-    const filtered = getFilteredTasks();
-    const allFilteredDone = filtered.length > 0 && filtered.every(tk => tk.done);
-    setFilteredTasksDone(!allFilteredDone);
-  });
+  bulkAllBtn.addEventListener('click', () => setFilteredTasksDone(true));
+  bulkNoneBtn.addEventListener('click', () => setFilteredTasksDone(false));
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {

@@ -18,10 +18,11 @@ Testované vždy cez Playwright (Chromium) na `localhost:8791`, pokiaľ nie je u
 - **Favicon** (`html/favicon.svg` + `<link rel="icon">`) – vracia HTTP 200, žiadny 404 v konzole.
 - **Dotykové plochy zväčšené** (checkbox 20→24px, subtask-checkbox 16→20px, day-chip 34→42px, cal-header/day-nav
   tlačidlá, burger, close-btn, edit/delete/expand ikonky) – overené na 320px šírke, žiadny horizontálny presah.
-- **Bulk toggle "Všetky"/"Žiadne"** (pravý horný roh nad zoznamom úloh, jedno tlačidlo namiesto dvoch) – label sa
-  mení podľa toho, či sú aktuálne zobrazené úlohy už všetky hotové. Overené: prepína obojsmerne, funguje v SK aj EN
-  preklade (aj po prepnutí jazyka za behu), pôsobí len na aktuálne *filtrované/zobrazené* úlohy (rešpektuje
-  Aktívne/Hotové filter aj deň), no-op bez pádu keď je filtrovaný zoznam prázdny.
+- **"Všetky / Žiadne"** (pravý horný roh nad zoznamom úloh, dva odkazy oddelené lomkou – nie toggle, podľa
+  referenčného screenshotu od používateľky) – pôsobia na aktuálne *filtrované/zobrazené* úlohy (rešpektuje Aktívne/Hotové
+  filter aj deň). Keď je filtrovaný zoznam prázdny, oba sú `disabled` (sivé, `cursor:not-allowed`, neklikateľné).
+  Overené: funguje v SK aj EN preklade, disabled/enabled stav pri prázdnom/neprázdnom zozname, obe tlačidlá
+  funkčné nezávisle.
 - **Zelená farba appky zmenená** (menej tmavá/zamazaná, sviežejší odtieň) – zmenené v `css/style.css`, `html/index.html`
   (ring farby), `js/script.js` (farba zajka-avatara). Vizuálne overené screenshotmi: tlačidlo Pridať, checkbox,
   hotová úloha, kalendár "celý deň splnený", prstenec "Dnešné úlohy" aj heatmapa aktivity – všade sviežia zelená.
