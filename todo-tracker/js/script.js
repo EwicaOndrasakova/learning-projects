@@ -38,8 +38,8 @@
       filterAll: 'Všetky',
       filterActive: 'Aktívne',
       filterDone: 'Hotové',
-      bulkAllBtn: 'Označiť všetky',
-      bulkNoneBtn: 'Zrušiť všetky',
+      bulkAllBtn: 'Všetky',
+      bulkNoneBtn: 'Žiadne',
       emptyList: 'Žiadne úlohy tu nie sú',
       calLegendFull: 'Celý deň splnený',
       calLegendPartial: 'Čiastočne splnený',
@@ -122,8 +122,8 @@
       filterAll: 'All',
       filterActive: 'Active',
       filterDone: 'Done',
-      bulkAllBtn: 'Check all',
-      bulkNoneBtn: 'Uncheck all',
+      bulkAllBtn: 'All',
+      bulkNoneBtn: 'None',
       emptyList: 'No tasks here',
       calLegendFull: 'Fully completed day',
       calLegendPartial: 'Partially completed',
@@ -298,6 +298,7 @@
   const addBtn = document.getElementById('addBtn');
   const taskList = document.getElementById('taskList');
   const stats = document.getElementById('stats');
+  const bulkToggleBtn = document.getElementById('bulkToggleBtn');
   const filterBtns = document.querySelectorAll('.filter-btn');
   const tabBtns = document.querySelectorAll('.tab-btn');
   const recurrenceSelect = document.getElementById('recurrenceSelect');
@@ -711,6 +712,11 @@
   function render() {
     const filtered = getFilteredTasks();
     taskList.innerHTML = '';
+
+    // Tlačidlo sa mení podľa toho, či sú už všetky zobrazené úlohy hotové -
+    // "Všetky" (označí ich) alebo "Žiadne" (zruší ich), namiesto dvoch samostatných tlačidiel.
+    const allFilteredDone = filtered.length > 0 && filtered.every(tk => tk.done);
+    bulkToggleBtn.textContent = allFilteredDone ? t('bulkNoneBtn') : t('bulkAllBtn');
 
     if (filtered.length === 0) {
       taskList.innerHTML = `<li class="empty-msg">${t('emptyList')}</li>`;
@@ -1168,8 +1174,11 @@
     if (e.key === 'Enter') addTask();
   });
 
-  document.getElementById('bulkAllBtn').addEventListener('click', () => setFilteredTasksDone(true));
-  document.getElementById('bulkNoneBtn').addEventListener('click', () => setFilteredTasksDone(false));
+  bulkToggleBtn.addEventListener('click', () => {
+    const filtered = getFilteredTasks();
+    const allFilteredDone = filtered.length > 0 && filtered.every(tk => tk.done);
+    setFilteredTasksDone(!allFilteredDone);
+  });
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
