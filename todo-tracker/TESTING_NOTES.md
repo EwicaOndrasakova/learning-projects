@@ -71,3 +71,7 @@ Testované vždy cez Playwright (Chromium) na `localhost:8791`, pokiaľ nie je u
   Overené: klik na deň nezmení tab, klik na úlohu prenesie do List view a nastaví správny deň, prázdny deň,
   dlhý text úlohy sa skráti ellipsis bez pretečenia na 320px, prepnutie mesiaca s aktívnym náhľadom nespadne,
   SK aj EN preklad (dátumový label aj "no tasks" hláška).
+- **Dnešný deň predvolene vybraný pri prvom vstupe do Calendar view** – `activateTab('calendar')` nastaví
+  `calPreviewDate = todayStr()` len ak ešte nič vybrané nebolo (`calPreviewDate === null`). Ak si už predtým
+  vybrala iný deň, ten ostáva zachovaný aj pri prepnutí na iný tab a späť (nereseuje sa na dnešok pri každom
+  vstupe). Overené: prvý vstup ukáže "Dnes" s náhľadom, výber iného dňa prežije prepnutie na List a späť.

@@ -1024,7 +1024,11 @@
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + tabName).classList.add('active');
 
-    if (tabName === 'calendar') renderCalendar();
+    if (tabName === 'calendar') {
+      // Kým si nevyberieš iný deň, náhľad pod kalendárom defaultne ukazuje dnešok
+      if (calPreviewDate === null) calPreviewDate = todayStr();
+      renderCalendar();
+    }
     if (tabName === 'badges') renderBadges();
   }
 
