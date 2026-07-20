@@ -196,7 +196,7 @@
 
   function setLanguage(lang) {
     currentLang = lang;
-    localStorage.setItem('language', lang);
+    safeSetItem('language', lang);
     applyTranslations();
     // Prekreslíme všetko, čo obsahuje dynamicky generovaný (nejazykovo-neutrálny) text
     if (typeof render === 'function') render();
@@ -221,7 +221,43 @@
     }
   }
 
-  let tasks = safeParse('tasks', []);
+  // Bezpečný zápis do localStorage - v privátnom prehliadaní (napr. Safari) alebo
+  // pri plnom úložisku setItem hádže výnimku. Bez tohto by pád nastal uprostred
+  // addTask()/toggleTask()/atď. a zvyšok funkcie (render, reset formulára) by sa vôbec nevykonal.
+  function safeSetItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      // Dáta ostávajú aspoň v pamäti (v premennej tasks/profile/...) pre aktuálnu session
+    }
+  }
+
+  // Vracia kľúč, pod ktorým sú v localStorage uložené úlohy/šablóny/odznaky patriace
+  // danej prezývke - vďaka tomu majú rôzne profily (napr. viacero ľudí na jednom
+  // počítači) oddelené zoznamy úloh namiesto jedného spoločného.
+  function profileStorageKey(nickname) {
+    const normalized = (nickname || '').trim().toLowerCase();
+    return normalized || '_guest';
+  }
+
+  let profile = safeParse('profile', null);
+
+  // Jednorazová migrácia: appka predtým ukladala úlohy/šablóny/odznaky pod jedným
+  // spoločným kľúčom bez ohľadu na profil. Existujúce dáta presunieme pod aktuálne
+  // aktívny profil, nech sa touto zmenou nestratia.
+  (function migrateToProfileScopedStorage() {
+    if (localStorage.getItem('tasks') === null) return;
+    const scopeKey = profileStorageKey(profile ? profile.nickname : '');
+    ['tasks', 'recurringTemplates', 'recurringExclusions', 'unlockedBadges'].forEach(name => {
+      const legacyValue = localStorage.getItem(name);
+      if (legacyValue !== null && localStorage.getItem(name + ':' + scopeKey) === null) {
+        safeSetItem(name + ':' + scopeKey, legacyValue);
+      }
+      localStorage.removeItem(name);
+    });
+  })();
+
+  let tasks = safeParse('tasks:' + profileStorageKey(profile ? profile.nickname : ''), []);
   let currentFilter = 'all';
   let calDate = new Date();
 
@@ -250,7 +286,7 @@
       }
       return updated;
     });
-    if (changed) localStorage.setItem('tasks', JSON.stringify(tasks));
+    if (changed) safeSetItem('tasks:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(tasks));
   })();
 
   const taskInput = document.getElementById('taskInput');
@@ -377,13 +413,13 @@
   dateInput.value = todayStr();
 
   function saveTasks() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    safeSetItem('tasks:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(tasks));
   }
 
   // --- Opakovanie úloh (šablóny) ---
 
-  let recurringTemplates = safeParse('recurringTemplates', []);
-  let recurringExclusions = safeParse('recurringExclusions', []); // zoznam "templateId|dátum", ktoré si vedome zmazal/a
+  let recurringTemplates = safeParse('recurringTemplates:' + profileStorageKey(profile ? profile.nickname : ''), []);
+  let recurringExclusions = safeParse('recurringExclusions:' + profileStorageKey(profile ? profile.nickname : ''), []); // zoznam "templateId|dátum", ktoré si vedome zmazal/a
   let selectedCustomDays = []; // dni vybrané pri "Vlastné dni" (0=Ne .. 6=So)
 
   recurrenceSelect.addEventListener('change', () => {
@@ -404,11 +440,11 @@
   });
 
   function saveRecurringTemplates() {
-    localStorage.setItem('recurringTemplates', JSON.stringify(recurringTemplates));
+    safeSetItem('recurringTemplates:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(recurringTemplates));
   }
 
   function saveRecurringExclusions() {
-    localStorage.setItem('recurringExclusions', JSON.stringify(recurringExclusions));
+    safeSetItem('recurringExclusions:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(recurringExclusions));
   }
 
   // Zistí, či daný dátum (Date objekt) zodpovedá pravidlu opakovania danej šablóny
@@ -988,7 +1024,7 @@
     return daysWithTasks > 0 ? Math.round((daysCompleted / daysWithTasks) * 100) : null;
   }
 
-  let previouslyUnlockedBadges = safeParse('unlockedBadges', []);
+  let previouslyUnlockedBadges = safeParse('unlockedBadges:' + profileStorageKey(profile ? profile.nickname : ''), []);
 
   function renderBadges() {
     const streak = calculateStreak();
@@ -1052,7 +1088,7 @@
     });
 
     previouslyUnlockedBadges = currentlyUnlockedIds;
-    localStorage.setItem('unlockedBadges', JSON.stringify(currentlyUnlockedIds));
+    safeSetItem('unlockedBadges:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(currentlyUnlockedIds));
 
     renderHeatmap();
   }
@@ -1237,7 +1273,6 @@
     });
   }
 
-  let profile = safeParse('profile', null);
   let profiles = safeParse('profiles', []); // posledné prihlásenia
 
   const welcomeOverlay = document.getElementById('welcomeOverlay');
@@ -1264,18 +1299,39 @@
     topBarName.textContent = name;
   }
 
-  // Uloží aktívny profil pre túto session a zároveň ho pridá do "posledných prihlásení"
+  // Uloží aktívny profil pre túto session a zároveň ho pridá do "posledných prihlásení".
+  // Ak sa prezývka zmenila (napr. prepnutie na iné "posledné prihlásenie" alebo
+  // premenovanie v Nastaveniach), prepneme aj úlohy/šablóny/odznaky na dáta patriace
+  // novej prezývke - každá prezývka má svoj vlastný, oddelený zoznam úloh.
   function saveProfile(nickname, email, avatarId) {
+    const previousNickname = profile ? profile.nickname : '';
     profile = { nickname: nickname.trim(), email: email.trim(), avatarId: avatarId || null };
-    localStorage.setItem('profile', JSON.stringify(profile));
+    safeSetItem('profile', JSON.stringify(profile));
     applyProfileToTopBar();
+
+    if (profileStorageKey(profile.nickname) !== profileStorageKey(previousNickname)) {
+      switchProfileData(profile.nickname);
+    }
 
     if (profile.nickname) {
       profiles = profiles.filter(p => p.nickname.toLowerCase() !== profile.nickname.toLowerCase());
       profiles.unshift(profile);
       profiles = profiles.slice(0, 5);
-      localStorage.setItem('profiles', JSON.stringify(profiles));
+      safeSetItem('profiles', JSON.stringify(profiles));
     }
+  }
+
+  // Načíta úlohy/šablóny/odznaky patriace danej prezývke a appku prekreslí
+  function switchProfileData(nickname) {
+    const key = profileStorageKey(nickname);
+    tasks = safeParse('tasks:' + key, []);
+    recurringTemplates = safeParse('recurringTemplates:' + key, []);
+    recurringExclusions = safeParse('recurringExclusions:' + key, []);
+    previouslyUnlockedBadges = safeParse('unlockedBadges:' + key, []);
+    generateRecurringInstances();
+    render();
+    renderCalendar();
+    renderBadges();
   }
 
   // --- Welcome obrazovka: zobrazuje sa vždy pri otvorení appky ---
