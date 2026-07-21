@@ -1286,68 +1286,21 @@
 
   // --- Profil používateľa (prezývka, avatar postavička, voliteľný email) ---
 
-  // 5 jednoduchých postavičiek na výber - farebný kruh na pozadí + biela silueta v strede
+  // 5 postavičiek na výber - DiceBear "Adventurer" avatary (farebné, zadarmo, bez potreby atribúcie)
+  // Každá má pevný "seed", nech vyzerá vždy rovnako, a farbu pozadia ladiacu so zvyškom appky.
   const avatarTypes = [
-    { id: 'cat',   name: 'Mačka',  color: '#f5829e' },
-    { id: 'fox',   name: 'Líška',  color: '#f5a25a' },
-    { id: 'bear',  name: 'Medveď', color: '#a98be0' },
-    { id: 'bunny', name: 'Zajko',  color: '#5fd6a0' },
-    { id: 'owl',   name: 'Sova',   color: '#6fb3e0' },
+    { id: 'nova',  name: 'Nova',  seed: 'Nova-Adventurer',  bg: 'f5829e' },
+    { id: 'blaze', name: 'Blaze', seed: 'Blaze-Adventurer', bg: 'f5a25a' },
+    { id: 'iris',  name: 'Iris',  seed: 'Iris-Adventurer',  bg: 'a98be0' },
+    { id: 'sage',  name: 'Sage',  seed: 'Sage-Adventurer',  bg: '5fd6a0' },
+    { id: 'skye',  name: 'Skye',  seed: 'Skye-Adventurer',  bg: '6fb3e0' },
   ];
 
   const defaultAvatarBg = '#e6ddfa';
 
-  // Vygeneruje SVG pre danú postavičku (farebné pozadie + biela silueta hlavy/uší/očí)
-  function buildAvatarSvg(type, color) {
-    let extra = '';
-    switch (type) {
-      case 'cat':
-        extra = `
-          <polygon points="20,24 26,10 30,22" fill="#ffffff"/>
-          <polygon points="44,24 38,10 34,22" fill="#ffffff"/>
-          <circle cx="27" cy="34" r="2.3" fill="${color}"/>
-          <circle cx="37" cy="34" r="2.3" fill="${color}"/>
-          <path d="M29,41 Q32,44 35,41" stroke="${color}" stroke-width="2" fill="none" stroke-linecap="round"/>
-        `;
-        break;
-      case 'fox':
-        extra = `
-          <polygon points="18,22 27,6 31,22" fill="#ffffff"/>
-          <polygon points="46,22 37,6 33,22" fill="#ffffff"/>
-          <circle cx="27" cy="34" r="2.3" fill="${color}"/>
-          <circle cx="37" cy="34" r="2.3" fill="${color}"/>
-          <polygon points="29,40 35,40 32,45" fill="${color}"/>
-        `;
-        break;
-      case 'bear':
-        extra = `
-          <circle cx="20" cy="20" r="6" fill="#ffffff"/>
-          <circle cx="44" cy="20" r="6" fill="#ffffff"/>
-          <circle cx="27" cy="34" r="2.3" fill="${color}"/>
-          <circle cx="37" cy="34" r="2.3" fill="${color}"/>
-          <ellipse cx="32" cy="41" rx="5" ry="3.5" fill="#ffffff"/>
-        `;
-        break;
-      case 'bunny':
-        extra = `
-          <rect x="21" y="4" width="7" height="24" rx="3.5" fill="#ffffff"/>
-          <rect x="36" y="4" width="7" height="24" rx="3.5" fill="#ffffff"/>
-          <circle cx="27" cy="34" r="2.3" fill="${color}"/>
-          <circle cx="37" cy="34" r="2.3" fill="${color}"/>
-          <path d="M29,41 Q32,44 35,41" stroke="${color}" stroke-width="2" fill="none" stroke-linecap="round"/>
-        `;
-        break;
-      case 'owl':
-        extra = `
-          <circle cx="25" cy="32" r="7" fill="#ffffff"/>
-          <circle cx="39" cy="32" r="7" fill="#ffffff"/>
-          <circle cx="25" cy="32" r="3" fill="${color}"/>
-          <circle cx="39" cy="32" r="3" fill="${color}"/>
-          <polygon points="29,38 35,38 32,43" fill="${color}"/>
-        `;
-        break;
-    }
-    return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="32" fill="${color}"/><circle cx="32" cy="34" r="14" fill="#ffffff"/>${extra}</svg>`;
+  // URL adresa DiceBear API pre daný seed/farbu pozadia (verzia 9.x, štýl "adventurer")
+  function avatarImageUrl(seed, bgHex) {
+    return `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(seed)}&backgroundColor=${bgHex}`;
   }
 
   function findAvatarType(avatarId) {
@@ -1361,10 +1314,22 @@
   }
 
   // Nastaví obsah daného "preview" elementu - buď zvolenú postavičku, alebo iniciály ako placeholder
+  // Ak DiceBear API nie je dostupné (offline/výpadok), radšej ukážeme iniciály na farebnom
+  // pozadí než rozbitý obrázok
+  function avatarLoadFallback(el, fallbackText, bgHex) {
+    el.textContent = fallbackText;
+    el.style.background = '#' + bgHex;
+  }
+
   function setAvatarPreview(el, avatarId, nickname) {
     const type = findAvatarType(avatarId);
     if (type) {
-      el.innerHTML = buildAvatarSvg(type.id, type.color);
+      el.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = avatarImageUrl(type.seed, type.bg);
+      img.alt = type.name;
+      img.addEventListener('error', () => avatarLoadFallback(el, initials2(nickname), type.bg), { once: true });
+      el.appendChild(img);
       el.style.background = 'transparent';
     } else {
       el.textContent = initials2(nickname);
@@ -1379,7 +1344,11 @@
       const opt = document.createElement('div');
       opt.className = 'avatar-option' + (a.id === selectedId ? ' selected' : '');
       opt.title = a.name;
-      opt.innerHTML = buildAvatarSvg(a.id, a.color);
+      const img = document.createElement('img');
+      img.src = avatarImageUrl(a.seed, a.bg);
+      img.alt = a.name;
+      img.addEventListener('error', () => avatarLoadFallback(opt, a.name.slice(0, 2).toUpperCase(), a.bg), { once: true });
+      opt.appendChild(img);
       opt.addEventListener('click', () => {
         container.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected'));
         opt.classList.add('selected');

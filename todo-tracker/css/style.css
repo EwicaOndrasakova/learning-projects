@@ -747,6 +747,15 @@
     font-size: 24px;
     font-weight: 800;
     transition: background 0.2s;
+    overflow: hidden;
+  }
+
+  .welcome-avatar-preview img, .top-bar-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
   }
 
   .field-label {
@@ -833,6 +842,7 @@
     font-weight: 800;
     font-size: 15px;
     flex-shrink: 0;
+    overflow: hidden;
   }
 
   .top-bar-greeting {
@@ -1111,13 +1121,20 @@
     border: 2px solid transparent;
     padding: 2px;
     transition: border-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 13px;
   }
 
-  .avatar-option svg {
+  .avatar-option svg, .avatar-option img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     display: block;
+    object-fit: cover;
   }
 
   .avatar-option.selected {
@@ -1165,7 +1182,7 @@
     font-size: 14px;
   }
 
-  .recent-login-avatar svg {
+  .recent-login-avatar svg, .recent-login-avatar img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
