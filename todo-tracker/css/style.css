@@ -1664,10 +1664,10 @@
   }
 
   .edit-cancel-btn {
-    background: #f8fafd;
+    background: #ffffff;
     color: #64748d;
-    border: none;
-    padding: 7px 14px;
+    border: 2px solid #e5edf5;
+    padding: 5px 14px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
