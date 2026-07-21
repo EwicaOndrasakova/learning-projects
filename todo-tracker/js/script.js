@@ -65,6 +65,9 @@
       subtaskPlaceholder: 'Pridať podúlohu...',
       subtaskAdd: 'Pridať',
       editTitle: 'Upraviť úlohu',
+      deleteTitle: 'Zmazať úlohu',
+      expandTitle: 'Zobraziť detail',
+      collapseTitle: 'Skryť detail',
       saveBtn: 'Uložiť zmeny',
       cancelBtn: 'Zrušiť',
       toastTaskAdded: 'Úloha pridaná',
@@ -160,6 +163,9 @@
       subtaskPlaceholder: 'Add a subtask...',
       subtaskAdd: 'Add',
       editTitle: 'Edit task',
+      deleteTitle: 'Delete task',
+      expandTitle: 'Show details',
+      collapseTitle: 'Hide details',
       saveBtn: 'Save changes',
       cancelBtn: 'Cancel',
       toastTaskAdded: 'Task added',
@@ -756,6 +762,12 @@
     renderBadges();
   }
 
+  // Ikony na riadku úlohy (Bootstrap Icons, MIT licencia - vložené priamo ako SVG, žiadna závislosť na ich webe)
+  const editIconSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.5 2.207 1.793 9.914a.5.5 0 0 0-.128.22l-1.171 4.291a.5.5 0 0 0 .618.618l4.291-1.17a.5.5 0 0 0 .22-.128z"/></svg>';
+  const trashIconSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 5.5 5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm2.5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/></svg>';
+  const chevronDownSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>';
+  const chevronUpSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/></svg>';
+
   function render() {
     const filtered = getFilteredTasks();
     taskList.innerHTML = '';
@@ -777,7 +789,9 @@
         const isExpanded = expandedTaskIds.has(task.id);
         const isEditing = editingTaskId === task.id;
 
-        const editIconSvg = '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+        const expandIconHtml = isExpanded
+          ? (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronUpSvg}` : chevronUpSvg)
+          : (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronDownSvg}` : chevronDownSvg);
 
         const detailsContent = isEditing ? `
             <div class="edit-form">
@@ -806,8 +820,8 @@
             <span class="task-text">${escapeHtml(task.text)}</span>
             ${task.tag ? `<span class="task-tag">${escapeHtml(task.tag)}</span>` : ''}
             <button class="edit-btn" title="${t('editTitle')}">${editIconSvg}</button>
-            <button class="task-expand-btn">${isExpanded ? '▲' : (subtasks.length ? `${subDone}/${subtasks.length} ▼` : '▼')}</button>
-            <button class="delete-btn">✕</button>
+            <button class="task-expand-btn" title="${isExpanded ? t('collapseTitle') : t('expandTitle')}">${expandIconHtml}</button>
+            <button class="delete-btn" title="${t('deleteTitle')}">${trashIconSvg}</button>
           </div>
           <div class="task-details ${(isExpanded || isEditing) ? 'visible' : ''}">
             ${detailsContent}
@@ -847,7 +861,10 @@
           // nech CSS prechod na .task-details má na čom plynulo animovať - kompletné
           // prekreslenie zoznamu by vytvorilo nový element rovno v cieľovom stave bez animácie.
           li.querySelector('.task-details').classList.toggle('visible', willExpand);
-          e.currentTarget.textContent = willExpand ? '▲' : (subtasks.length ? `${subDone}/${subtasks.length} ▼` : '▼');
+          e.currentTarget.innerHTML = willExpand
+            ? (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronUpSvg}` : chevronUpSvg)
+            : (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronDownSvg}` : chevronDownSvg);
+          e.currentTarget.title = willExpand ? t('collapseTitle') : t('expandTitle');
         });
 
         if (isEditing) {

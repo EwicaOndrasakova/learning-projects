@@ -1415,14 +1415,22 @@
     color: #50617a;
   }
 
-  .edit-btn svg {
-    width: 15px;
-    height: 15px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .edit-btn svg, .delete-btn svg, .task-expand-btn svg {
+    width: 17px;
+    height: 17px;
+    fill: currentColor;
+    display: block;
+  }
+
+  .task-expand-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .subtask-count {
+    font-size: 11px;
+    font-weight: 700;
   }
 
   .edit-form {
@@ -1458,6 +1466,20 @@
     color: #061b31;
   }
 
+  /* Natívny <select> vie na rôznych prehliadačoch/OS (najmä Safari) ignorovať border-radius
+     alebo si dokresliť vlastný rámik - vypneme predvolený vzhľad a nahradíme ho vlastnou
+     šípkou, nech je zaoblenie vždy rovnaké ako pri ostatných poliach. */
+  .recurrence-select, .priority-select, .edit-priority-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8l3.5-3.5' stroke='%2364748d' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 11px;
+    padding-right: 30px;
+  }
+
   .edit-notes-textarea {
     width: 100%;
     padding: 7px 10px;
@@ -1473,6 +1495,7 @@
 
   .edit-form-actions {
     display: flex;
+    justify-content: flex-end;
     gap: 8px;
   }
 
