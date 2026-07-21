@@ -29,7 +29,7 @@
   }
 
   li.task:hover {
-    box-shadow: 0 2px 10px rgba(150, 130, 200, 0.1);
+    border-color: #d9d0f7;
   }
 
   /* Jemné zjavenie obsahu pri prepnutí záložky */
@@ -53,8 +53,8 @@
   }
 
   body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: linear-gradient(135deg, #fdf2f8 0%, #eef2ff 50%, #f0fdfa 100%);
+    font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif;
+    background: #e4e0f2;
     margin: 0;
     padding: 40px 16px;
     display: flex;
@@ -66,17 +66,18 @@
     background: #ffffff;
     width: 100%;
     max-width: 480px;
-    border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(150, 130, 200, 0.15);
+    border-radius: 28px;
     padding: 24px;
     height: fit-content;
   }
 
   h1 {
     text-align: center;
-    color: #6b5b95;
+    color: #211c38;
     margin-bottom: 20px;
-    font-size: 24px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
   .tabs {
@@ -85,7 +86,7 @@
     margin-bottom: 20px;
     background: #f6f3fb;
     padding: 4px;
-    border-radius: 12px;
+    border-radius: 999px;
   }
 
   .tab-btn {
@@ -93,7 +94,7 @@
     padding: 10px;
     border: none;
     background: transparent;
-    border-radius: 10px;
+    border-radius: 999px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
@@ -102,9 +103,8 @@
   }
 
   .tab-btn.active {
-    background: #c9b6f0;
+    background: #5b3df0;
     color: white;
-    box-shadow: 0 2px 8px rgba(180, 150, 230, 0.4);
   }
 
   .view { display: none; }
@@ -124,14 +124,14 @@
     height: 42px;
     padding: 0 14px;
     border: 2px solid #f0e9fa;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 14px;
     background: #fdfcff;
   }
 
   #taskInput:focus {
     outline: none;
-    border-color: #c9b6f0;
+    border-color: #5b3df0;
   }
 
   #dateInput {
@@ -139,7 +139,7 @@
     height: 42px;
     padding: 0 10px;
     border: 2px solid #f0e9fa;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 13px;
     background: #fdfcff;
     color: #8a80a8;
@@ -147,7 +147,7 @@
 
   #dateInput:focus {
     outline: none;
-    border-color: #c9b6f0;
+    border-color: #5b3df0;
   }
 
   #addBtn {
@@ -156,7 +156,7 @@
     color: #1f9d6c;
     border: none;
     padding: 0 18px;
-    border-radius: 10px;
+    border-radius: 999px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 700;
@@ -208,7 +208,7 @@
     flex: 1;
     padding: 9px 10px;
     border: 2px solid #f0e9fa;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 13px;
     background: #fdfcff;
     color: #8a80a8;
@@ -216,7 +216,7 @@
 
   .recurrence-select:focus {
     outline: none;
-    border-color: #c9b6f0;
+    border-color: #5b3df0;
   }
 
   .custom-days-row {
@@ -233,7 +233,7 @@
   .day-chip {
     width: 42px;
     height: 42px;
-    border-radius: 10px;
+    border-radius: 14px;
     border: 2px solid #f0e9fa;
     background: #fdfcff;
     color: #9b8fc0;
@@ -243,8 +243,8 @@
   }
 
   .day-chip.selected {
-    background: #c9b6f0;
-    border-color: #c9b6f0;
+    background: #5b3df0;
+    border-color: #5b3df0;
     color: #ffffff;
   }
 
@@ -253,7 +253,7 @@
     padding: 8px;
     border: 2px solid #f0e9fa;
     background: #fdfcff;
-    border-radius: 10px;
+    border-radius: 999px;
     cursor: pointer;
     font-size: 13px;
     color: #9b8fc0;
@@ -283,7 +283,7 @@
     font-weight: 700;
     cursor: pointer;
     padding: 6px 8px;
-    border-radius: 8px;
+    border-radius: 999px;
   }
 
   .bulk-btn:hover {
@@ -314,7 +314,7 @@
     align-items: center;
     gap: 10px;
     padding: 12px 10px;
-    border-radius: 12px;
+    border-radius: 16px;
     margin-bottom: 8px;
     background: #faf8ff;
     border: 1px solid #f0e9fa;
@@ -386,7 +386,7 @@
     color: #9b8fc0;
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 14px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 700;
@@ -421,7 +421,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 14px;
     font-size: 13px;
     font-weight: 600;
     color: #8a80a8;
@@ -446,7 +446,7 @@
   }
 
   .cal-day.today {
-    border: 2px solid #c9b6f0;
+    border: 2px solid #5b3df0;
   }
 
   .cal-day.selected {
@@ -513,7 +513,7 @@
   .cal-day-preview-item {
     position: relative;
     padding: 7px 10px 7px 14px;
-    border-radius: 8px;
+    border-radius: 14px;
     background: #faf8ff;
     border: 1px solid #f0e9fa;
     font-size: 13px;
@@ -563,7 +563,7 @@
     gap: 20px;
     background: #faf8ff;
     border: 1px solid #f0e9fa;
-    border-radius: 18px;
+    border-radius: 24px;
     padding: 20px;
     margin-bottom: 22px;
   }
@@ -625,7 +625,7 @@
   .badge {
     background: #faf8ff;
     border: 1px solid #f0e9fa;
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 14px 6px 12px;
     text-align: center;
   }
@@ -702,7 +702,7 @@
   .welcome-overlay {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, #fdf2f8 0%, #eef2ff 50%, #f0fdfa 100%);
+    background: #e4e0f2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -712,8 +712,7 @@
 
   .welcome-card {
     background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(150, 130, 200, 0.18);
+    border-radius: 28px;
     padding: 32px 26px;
     width: 100%;
     max-width: 400px;
@@ -723,8 +722,10 @@
   }
 
   .welcome-card h2 {
-    color: #6b5b95;
-    font-size: 22px;
+    color: #211c38;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     margin: 0 0 6px;
   }
 
@@ -765,7 +766,7 @@
     width: 100%;
     padding: 10px 14px;
     border: 2px solid #f0e9fa;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 14px;
     background: #fdfcff;
     color: #5c5470;
@@ -773,7 +774,7 @@
 
   .text-field:focus {
     outline: none;
-    border-color: #c9b6f0;
+    border-color: #5b3df0;
   }
 
   .optional-tag {
@@ -784,11 +785,11 @@
 
   .primary-btn {
     width: 100%;
-    background: #c9b6f0;
+    background: #5b3df0;
     color: #ffffff;
     border: none;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 999px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
@@ -796,7 +797,7 @@
   }
 
   .primary-btn:hover {
-    background: #b8a2e8;
+    background: #4930d1;
   }
 
   .text-link-btn {
@@ -857,7 +858,7 @@
   .burger-btn {
     width: 42px;
     height: 42px;
-    border-radius: 10px;
+    border-radius: 14px;
     border: none;
     background: #f6f3fb;
     cursor: pointer;
@@ -888,8 +889,8 @@
     top: 48px;
     right: 0;
     background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(150, 130, 200, 0.25);
+    border: 1px solid #ece7fb;
+    border-radius: 20px;
     padding: 6px;
     min-width: 150px;
     flex-direction: column;
@@ -906,7 +907,7 @@
     border: none;
     text-align: left;
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: 14px;
     font-size: 13px;
     font-weight: 600;
     color: #5c5470;
@@ -929,7 +930,7 @@
     padding: 10px;
     border: 2px solid #f0e9fa;
     background: #fdfcff;
-    border-radius: 10px;
+    border-radius: 999px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
@@ -937,8 +938,8 @@
   }
 
   .gender-btn.selected {
-    background: #c9b6f0;
-    border-color: #c9b6f0;
+    background: #5b3df0;
+    border-color: #5b3df0;
     color: #ffffff;
   }
 
@@ -946,7 +947,7 @@
   .lang-toggle {
     display: flex;
     background: #f6f3fb;
-    border-radius: 10px;
+    border-radius: 999px;
     padding: 3px;
     flex-shrink: 0;
     gap: 2px;
@@ -959,7 +960,7 @@
     font-size: 11px;
     font-weight: 700;
     padding: 6px 8px;
-    border-radius: 8px;
+    border-radius: 999px;
     cursor: pointer;
   }
 
@@ -969,7 +970,7 @@
   }
 
   .lang-btn.active {
-    background: #c9b6f0;
+    background: #5b3df0;
     color: #ffffff;
   }
 
@@ -994,9 +995,8 @@
     max-width: 480px;
     max-height: 90vh;
     overflow-y: auto;
-    border-radius: 20px 20px 0 0;
+    border-radius: 28px 28px 0 0;
     padding: 24px;
-    box-shadow: 0 -8px 30px rgba(150, 130, 200, 0.2);
   }
 
   .settings-header {
@@ -1007,8 +1007,10 @@
   }
 
   .settings-header h3 {
-    color: #6b5b95;
-    font-size: 17px;
+    color: #211c38;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     margin: 0;
   }
 
@@ -1210,7 +1212,7 @@
     flex: 1;
     padding: 9px 10px;
     border: 2px solid #f0e9fa;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 13px;
     background: #fdfcff;
     color: #5c5470;
@@ -1218,14 +1220,14 @@
 
   .priority-select:focus, .tag-input:focus, .notes-textarea:focus {
     outline: none;
-    border-color: #c9b6f0;
+    border-color: #5b3df0;
   }
 
   .notes-textarea {
     width: 100%;
     padding: 9px 10px;
     border: 2px solid #f0e9fa;
-    border-radius: 10px;
+    border-radius: 16px;
     font-size: 13px;
     background: #fdfcff;
     color: #5c5470;
@@ -1241,7 +1243,7 @@
     color: #9b8fc0;
     width: 42px;
     height: 42px;
-    border-radius: 10px;
+    border-radius: 14px;
     cursor: pointer;
     flex-shrink: 0;
     display: flex;
@@ -1279,7 +1281,7 @@
     width: 100%;
     padding: 10px 14px;
     border: 2px solid #f0e9fa;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 14px;
     background: #fdfcff;
     color: #5c5470;
@@ -1287,7 +1289,7 @@
 
   .search-input:focus {
     outline: none;
-    border-color: #c9b6f0;
+    border-color: #5b3df0;
   }
 
   /* --- Navigátor dní (Zoznam defaultne zobrazuje len vybraný deň) --- */
@@ -1296,7 +1298,7 @@
     align-items: center;
     justify-content: space-between;
     background: #f6f3fb;
-    border-radius: 10px;
+    border-radius: 999px;
     padding: 8px 10px;
     margin-bottom: 14px;
   }
@@ -1311,7 +1313,7 @@
     color: #9b8fc0;
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: 999px;
     cursor: pointer;
     font-size: 15px;
     font-weight: 700;
@@ -1417,7 +1419,7 @@
     width: 100%;
     padding: 8px 10px;
     border: 2px solid #e0d9f7;
-    border-radius: 8px;
+    border-radius: 14px;
     font-size: 13px;
     background: #ffffff;
     color: #5c5470;
@@ -1433,7 +1435,7 @@
     flex: 1;
     padding: 7px 8px;
     border: 2px solid #e0d9f7;
-    border-radius: 8px;
+    border-radius: 14px;
     font-size: 12px;
     background: #ffffff;
     color: #5c5470;
@@ -1443,7 +1445,7 @@
     width: 100%;
     padding: 7px 10px;
     border: 2px solid #e0d9f7;
-    border-radius: 8px;
+    border-radius: 14px;
     font-size: 12px;
     background: #ffffff;
     color: #5c5470;
@@ -1462,7 +1464,7 @@
     color: #1f9d6c;
     border: none;
     padding: 7px 14px;
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
@@ -1473,7 +1475,7 @@
     color: #9b8fc0;
     border: none;
     padding: 7px 14px;
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
@@ -1555,7 +1557,7 @@
     flex: 1;
     padding: 6px 10px;
     border: 2px solid #f0e9fa;
-    border-radius: 8px;
+    border-radius: 14px;
     font-size: 12px;
     background: #ffffff;
   }
@@ -1565,7 +1567,7 @@
     color: #6b5b95;
     border: none;
     padding: 6px 12px;
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
@@ -1575,7 +1577,7 @@
   .heatmap-section {
     background: #faf8ff;
     border: 1px solid #f0e9fa;
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 16px;
     margin-bottom: 22px;
   }
@@ -1624,7 +1626,7 @@
   .activity-bar.level-3 { background: #2ecc82; }
 
   .activity-bar.today {
-    box-shadow: 0 0 0 2px #c9b6f0;
+    box-shadow: 0 0 0 2px #5b3df0;
   }
 
   .activity-labels {
@@ -1678,13 +1680,12 @@
   }
 
   .toast {
-    background: #4a3f66;
+    background: #211c38;
     color: #ffffff;
     font-size: 13px;
     font-weight: 600;
     padding: 10px 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 16px rgba(60, 40, 90, 0.25);
+    border-radius: 999px;
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.25s ease, transform 0.25s ease;

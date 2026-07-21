@@ -86,3 +86,23 @@ Testované vždy cez Playwright (Chromium) na `localhost:8791`, pokiaľ nie je u
   Overené: uloženie birthday+gender v My Profile, Log out vyprázdni meno a zobrazí welcome, opätovné prihlásenie
   pod tým istým menom cez Login formulár (ktorý nemá birthday/gender polia) správne zachová predtým uložené
   birthday="1995-03-14" a gender="female".
+- **Vizuálny redesign inšpirovaný "Caldera" štýlom** (z https://styles.refero.design/style/fe8cdcf9-...) –
+  adaptovaný duch (plochý dizajn, sebavedomá paleta, pill tvary), nie doslovná kópia (pôvodný štýl je pre
+  landing page s hero sekciami, nie kompaktnú kartovú appku). Zmeny:
+  - Font `DM Sans` (Google Fonts, pridané `<link>` v `index.html`) namiesto `Segoe UI`.
+  - `body`/`.welcome-overlay` gradient nahradený plochou farbou `#e4e0f2` (žiadne farebné prechody).
+  - Odstránené takmer všetky `box-shadow` (`.app`, `.welcome-card`, `.settings-panel`, `.burger-menu`,
+    `.toast`, `.tab-btn.active`, `li.task:hover`) - ostali len "ring" efekty (`.cal-day.selected`,
+    `.activity-bar.today`), ktoré sú vizuálne obrysy, nie hĺbkové tiene.
+  - Hlavná fialová akcentová farba `#c9b6f0` → sýtejšia `#5b3df0` (a hover `#b8a2e8` → `#4930d1`) - **globálny
+    sed replace**, dotklo sa to tab-btn.active, day-chip.selected, focus rings na vstupoch, primary-btn,
+    lang-btn.active, gender-btn.selected. Vedomé rozhodnutie: NIE oranžová (ako v originálnom štýle), lebo by
+    kolidovala s existujúcim farebným kódovaním priority úloh (stredná priorita je už oranžová/žltá).
+  - Zväčšené zaoblenie naprieč appkou - primárne tlačidlá/inputy/filter/tab/day-nav na plný pill (`999px`),
+    karty (`.app`, `.welcome-card`, `.settings-panel`, `.badge`, `.rings-summary`) na 20-28px (predtým 12-20px).
+  - `h1`, `.welcome-card h2`, `.settings-header h3` dostali `font-weight:800` + `letter-spacing:-0.02em` +
+    tmavšiu takmer-čiernu farbu `#211c38` (predtým `#6b5b95`) - zvyšné menšie fialové akcenty (badge-name,
+    rings-legend, cal month label...) zostali pri pôvodnej `#6b5b95`, nech appka nestratí celú identitu.
+  Overené: vizuálne screenshotmi na 420px aj 320px (žiadny horizontálny presah), font DM Sans sa reálne
+  načítal (`document.fonts.check('700 16px "DM Sans"')` → true), všetky views (List/Calendar/Overview),
+  burger menu aj My Profile panel prekontrolované. **Ľahko vratiteľné cez git, ak by sa nepáčilo.**
