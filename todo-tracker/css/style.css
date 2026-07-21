@@ -29,7 +29,7 @@
   }
 
   li.task:hover {
-    border-color: #d9d0f7;
+    border-color: #d9d0bd;
   }
 
   /* Jemné zjavenie obsahu pri prepnutí záložky */
@@ -54,7 +54,7 @@
 
   body {
     font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif;
-    background: #e4e0f2;
+    background: #e7e3da;
     margin: 0;
     padding: 40px 16px;
     display: flex;
@@ -73,7 +73,7 @@
 
   h1 {
     text-align: center;
-    color: #211c38;
+    color: #1c1712;
     margin-bottom: 20px;
     font-size: 26px;
     font-weight: 800;
@@ -84,7 +84,7 @@
     display: flex;
     gap: 8px;
     margin-bottom: 20px;
-    background: #f6f3fb;
+    background: #f2efe6;
     padding: 4px;
     border-radius: 999px;
   }
@@ -98,12 +98,12 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
-    color: #9b8fc0;
+    color: #a89f8a;
     transition: all 0.2s;
   }
 
   .tab-btn.active {
-    background: #5b3df0;
+    background: #fc5000;
     color: white;
   }
 
@@ -123,31 +123,31 @@
     min-width: 0;
     height: 42px;
     padding: 0 14px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 20px;
     font-size: 14px;
-    background: #fdfcff;
+    background: #fdfbf7;
   }
 
   #taskInput:focus {
     outline: none;
-    border-color: #5b3df0;
+    border-color: #fc5000;
   }
 
   #dateInput {
     flex: 1 1 auto;
     height: 42px;
     padding: 0 10px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 20px;
     font-size: 13px;
-    background: #fdfcff;
-    color: #8a80a8;
+    background: #fdfbf7;
+    color: #8a8170;
   }
 
   #dateInput:focus {
     outline: none;
-    border-color: #5b3df0;
+    border-color: #fc5000;
   }
 
   #addBtn {
@@ -182,9 +182,9 @@
   }
 
   .quick-chip {
-    background: #f6f3fb;
-    border: 1px solid #ede5fb;
-    color: #8a7ba8;
+    background: #f2efe6;
+    border: 1px solid #ece4d3;
+    color: #8a7860;
     font-size: 12px;
     font-weight: 600;
     padding: 6px 10px;
@@ -194,7 +194,7 @@
   }
 
   .quick-chip:hover {
-    background: #ede5fb;
+    background: #ece4d3;
   }
 
   /* --- Opakovanie úlohy --- */
@@ -207,16 +207,16 @@
   .recurrence-select {
     flex: 1;
     padding: 9px 10px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 20px;
     font-size: 13px;
-    background: #fdfcff;
-    color: #8a80a8;
+    background: #fdfbf7;
+    color: #8a8170;
   }
 
   .recurrence-select:focus {
     outline: none;
-    border-color: #5b3df0;
+    border-color: #fc5000;
   }
 
   .custom-days-row {
@@ -234,29 +234,29 @@
     width: 42px;
     height: 42px;
     border-radius: 14px;
-    border: 2px solid #f0e9fa;
-    background: #fdfcff;
-    color: #9b8fc0;
+    border: 2px solid #e8e2d5;
+    background: #fdfbf7;
+    color: #a89f8a;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
   }
 
   .day-chip.selected {
-    background: #5b3df0;
-    border-color: #5b3df0;
+    background: #fc5000;
+    border-color: #fc5000;
     color: #ffffff;
   }
 
   .filter-btn {
     flex: 1;
     padding: 8px;
-    border: 2px solid #f0e9fa;
-    background: #fdfcff;
+    border: 2px solid #e8e2d5;
+    background: #fdfbf7;
     border-radius: 999px;
     cursor: pointer;
     font-size: 13px;
-    color: #9b8fc0;
+    color: #a89f8a;
     font-weight: 600;
   }
 
@@ -278,7 +278,7 @@
   .bulk-btn {
     background: none;
     border: none;
-    color: #9b8fc0;
+    color: #a89f8a;
     font-size: 11px;
     font-weight: 700;
     cursor: pointer;
@@ -287,18 +287,18 @@
   }
 
   .bulk-btn:hover {
-    background: #f6f3fb;
-    color: #6b5b95;
+    background: #f2efe6;
+    color: #3a3128;
   }
 
   .bulk-btn:disabled {
-    color: #d8d3e8;
+    color: #d6d0be;
     cursor: not-allowed;
     background: none;
   }
 
   .bulk-divider {
-    color: #d8d3e8;
+    color: #d6d0be;
     font-size: 11px;
     font-weight: 700;
   }
@@ -316,8 +316,8 @@
     padding: 12px 10px;
     border-radius: 16px;
     margin-bottom: 8px;
-    background: #faf8ff;
-    border: 1px solid #f0e9fa;
+    background: #faf7f0;
+    border: 1px solid #e8e2d5;
   }
 
   li.task.done {
@@ -334,7 +334,7 @@
     flex: 1;
     font-size: 14px;
     word-break: break-word;
-    color: #5c5470;
+    color: #4a4235;
   }
 
   .checkbox {
@@ -360,7 +360,7 @@
 
   .empty-msg {
     text-align: center;
-    color: #b5aed1;
+    color: #b3ab9a;
     font-size: 14px;
     padding: 24px 0;
   }
@@ -369,7 +369,7 @@
     margin-top: 16px;
     text-align: center;
     font-size: 13px;
-    color: #a89fc4;
+    color: #a89e89;
     font-weight: 600;
   }
 
@@ -382,8 +382,8 @@
 
   .cal-header button {
     border: none;
-    background: #f6f3fb;
-    color: #9b8fc0;
+    background: #f2efe6;
+    color: #a89f8a;
     width: 40px;
     height: 40px;
     border-radius: 14px;
@@ -393,12 +393,12 @@
   }
 
   .cal-header button:hover {
-    background: #ede5fb;
+    background: #ece4d3;
   }
 
   #calMonthLabel {
     font-weight: 700;
-    color: #6b5b95;
+    color: #3a3128;
     font-size: 15px;
   }
 
@@ -411,7 +411,7 @@
   .cal-dow {
     text-align: center;
     font-size: 11px;
-    color: #b5aed1;
+    color: #b3ab9a;
     font-weight: 700;
     padding-bottom: 4px;
   }
@@ -424,15 +424,15 @@
     border-radius: 14px;
     font-size: 13px;
     font-weight: 600;
-    color: #8a80a8;
-    background: #faf8ff;
-    border: 1px solid #f0e9fa;
+    color: #8a8170;
+    background: #faf7f0;
+    border: 1px solid #e8e2d5;
     position: relative;
     cursor: pointer;
   }
 
   .cal-day:hover {
-    background: #f0e9fa;
+    background: #e8e2d5;
   }
 
   .cal-day.empty {
@@ -446,11 +446,11 @@
   }
 
   .cal-day.today {
-    border: 2px solid #5b3df0;
+    border: 2px solid #fc5000;
   }
 
   .cal-day.selected {
-    box-shadow: 0 0 0 2px #6b5b95 inset;
+    box-shadow: 0 0 0 2px #3a3128 inset;
   }
 
   .cal-day.all-done {
@@ -460,9 +460,9 @@
   }
 
   .cal-day.partial {
-    background: #ffe8b3;
+    background: #f5f28e;
     color: #8a6d1f;
-    border-color: #ffe8b3;
+    border-color: #f5f28e;
   }
 
   .cal-legend {
@@ -471,7 +471,7 @@
     gap: 16px;
     margin-top: 16px;
     font-size: 12px;
-    color: #a89fc4;
+    color: #a89e89;
   }
 
   .legend-dot {
@@ -497,7 +497,7 @@
   .cal-day-preview-label {
     font-size: 13px;
     font-weight: 700;
-    color: #6b5b95;
+    color: #3a3128;
     margin-bottom: 8px;
   }
 
@@ -514,10 +514,10 @@
     position: relative;
     padding: 7px 10px 7px 14px;
     border-radius: 14px;
-    background: #faf8ff;
-    border: 1px solid #f0e9fa;
+    background: #faf7f0;
+    border: 1px solid #e8e2d5;
     font-size: 13px;
-    color: #5c5470;
+    color: #4a4235;
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
@@ -525,7 +525,7 @@
   }
 
   .cal-day-preview-item:hover {
-    background: #f0e9fa;
+    background: #e8e2d5;
   }
 
   .cal-day-preview-item::before {
@@ -536,11 +536,11 @@
     bottom: 6px;
     width: 4px;
     border-radius: 2px;
-    background: #e0d9f0;
+    background: #ded7c5;
   }
 
   .cal-day-preview-item.priority-high::before { background: #ef5c7e; }
-  .cal-day-preview-item.priority-medium::before { background: #f5b942; }
+  .cal-day-preview-item.priority-medium::before { background: #5b3df0; }
   .cal-day-preview-item.priority-low::before { background: #4cd28f; }
 
   .cal-day-preview-item.done {
@@ -550,7 +550,7 @@
 
   .cal-day-preview-empty {
     text-align: center;
-    color: #b5aed1;
+    color: #b3ab9a;
     font-size: 13px;
     padding: 10px 0;
   }
@@ -561,8 +561,8 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: #faf8ff;
-    border: 1px solid #f0e9fa;
+    background: #faf7f0;
+    border: 1px solid #e8e2d5;
     border-radius: 24px;
     padding: 20px;
     margin-bottom: 22px;
@@ -598,7 +598,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #6b5b95;
+    color: #3a3128;
     font-weight: 600;
   }
 
@@ -611,7 +611,7 @@
 
   .rings-legend-value {
     margin-left: auto;
-    color: #a89fc4;
+    color: #a89e89;
     font-weight: 700;
   }
 
@@ -623,8 +623,8 @@
   }
 
   .badge {
-    background: #faf8ff;
-    border: 1px solid #f0e9fa;
+    background: #faf7f0;
+    border: 1px solid #e8e2d5;
     border-radius: 20px;
     padding: 14px 6px 12px;
     text-align: center;
@@ -632,7 +632,7 @@
 
   .badge.unlocked {
     background: #fffdfa;
-    border-color: #eee2fa;
+    border-color: #f0e8d5;
   }
 
   .badge-ring {
@@ -656,7 +656,7 @@
     justify-content: center;
     font-size: 12px;
     font-weight: 800;
-    color: #8a80a8;
+    color: #8a8170;
   }
 
   .badge.unlocked .badge-ring-value {
@@ -685,16 +685,16 @@
   .badge-name {
     font-size: 11px;
     font-weight: 700;
-    color: #6b5b95;
+    color: #3a3128;
   }
 
   .badge:not(.unlocked) .badge-name {
-    color: #b5aed1;
+    color: #b3ab9a;
   }
 
   .badge-desc {
     font-size: 10px;
-    color: #a89fc4;
+    color: #a89e89;
     margin-top: 2px;
   }
 
@@ -702,7 +702,7 @@
   .welcome-overlay {
     position: fixed;
     inset: 0;
-    background: #e4e0f2;
+    background: #e7e3da;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -722,7 +722,7 @@
   }
 
   .welcome-card h2 {
-    color: #211c38;
+    color: #1c1712;
     font-size: 24px;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -730,7 +730,7 @@
   }
 
   .welcome-card p {
-    color: #a89fc4;
+    color: #a89e89;
     font-size: 13px;
     margin: 0 0 22px;
   }
@@ -753,7 +753,7 @@
     text-align: left;
     font-size: 12px;
     font-weight: 700;
-    color: #8a80a8;
+    color: #8a8170;
     margin-bottom: 6px;
     margin-top: 14px;
   }
@@ -765,27 +765,27 @@
   .text-field {
     width: 100%;
     padding: 10px 14px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 20px;
     font-size: 14px;
-    background: #fdfcff;
-    color: #5c5470;
+    background: #fdfbf7;
+    color: #4a4235;
   }
 
   .text-field:focus {
     outline: none;
-    border-color: #5b3df0;
+    border-color: #fc5000;
   }
 
   .optional-tag {
     font-weight: 400;
-    color: #cabee8;
+    color: #c9bfa6;
     text-transform: none;
   }
 
   .primary-btn {
     width: 100%;
-    background: #5b3df0;
+    background: #fc5000;
     color: #ffffff;
     border: none;
     padding: 12px;
@@ -797,13 +797,13 @@
   }
 
   .primary-btn:hover {
-    background: #4930d1;
+    background: #e04600;
   }
 
   .text-link-btn {
     background: none;
     border: none;
-    color: #b5aed1;
+    color: #b3ab9a;
     font-size: 13px;
     cursor: pointer;
     margin-top: 10px;
@@ -837,7 +837,7 @@
 
   .top-bar-greeting {
     font-size: 13px;
-    color: #8a80a8;
+    color: #8a8170;
     display: flex;
     align-items: baseline;
     gap: 4px;
@@ -846,7 +846,7 @@
   }
 
   .top-bar-greeting strong {
-    color: #6b5b95;
+    color: #3a3128;
     font-size: 15px;
     font-weight: 800;
     overflow: hidden;
@@ -860,7 +860,7 @@
     height: 42px;
     border-radius: 14px;
     border: none;
-    background: #f6f3fb;
+    background: #f2efe6;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -873,7 +873,7 @@
   .burger-btn span {
     width: 16px;
     height: 2px;
-    background: #9b8fc0;
+    background: #a89f8a;
     border-radius: 2px;
   }
 
@@ -889,7 +889,7 @@
     top: 48px;
     right: 0;
     background: #ffffff;
-    border: 1px solid #ece7fb;
+    border: 1px solid #e8e2d0;
     border-radius: 20px;
     padding: 6px;
     min-width: 150px;
@@ -910,12 +910,12 @@
     border-radius: 14px;
     font-size: 13px;
     font-weight: 600;
-    color: #5c5470;
+    color: #4a4235;
     cursor: pointer;
   }
 
   .burger-menu-item:hover {
-    background: #f6f3fb;
+    background: #f2efe6;
   }
 
   /* --- Výber pohlavia v My Profile --- */
@@ -928,25 +928,25 @@
   .gender-btn {
     flex: 1;
     padding: 10px;
-    border: 2px solid #f0e9fa;
-    background: #fdfcff;
+    border: 2px solid #e8e2d5;
+    background: #fdfbf7;
     border-radius: 999px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    color: #9b8fc0;
+    color: #a89f8a;
   }
 
   .gender-btn.selected {
-    background: #5b3df0;
-    border-color: #5b3df0;
+    background: #fc5000;
+    border-color: #fc5000;
     color: #ffffff;
   }
 
   /* --- Prepínač jazyka SK/EN --- */
   .lang-toggle {
     display: flex;
-    background: #f6f3fb;
+    background: #f2efe6;
     border-radius: 999px;
     padding: 3px;
     flex-shrink: 0;
@@ -956,7 +956,7 @@
   .lang-btn {
     border: none;
     background: transparent;
-    color: #9b8fc0;
+    color: #a89f8a;
     font-size: 11px;
     font-weight: 700;
     padding: 6px 8px;
@@ -970,7 +970,7 @@
   }
 
   .lang-btn.active {
-    background: #5b3df0;
+    background: #fc5000;
     color: #ffffff;
   }
 
@@ -1007,7 +1007,7 @@
   }
 
   .settings-header h3 {
-    color: #211c38;
+    color: #1c1712;
     font-size: 19px;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -1017,7 +1017,7 @@
   .close-btn {
     background: none;
     border: none;
-    color: #b5aed1;
+    color: #b3ab9a;
     font-size: 22px;
     cursor: pointer;
     line-height: 1;
@@ -1033,8 +1033,8 @@
 
   .success-card {
     flex: 1;
-    background: #faf8ff;
-    border: 1px solid #f0e9fa;
+    background: #faf7f0;
+    border: 1px solid #e8e2d5;
     border-radius: 14px;
     padding: 14px;
     text-align: center;
@@ -1043,19 +1043,19 @@
   .success-value {
     font-size: 26px;
     font-weight: 800;
-    color: #6b5b95;
+    color: #3a3128;
   }
 
   .success-label {
     font-size: 11px;
-    color: #a89fc4;
+    color: #a89e89;
     font-weight: 600;
     margin-top: 2px;
   }
 
   .rings-note {
     font-size: 11px;
-    color: #b5aed1;
+    color: #b3ab9a;
     text-align: center;
     margin: 10px 0 20px;
   }
@@ -1121,7 +1121,7 @@
   }
 
   .avatar-option.selected {
-    border-color: #6b5b95;
+    border-color: #3a3128;
   }
 
   /* --- Posledné prihlásenia --- */
@@ -1132,7 +1132,7 @@
   .recent-logins-label {
     font-size: 12px;
     font-weight: 700;
-    color: #8a80a8;
+    color: #8a8170;
     margin-bottom: 8px;
     text-align: center;
   }
@@ -1160,7 +1160,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6b5b95;
+    color: #3a3128;
     font-weight: 800;
     font-size: 14px;
   }
@@ -1173,7 +1173,7 @@
 
   .recent-login-name {
     font-size: 10px;
-    color: #8a80a8;
+    color: #8a8170;
     font-weight: 600;
     max-width: 56px;
     overflow: hidden;
@@ -1185,7 +1185,7 @@
   .more-options-toggle {
     background: none;
     border: none;
-    color: #9b8fc0;
+    color: #a89f8a;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
@@ -1211,26 +1211,26 @@
   .priority-select, .tag-input {
     flex: 1;
     padding: 9px 10px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 20px;
     font-size: 13px;
-    background: #fdfcff;
-    color: #5c5470;
+    background: #fdfbf7;
+    color: #4a4235;
   }
 
   .priority-select:focus, .tag-input:focus, .notes-textarea:focus {
     outline: none;
-    border-color: #5b3df0;
+    border-color: #fc5000;
   }
 
   .notes-textarea {
     width: 100%;
     padding: 9px 10px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 16px;
     font-size: 13px;
-    background: #fdfcff;
-    color: #5c5470;
+    background: #fdfbf7;
+    color: #4a4235;
     resize: vertical;
     min-height: 44px;
     font-family: inherit;
@@ -1238,9 +1238,9 @@
 
   /* --- Mikrofón (hlasové pridávanie) --- */
   .mic-btn {
-    background: #f6f3fb;
+    background: #f2efe6;
     border: none;
-    color: #9b8fc0;
+    color: #a89f8a;
     width: 42px;
     height: 42px;
     border-radius: 14px;
@@ -1280,16 +1280,16 @@
   .search-input {
     width: 100%;
     padding: 10px 14px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 20px;
     font-size: 14px;
-    background: #fdfcff;
-    color: #5c5470;
+    background: #fdfbf7;
+    color: #4a4235;
   }
 
   .search-input:focus {
     outline: none;
-    border-color: #5b3df0;
+    border-color: #fc5000;
   }
 
   /* --- Navigátor dní (Zoznam defaultne zobrazuje len vybraný deň) --- */
@@ -1297,7 +1297,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #f6f3fb;
+    background: #f2efe6;
     border-radius: 999px;
     padding: 8px 10px;
     margin-bottom: 14px;
@@ -1310,7 +1310,7 @@
   .day-nav button {
     border: none;
     background: #ffffff;
-    color: #9b8fc0;
+    color: #a89f8a;
     width: 36px;
     height: 36px;
     border-radius: 999px;
@@ -1320,14 +1320,14 @@
   }
 
   .day-nav button:hover {
-    background: #ede5fb;
-    color: #6b5b95;
+    background: #ece4d3;
+    color: #3a3128;
   }
 
   #dayNavLabel {
     font-size: 13px;
     font-weight: 700;
-    color: #6b5b95;
+    color: #3a3128;
   }
 
   /* --- Priorita a tag na položke úlohy --- */
@@ -1345,15 +1345,15 @@
     bottom: 8px;
     width: 5px;
     border-radius: 3px;
-    background: #e0d9f0;
+    background: #ded7c5;
   }
 
   li.task.priority-high::before { background: #ef5c7e; }
-  li.task.priority-medium::before { background: #f5b942; }
+  li.task.priority-medium::before { background: #5b3df0; }
   li.task.priority-low::before { background: #4cd28f; }
 
   li.task.priority-high:not(.done) { background: #fef5f7; }
-  li.task.priority-medium:not(.done) { background: #fefaf1; }
+  li.task.priority-medium:not(.done) { background: #f5f2ff; }
   li.task.priority-low:not(.done) { background: #f3fdf8; }
 
   .task-main-row {
@@ -1366,8 +1366,8 @@
   .task-tag {
     font-size: 10px;
     font-weight: 700;
-    color: #8a5aa8;
-    background: #f0e3fa;
+    color: #6b5a1f;
+    background: #f5f28e;
     padding: 2px 8px;
     border-radius: 10px;
     white-space: nowrap;
@@ -1376,7 +1376,7 @@
   .task-expand-btn {
     background: none;
     border: none;
-    color: #b5aed1;
+    color: #b3ab9a;
     cursor: pointer;
     font-size: 11px;
     padding: 8px 6px;
@@ -1386,7 +1386,7 @@
   .edit-btn {
     background: none;
     border: none;
-    color: #b5aed1;
+    color: #b3ab9a;
     cursor: pointer;
     padding: 8px;
     flex-shrink: 0;
@@ -1395,7 +1395,7 @@
   }
 
   .edit-btn:hover {
-    color: #8a80a8;
+    color: #8a8170;
   }
 
   .edit-btn svg {
@@ -1418,11 +1418,11 @@
   .edit-text-input {
     width: 100%;
     padding: 8px 10px;
-    border: 2px solid #e0d9f7;
+    border: 2px solid #e2dbc9;
     border-radius: 14px;
     font-size: 13px;
     background: #ffffff;
-    color: #5c5470;
+    color: #4a4235;
     font-weight: 600;
   }
 
@@ -1434,21 +1434,21 @@
   .edit-priority-select, .edit-tag-input {
     flex: 1;
     padding: 7px 8px;
-    border: 2px solid #e0d9f7;
+    border: 2px solid #e2dbc9;
     border-radius: 14px;
     font-size: 12px;
     background: #ffffff;
-    color: #5c5470;
+    color: #4a4235;
   }
 
   .edit-notes-textarea {
     width: 100%;
     padding: 7px 10px;
-    border: 2px solid #e0d9f7;
+    border: 2px solid #e2dbc9;
     border-radius: 14px;
     font-size: 12px;
     background: #ffffff;
-    color: #5c5470;
+    color: #4a4235;
     resize: vertical;
     min-height: 40px;
     font-family: inherit;
@@ -1471,8 +1471,8 @@
   }
 
   .edit-cancel-btn {
-    background: #f6f3fb;
-    color: #9b8fc0;
+    background: #f2efe6;
+    color: #a89f8a;
     border: none;
     padding: 7px 14px;
     border-radius: 999px;
@@ -1499,8 +1499,8 @@
 
   .task-notes {
     font-size: 12px;
-    color: #a89fc4;
-    background: #f6f3fb;
+    color: #a89e89;
+    background: #f2efe6;
     padding: 8px 10px;
     border-radius: 8px;
     margin-bottom: 8px;
@@ -1523,7 +1523,7 @@
 
   .subtask-item.done .subtask-text {
     text-decoration: line-through;
-    color: #b5aed1;
+    color: #b3ab9a;
   }
 
   .subtask-checkbox {
@@ -1536,7 +1536,7 @@
 
   .subtask-text {
     flex: 1;
-    color: #5c5470;
+    color: #4a4235;
   }
 
   .subtask-delete {
@@ -1556,15 +1556,15 @@
   .subtask-add-input {
     flex: 1;
     padding: 6px 10px;
-    border: 2px solid #f0e9fa;
+    border: 2px solid #e8e2d5;
     border-radius: 14px;
     font-size: 12px;
     background: #ffffff;
   }
 
   .subtask-add-btn {
-    background: #e0d9f7;
-    color: #6b5b95;
+    background: #e2dbc9;
+    color: #3a3128;
     border: none;
     padding: 6px 12px;
     border-radius: 999px;
@@ -1575,8 +1575,8 @@
 
   /* --- Heatmapa aktivity --- */
   .heatmap-section {
-    background: #faf8ff;
-    border: 1px solid #f0e9fa;
+    background: #faf7f0;
+    border: 1px solid #e8e2d5;
     border-radius: 20px;
     padding: 16px;
     margin-bottom: 22px;
@@ -1585,13 +1585,13 @@
   .heatmap-title {
     font-size: 13px;
     font-weight: 700;
-    color: #6b5b95;
+    color: #3a3128;
     margin-bottom: 4px;
   }
 
   .heatmap-subtitle {
     font-size: 11px;
-    color: #a89fc4;
+    color: #a89e89;
     margin-bottom: 18px;
   }
 
@@ -1617,7 +1617,7 @@
     max-width: 16px;
     min-height: 4px;
     border-radius: 5px 5px 2px 2px;
-    background: #f0e9fa;
+    background: #e8e2d5;
     transition: height 0.3s ease;
   }
 
@@ -1626,7 +1626,7 @@
   .activity-bar.level-3 { background: #2ecc82; }
 
   .activity-bar.today {
-    box-shadow: 0 0 0 2px #5b3df0;
+    box-shadow: 0 0 0 2px #fc5000;
   }
 
   .activity-labels {
@@ -1639,12 +1639,12 @@
     flex: 1;
     text-align: center;
     font-size: 9px;
-    color: #b5aed1;
+    color: #b3ab9a;
     font-weight: 600;
   }
 
   .activity-label.today {
-    color: #6b5b95;
+    color: #3a3128;
     font-weight: 800;
   }
 
@@ -1655,7 +1655,7 @@
     gap: 4px;
     margin-top: 14px;
     font-size: 10px;
-    color: #b5aed1;
+    color: #b3ab9a;
   }
 
   .heatmap-legend .activity-bar {
@@ -1680,7 +1680,7 @@
   }
 
   .toast {
-    background: #211c38;
+    background: #1c1712;
     color: #ffffff;
     font-size: 13px;
     font-weight: 600;
