@@ -75,3 +75,14 @@ Testované vždy cez Playwright (Chromium) na `localhost:8791`, pokiaľ nie je u
   `calPreviewDate = todayStr()` len ak ešte nič vybrané nebolo (`calPreviewDate === null`). Ak si už predtým
   vybrala iný deň, ten ostáva zachovaný aj pri prepnutí na iný tab a späť (nereseuje sa na dnešok pri každom
   vstupe). Overené: prvý vstup ukáže "Dnes" s náhľadom, výber iného dňa prežije prepnutie na List a späť.
+- **Login/My Profile/Log out prestavba.** Tlačidlo "Pokračovať" na uvítacej obrazovke je teraz "Login"/"Login".
+  Hamburger menu už neotvára Nastavenia rovno - je to skutočné dropdown menu (`#burgerMenu`) s položkami
+  **My Profile** (bývalý panel Nastavenia, teraz s poľami Dátum narodenia a Pohlavie Muž/Žena navyše k
+  Prezývke/Avataru/Emailu) a **Log out** (vynuluje `profile` na `null`, prepne dáta na `_guest` cez
+  `switchProfileData('')`, vyprázdni polia na uvítacej obrazovke a znova ju zobrazí - dáta úloh sa nemažú).
+  `saveProfile()` teraz berie jeden objekt `{nickname, email, avatarId, birthday, gender}` namiesto pozičných
+  argumentov, a chýbajúce polia dopĺňa z existujúceho záznamu danej prezývky (z `profiles`) alebo z aktuálneho
+  profilu - vďaka tomu Login/Skip obrazovka (ktorá birthday/gender vôbec nepozná) tieto polia neprepíše/nevymaže.
+  Overené: uloženie birthday+gender v My Profile, Log out vyprázdni meno a zobrazí welcome, opätovné prihlásenie
+  pod tým istým menom cez Login formulár (ktorý nemá birthday/gender polia) správne zachová predtým uložené
+  birthday="1995-03-14" a gender="female".

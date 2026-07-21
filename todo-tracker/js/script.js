@@ -7,11 +7,18 @@
       fieldNickname: 'Prezývka',
       fieldAvatar: 'Postavička',
       fieldEmail: 'Email',
+      fieldBirthday: 'Dátum narodenia',
+      fieldGender: 'Pohlavie',
+      genderMale: 'Muž',
+      genderFemale: 'Žena',
       optionalTag: '(voliteľné)',
       nicknamePlaceholder: 'napr. Janka',
       emailPlaceholder: 'tvoj@email.sk',
-      continueBtn: 'Pokračovať',
+      continueBtn: 'Login',
       skipBtn: 'Preskočiť zatiaľ',
+      menuMyProfile: 'Môj profil',
+      menuLogout: 'Odhlásiť sa',
+      toastLoggedOut: 'Odhlásené',
       greetingHi: 'Ahoj,',
       appTitle: 'Môj To-Do Tracker',
       tabList: 'Zoznam',
@@ -53,7 +60,7 @@
       heatmapSubtitle: 'Výška stĺpca = koľko % úloh si v ten deň splnila.',
       heatmapLess: 'menej',
       heatmapMore: 'viac',
-      settingsTitle: 'Nastavenia profilu',
+      settingsTitle: 'Môj profil',
       settingsSave: 'Uložiť',
       subtaskPlaceholder: 'Pridať podúlohu...',
       subtaskAdd: 'Pridať',
@@ -95,11 +102,18 @@
       fieldNickname: 'Nickname',
       fieldAvatar: 'Avatar',
       fieldEmail: 'Email',
+      fieldBirthday: 'Date of birth',
+      fieldGender: 'Gender',
+      genderMale: 'Male',
+      genderFemale: 'Female',
       optionalTag: '(optional)',
       nicknamePlaceholder: 'e.g. Jane',
       emailPlaceholder: 'you@email.com',
-      continueBtn: 'Continue',
+      continueBtn: 'Login',
       skipBtn: 'Skip for now',
+      menuMyProfile: 'My Profile',
+      menuLogout: 'Log out',
+      toastLoggedOut: 'Logged out',
       greetingHi: 'Hi,',
       appTitle: 'My To-Do Tracker',
       tabList: 'List',
@@ -141,7 +155,7 @@
       heatmapSubtitle: 'Bar height = % of tasks completed that day.',
       heatmapLess: 'less',
       heatmapMore: 'more',
-      settingsTitle: 'Profile settings',
+      settingsTitle: 'My Profile',
       settingsSave: 'Save',
       subtaskPlaceholder: 'Add a subtask...',
       subtaskAdd: 'Add',
@@ -1386,11 +1400,24 @@
   const settingsOverlay = document.getElementById('settingsOverlay');
   const settingsNickname = document.getElementById('settingsNickname');
   const settingsEmail = document.getElementById('settingsEmail');
+  const settingsBirthday = document.getElementById('settingsBirthday');
+  const settingsGenderOptions = document.getElementById('settingsGenderOptions');
   const settingsAvatarPreview = document.getElementById('settingsAvatarPreview');
   const settingsAvatarOptions = document.getElementById('settingsAvatarOptions');
 
   let welcomeSelectedAvatar = profile && profile.avatarId ? profile.avatarId : null;
   let settingsSelectedAvatar = null;
+  let settingsSelectedGender = null;
+
+  settingsGenderOptions.querySelectorAll('.gender-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Opätovný klik na už vybrané pohlavie ho zruší - pole je voliteľné
+      settingsSelectedGender = settingsSelectedGender === btn.dataset.gender ? null : btn.dataset.gender;
+      settingsGenderOptions.querySelectorAll('.gender-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.gender === settingsSelectedGender);
+      });
+    });
+  });
 
   function applyProfileToTopBar() {
     const topBarAvatar = document.getElementById('topBarAvatar');
@@ -1402,12 +1429,29 @@
   }
 
   // Uloží aktívny profil pre túto session a zároveň ho pridá do "posledných prihlásení".
-  // Ak sa prezývka zmenila (napr. prepnutie na iné "posledné prihlásenie" alebo
-  // premenovanie v Nastaveniach), prepneme aj úlohy/šablóny/odznaky na dáta patriace
-  // novej prezývke - každá prezývka má svoj vlastný, oddelený zoznam úloh.
-  function saveProfile(nickname, email, avatarId) {
+  // `updates` obsahuje len polia, ktoré sa majú zmeniť (napr. Login obrazovka pozná len
+  // nickname/email/avatarId, kým birthday/gender sa nastavujú výhradne v My Profile) -
+  // chýbajúce polia sa doplnia z existujúceho záznamu danej prezývky (alebo aktuálneho
+  // profilu, ak meno ostáva rovnaké), nech sa Login/Skip prepísaním neresetuje birthday/gender.
+  function saveProfile(updates) {
     const previousNickname = profile ? profile.nickname : '';
-    profile = { nickname: nickname.trim(), email: email.trim(), avatarId: avatarId || null };
+    const newNickname = (updates.nickname !== undefined ? updates.nickname : (profile ? profile.nickname : '')).trim();
+    const emptyProfile = { nickname: '', email: '', avatarId: null, birthday: '', gender: '' };
+
+    let base;
+    if (profileStorageKey(newNickname) !== profileStorageKey(previousNickname)) {
+      base = profiles.find(p => profileStorageKey(p.nickname) === profileStorageKey(newNickname)) || emptyProfile;
+    } else {
+      base = profile || emptyProfile;
+    }
+
+    profile = {
+      nickname: newNickname,
+      email: (updates.email !== undefined ? updates.email : (base.email || '')).trim(),
+      avatarId: updates.avatarId !== undefined ? (updates.avatarId || null) : (base.avatarId || null),
+      birthday: updates.birthday !== undefined ? updates.birthday : (base.birthday || ''),
+      gender: updates.gender !== undefined ? updates.gender : (base.gender || '')
+    };
     safeSetItem('profile', JSON.stringify(profile));
     applyProfileToTopBar();
 
@@ -1421,6 +1465,29 @@
       profiles = profiles.slice(0, 5);
       safeSetItem('profiles', JSON.stringify(profiles));
     }
+  }
+
+  // Odhlásenie - vynuluje aktívny profil a vráti na uvítaciu/login obrazovku s prázdnym
+  // menom. Dáta (úlohy...) sa nemažú, len appka prepne na "guest" priečinok, kým sa
+  // niekto znova neprihlási (rovnakým alebo iným menom).
+  function logout() {
+    profile = null;
+    safeSetItem('profile', JSON.stringify(null));
+    applyProfileToTopBar();
+    switchProfileData('');
+
+    welcomeSelectedAvatar = null;
+    welcomeNickname.value = '';
+    welcomeEmail.value = '';
+    setAvatarPreview(welcomeAvatarPreview, null, '');
+    buildAvatarPicker(welcomeAvatarOptions, null, (id) => {
+      welcomeSelectedAvatar = id;
+      setAvatarPreview(welcomeAvatarPreview, id, welcomeNickname.value);
+    });
+    renderRecentLogins();
+
+    welcomeOverlay.style.display = 'flex';
+    showToast(t('toastLoggedOut'));
   }
 
   // Načíta úlohy/šablóny/odznaky patriace danej prezývke a appku prekreslí
@@ -1466,7 +1533,7 @@
       item.appendChild(nameDiv);
 
       item.addEventListener('click', () => {
-        saveProfile(p.nickname, p.email || '', p.avatarId);
+        saveProfile({ nickname: p.nickname, email: p.email || '', avatarId: p.avatarId });
         closeWelcome();
       });
 
@@ -1495,12 +1562,12 @@
   }
 
   document.getElementById('welcomeContinueBtn').addEventListener('click', () => {
-    saveProfile(welcomeNickname.value, welcomeEmail.value, welcomeSelectedAvatar);
+    saveProfile({ nickname: welcomeNickname.value, email: welcomeEmail.value, avatarId: welcomeSelectedAvatar });
     closeWelcome();
   });
 
   document.getElementById('welcomeSkipBtn').addEventListener('click', () => {
-    saveProfile('', '', welcomeSelectedAvatar);
+    saveProfile({ nickname: '', email: '', avatarId: welcomeSelectedAvatar });
     closeWelcome();
   });
 
@@ -1512,9 +1579,14 @@
     const name = profile && profile.nickname ? profile.nickname : '';
     const email = profile && profile.email ? profile.email : '';
     settingsSelectedAvatar = profile && profile.avatarId ? profile.avatarId : null;
+    settingsSelectedGender = profile && profile.gender ? profile.gender : null;
 
     settingsNickname.value = name;
     settingsEmail.value = email;
+    settingsBirthday.value = profile && profile.birthday ? profile.birthday : '';
+    settingsGenderOptions.querySelectorAll('.gender-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.gender === settingsSelectedGender);
+    });
     setAvatarPreview(settingsAvatarPreview, settingsSelectedAvatar, name);
 
     buildAvatarPicker(settingsAvatarOptions, settingsSelectedAvatar, (id) => {
@@ -1533,14 +1605,45 @@
     setAvatarPreview(settingsAvatarPreview, settingsSelectedAvatar, settingsNickname.value);
   });
 
-  document.getElementById('burgerBtn').addEventListener('click', openSettings);
+  // --- Burger menu (Môj profil / Odhlásiť sa) ---
+  const burgerBtn = document.getElementById('burgerBtn');
+  const burgerMenu = document.getElementById('burgerMenu');
+
+  burgerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    burgerMenu.classList.toggle('open');
+  });
+
+  document.getElementById('menuProfileBtn').addEventListener('click', () => {
+    burgerMenu.classList.remove('open');
+    openSettings();
+  });
+
+  document.getElementById('menuLogoutBtn').addEventListener('click', () => {
+    burgerMenu.classList.remove('open');
+    logout();
+  });
+
+  // Klik mimo menu ho zavrie
+  document.addEventListener('click', (e) => {
+    if (burgerMenu.classList.contains('open') && !burgerMenu.contains(e.target) && e.target !== burgerBtn && !burgerBtn.contains(e.target)) {
+      burgerMenu.classList.remove('open');
+    }
+  });
+
   document.getElementById('settingsCloseBtn').addEventListener('click', closeSettings);
   settingsOverlay.addEventListener('click', (e) => {
     if (e.target === settingsOverlay) closeSettings();
   });
 
   document.getElementById('settingsSaveBtn').addEventListener('click', () => {
-    saveProfile(settingsNickname.value, settingsEmail.value, settingsSelectedAvatar);
+    saveProfile({
+      nickname: settingsNickname.value,
+      email: settingsEmail.value,
+      avatarId: settingsSelectedAvatar,
+      birthday: settingsBirthday.value,
+      gender: settingsSelectedGender || ''
+    });
     closeSettings();
     showToast(t('toastProfileSaved'));
   });

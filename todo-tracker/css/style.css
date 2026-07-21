@@ -876,6 +876,72 @@
     border-radius: 2px;
   }
 
+  /* --- Burger menu (Môj profil / Odhlásiť sa) --- */
+  .burger-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .burger-menu {
+    display: none;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(150, 130, 200, 0.25);
+    padding: 6px;
+    min-width: 150px;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 150;
+  }
+
+  .burger-menu.open {
+    display: flex;
+  }
+
+  .burger-menu-item {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #5c5470;
+    cursor: pointer;
+  }
+
+  .burger-menu-item:hover {
+    background: #f6f3fb;
+  }
+
+  /* --- Výber pohlavia v My Profile --- */
+  .gender-options {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .gender-btn {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #f0e9fa;
+    background: #fdfcff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #9b8fc0;
+  }
+
+  .gender-btn.selected {
+    background: #c9b6f0;
+    border-color: #c9b6f0;
+    color: #ffffff;
+  }
+
   /* --- Prepínač jazyka SK/EN --- */
   .lang-toggle {
     display: flex;

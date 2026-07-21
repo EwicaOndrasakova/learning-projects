@@ -49,7 +49,13 @@
       <button type="button" class="lang-btn active" data-lang="sk">SK</button>
       <button type="button" class="lang-btn" data-lang="en">EN</button>
     </div>
-    <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
+    <div class="burger-wrap">
+      <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
+      <div class="burger-menu" id="burgerMenu">
+        <button type="button" class="burger-menu-item" id="menuProfileBtn" data-i18n="menuMyProfile">Môj profil</button>
+        <button type="button" class="burger-menu-item" id="menuLogoutBtn" data-i18n="menuLogout">Odhlásiť sa</button>
+      </div>
+    </div>
   </div>
 
   <h1 data-i18n="appTitle">Môj To-Do Tracker</h1>
@@ -227,6 +233,15 @@
 
     <div class="field-label" data-i18n="fieldAvatar">Postavička</div>
     <div class="avatar-options" id="settingsAvatarOptions"></div>
+
+    <div class="field-label"><span data-i18n="fieldBirthday">Dátum narodenia</span> <span class="optional-tag" data-i18n="optionalTag">(voliteľné)</span></div>
+    <input type="date" class="text-field" id="settingsBirthday">
+
+    <div class="field-label"><span data-i18n="fieldGender">Pohlavie</span> <span class="optional-tag" data-i18n="optionalTag">(voliteľné)</span></div>
+    <div class="gender-options" id="settingsGenderOptions">
+      <button type="button" class="gender-btn" data-gender="male" data-i18n="genderMale">Muž</button>
+      <button type="button" class="gender-btn" data-gender="female" data-i18n="genderFemale">Žena</button>
+    </div>
 
     <div class="field-label"><span data-i18n="fieldEmail">Email</span> <span class="optional-tag" data-i18n="optionalTag">(voliteľné)</span></div>
     <input type="email" class="text-field" id="settingsEmail" data-i18n-placeholder="emailPlaceholder" placeholder="tvoj@email.sk">
