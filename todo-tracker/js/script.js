@@ -41,7 +41,7 @@
       priorityLow: 'Nízka priorita',
       priorityMedium: 'Stredná priorita',
       priorityHigh: 'Vysoká priorita',
-      tagPlaceholder: 'Tag (napr. práca)',
+      tagPlaceholder: 'Tag (voliteľné, napr. práca)',
       notesPlaceholder: 'Poznámka k úlohe (voliteľné)',
       recurrenceNone: 'Bez opakovania',
       recurrenceDaily: 'Každý deň',
@@ -75,8 +75,6 @@
       subtaskAdd: 'Pridať',
       editTitle: 'Upraviť úlohu',
       deleteTitle: 'Zmazať úlohu',
-      expandTitle: 'Zobraziť detail',
-      collapseTitle: 'Skryť detail',
       saveBtn: 'Uložiť zmeny',
       cancelBtn: 'Zrušiť',
       toastTaskAdded: 'Úloha pridaná',
@@ -148,7 +146,7 @@
       priorityLow: 'Low priority',
       priorityMedium: 'Medium priority',
       priorityHigh: 'High priority',
-      tagPlaceholder: 'Tag (e.g. work)',
+      tagPlaceholder: 'Tag (optional, e.g. work)',
       notesPlaceholder: 'Note for the task (optional)',
       recurrenceNone: 'No repeat',
       recurrenceDaily: 'Every day',
@@ -182,8 +180,6 @@
       subtaskAdd: 'Add',
       editTitle: 'Edit task',
       deleteTitle: 'Delete task',
-      expandTitle: 'Show details',
-      collapseTitle: 'Hide details',
       saveBtn: 'Save changes',
       cancelBtn: 'Cancel',
       toastTaskAdded: 'Task added',
@@ -802,8 +798,7 @@
     return Array.from(tagSet).sort((a, b) => a.localeCompare(b));
   }
 
-  const expandedTaskIds = new Set(); // ktoré úlohy majú práve rozbalené detaily (poznámka/podúlohy)
-  let editingTaskId = null; // ktorá úloha sa práve upravuje (naraz len jedna)
+  let editingTaskId = null; // ktorá úloha sa práve upravuje (naraz len jedna) - detail (poznámka/podúlohy) je vidno len počas úpravy
 
   // Aktualizuje ľubovoľné polia existujúcej úlohy (text, prioritu, tag, poznámku...)
   function updateTask(id, updates) {
@@ -819,8 +814,6 @@
   // Ikony na riadku úlohy (Bootstrap Icons, MIT licencia - vložené priamo ako SVG, žiadna závislosť na ich webe)
   const editIconSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.5 2.207 1.793 9.914a.5.5 0 0 0-.128.22l-1.171 4.291a.5.5 0 0 0 .618.618l4.291-1.17a.5.5 0 0 0 .22-.128z"/></svg>';
   const trashIconSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 5.5 5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm2.5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/></svg>';
-  const chevronDownSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>';
-  const chevronUpSvg = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/></svg>';
 
   function render() {
     const filtered = getFilteredTasks();
@@ -839,15 +832,9 @@
         li.className = 'task priority-' + priority + (task.done ? ' done' : '');
 
         const subtasks = task.subtasks || [];
-        const subDone = subtasks.filter(st => st.done).length;
-        const isExpanded = expandedTaskIds.has(task.id);
         const isEditing = editingTaskId === task.id;
 
-        const expandIconHtml = isExpanded
-          ? (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronUpSvg}` : chevronUpSvg)
-          : (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronDownSvg}` : chevronDownSvg);
-
-        const detailsContent = isEditing ? `
+        const editFieldsHtml = isEditing ? `
             <div class="edit-form">
               <input type="text" class="edit-text-input" value="${escapeHtml(task.text)}">
               <div class="edit-form-row">
@@ -859,14 +846,8 @@
                 <input type="text" class="edit-tag-input" value="${escapeHtml(task.tag || '')}" placeholder="${t('tagPlaceholder')}">
               </div>
               <textarea class="edit-notes-textarea" placeholder="${t('notesPlaceholder')}">${escapeHtml(task.notes || '')}</textarea>
-              <div class="edit-form-actions">
-                <button type="button" class="edit-cancel-btn">${t('cancelBtn')}</button>
-                <button type="button" class="edit-save-btn">${t('saveBtn')}</button>
-              </div>
             </div>
-          ` : `
-            ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ''}
-          `;
+          ` : '';
 
         li.innerHTML = `
           <div class="task-main-row">
@@ -875,12 +856,11 @@
             ${task.tag ? `<span class="task-tag">${escapeHtml(task.tag)}</span>` : ''}
             <div class="task-actions">
               <button class="edit-btn" title="${t('editTitle')}">${editIconSvg}</button>
-              <button class="task-expand-btn" title="${isExpanded ? t('collapseTitle') : t('expandTitle')}">${expandIconHtml}</button>
               <button class="delete-btn" title="${t('deleteTitle')}">${trashIconSvg}</button>
             </div>
           </div>
-          <div class="task-details ${(isExpanded || isEditing) ? 'visible' : ''}">
-            ${detailsContent}
+          <div class="task-details ${isEditing ? 'visible' : ''}">
+            ${editFieldsHtml}
             <ul class="subtask-list">
               ${subtasks.map(st => `
                 <li class="subtask-item ${st.done ? 'done' : ''}" data-subtask-id="${st.id}">
@@ -894,6 +874,12 @@
               <input type="text" class="subtask-add-input" placeholder="${t('subtaskPlaceholder')}">
               <button type="button" class="subtask-add-btn">${t('subtaskAdd')}</button>
             </div>
+            ${isEditing ? `
+              <div class="edit-form-actions">
+                <button type="button" class="edit-cancel-btn">${t('cancelBtn')}</button>
+                <button type="button" class="edit-save-btn">${t('saveBtn')}</button>
+              </div>
+            ` : ''}
           </div>
         `;
 
@@ -902,25 +888,7 @@
 
         li.querySelector('.edit-btn').addEventListener('click', () => {
           editingTaskId = isEditing ? null : task.id;
-          if (!isEditing) expandedTaskIds.add(task.id); // pri úprave rovno rozbalíme detail
           render();
-        });
-
-        li.querySelector('.task-expand-btn').addEventListener('click', (e) => {
-          const willExpand = !expandedTaskIds.has(task.id);
-          if (willExpand) {
-            expandedTaskIds.add(task.id);
-          } else {
-            expandedTaskIds.delete(task.id);
-          }
-          // Prepneme len triedu na existujúcom elemente (namiesto celého render()),
-          // nech CSS prechod na .task-details má na čom plynulo animovať - kompletné
-          // prekreslenie zoznamu by vytvorilo nový element rovno v cieľovom stave bez animácie.
-          li.querySelector('.task-details').classList.toggle('visible', willExpand);
-          e.currentTarget.innerHTML = willExpand
-            ? (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronUpSvg}` : chevronUpSvg)
-            : (subtasks.length ? `<span class="subtask-count">${subDone}/${subtasks.length}</span>${chevronDownSvg}` : chevronDownSvg);
-          e.currentTarget.title = willExpand ? t('collapseTitle') : t('expandTitle');
         });
 
         if (isEditing) {
@@ -962,7 +930,6 @@
         const subtaskAddBtn = li.querySelector('.subtask-add-btn');
         const submitSubtask = () => {
           addSubtask(task.id, subtaskInput.value);
-          expandedTaskIds.add(task.id); // po pridaní necháme detail otvorený
         };
         subtaskAddBtn.addEventListener('click', submitSubtask);
         subtaskInput.addEventListener('keydown', (e) => {

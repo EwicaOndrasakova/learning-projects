@@ -54,7 +54,7 @@
 
   body {
     font-family: 'Inter Tight', 'Segoe UI', Arial, sans-serif;
-    background: linear-gradient(135deg, #eef0ff 0%, #f8fafd 50%, #eafaf3 100%);
+    background: linear-gradient(135deg, #eef0ff 0%, #f8fafd 50%, #fdf2f8 100%);
     margin: 0;
     padding: 40px 16px;
     display: flex;
@@ -699,9 +699,9 @@
     background: #c7d2e0;
   }
 
-  .cal-day-preview-item.priority-high::before { background: #ef5c7e; }
-  .cal-day-preview-item.priority-medium::before { background: #f5b942; }
-  .cal-day-preview-item.priority-low::before { background: #4cd28f; }
+  .cal-day-preview-item.priority-high::before { background: #7f71e6; }
+  .cal-day-preview-item.priority-medium::before { background: #b9b9f9; }
+  .cal-day-preview-item.priority-low::before { background: #d6d9fc; }
 
   .cal-day-preview-item.done {
     text-decoration: line-through;
@@ -862,7 +862,7 @@
   .welcome-overlay {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, #eef0ff 0%, #f8fafd 50%, #eafaf3 100%);
+    background: linear-gradient(135deg, #eef0ff 0%, #f8fafd 50%, #fdf2f8 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1386,7 +1386,8 @@
   }
 
   .priority-select, .tag-input {
-    flex: 1;
+    flex: 1 1 50%;
+    min-width: 0;
     padding: 9px 10px;
     border: 2px solid #e5edf5;
     border-radius: 20px;
@@ -1525,13 +1526,13 @@
     background: #c7d2e0;
   }
 
-  li.task.priority-high::before { background: #ef5c7e; }
-  li.task.priority-medium::before { background: #f5b942; }
-  li.task.priority-low::before { background: #4cd28f; }
+  li.task.priority-high::before { background: #7f71e6; }
+  li.task.priority-medium::before { background: #b9b9f9; }
+  li.task.priority-low::before { background: #d6d9fc; }
 
-  li.task.priority-high:not(.done) { background: #fef5f7; }
-  li.task.priority-medium:not(.done) { background: #fefaf1; }
-  li.task.priority-low:not(.done) { background: #f3fdf8; }
+  li.task.priority-high:not(.done) { background: #f1effc; }
+  li.task.priority-medium:not(.done) { background: #f4f4fe; }
+  li.task.priority-low:not(.done) { background: #f7f8fe; }
 
   .task-main-row {
     display: flex;
@@ -1561,16 +1562,6 @@
     white-space: nowrap;
   }
 
-  .task-expand-btn {
-    background: none;
-    border: none;
-    color: #839bc8;
-    cursor: pointer;
-    font-size: 11px;
-    padding: 8px 6px;
-    flex-shrink: 0;
-  }
-
   .edit-btn {
     background: none;
     border: none;
@@ -1586,22 +1577,11 @@
     color: #50617a;
   }
 
-  .edit-btn svg, .delete-btn svg, .task-expand-btn svg {
+  .edit-btn svg, .delete-btn svg {
     width: 17px;
     height: 17px;
     fill: currentColor;
     display: block;
-  }
-
-  .task-expand-btn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .subtask-count {
-    font-size: 11px;
-    font-weight: 700;
   }
 
   .edit-form {
@@ -1628,7 +1608,8 @@
   }
 
   .edit-priority-select, .edit-tag-input {
-    flex: 1;
+    flex: 1 1 50%;
+    min-width: 0;
     padding: 7px 8px;
     border: 2px solid #e5edf5;
     border-radius: 14px;
@@ -1671,8 +1652,8 @@
   }
 
   .edit-save-btn {
-    background: #a8e6c9;
-    color: #1f9d6c;
+    background: #ff8a3d;
+    color: #ffffff;
     border: none;
     padding: 7px 14px;
     border-radius: 999px;
