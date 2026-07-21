@@ -124,10 +124,39 @@
       <button type="button" id="nextDayBtn" data-i18n-arialabel="nextDay" aria-label="Nasledujúci deň">›</button>
     </div>
 
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all" data-i18n="filterAll">Všetky</button>
-      <button class="filter-btn" data-filter="active" data-i18n="filterActive">Aktívne</button>
-      <button class="filter-btn" data-filter="done" data-i18n="filterDone">Hotové</button>
+    <div class="filters-row">
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all" data-i18n="filterAll">Všetky</button>
+        <button class="filter-btn" data-filter="active" data-i18n="filterActive">Aktívne</button>
+        <button class="filter-btn" data-filter="done" data-i18n="filterDone">Hotové</button>
+      </div>
+
+      <div class="advanced-filter-wrap">
+        <button type="button" class="advanced-filter-btn" id="advancedFilterBtn" data-i18n-title="advancedFilterTitle" title="Ďalšie filtre">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/></svg>
+          <span class="filter-badge" id="filterBadgeCount" style="display:none;"></span>
+        </button>
+
+        <div class="advanced-filter-menu" id="advancedFilterMenu">
+          <div class="filter-section-title" data-i18n="filterSortLabel">Zoradenie</div>
+          <div class="filter-sort-options" id="filterSortOptions">
+            <button type="button" class="filter-sort-btn" data-sort="newest" data-i18n="sortNewest">Najnovšie</button>
+            <button type="button" class="filter-sort-btn" data-sort="oldest" data-i18n="sortOldest">Najstaršie</button>
+          </div>
+
+          <div class="filter-section-title" data-i18n="filterPriorityLabel">Priorita</div>
+          <div class="filter-checkbox-list" id="filterPriorityOptions">
+            <label class="filter-checkbox-row"><input type="checkbox" value="high"><span data-i18n="priorityHigh">Vysoká priorita</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="medium"><span data-i18n="priorityMedium">Stredná priorita</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="low"><span data-i18n="priorityLow">Nízka priorita</span></label>
+          </div>
+
+          <div class="filter-section-title" data-i18n="filterTagsLabel">Tagy</div>
+          <div class="filter-checkbox-list" id="filterTagOptions"></div>
+
+          <button type="button" class="filter-clear-btn" id="filterClearBtn" data-i18n="clearFiltersBtn">Zrušiť filtre</button>
+        </div>
+      </div>
     </div>
 
     <div class="bulk-actions">

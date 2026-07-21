@@ -167,10 +167,169 @@
     background: #8fdbb8;
   }
 
+  .filters-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
   .filters {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* --- Doplnkový filter (zoradenie, priorita, tagy) --- */
+  .advanced-filter-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .advanced-filter-btn {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border: 2px solid #e5edf5;
+    background: #fbfcfe;
+    border-radius: 14px;
+    color: #64748d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .advanced-filter-btn:hover {
+    color: #061b31;
+  }
+
+  .advanced-filter-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  .advanced-filter-btn.has-active {
+    border-color: #533afd;
+    color: #533afd;
+  }
+
+  .filter-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border-radius: 999px;
+    background: #533afd;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .advanced-filter-menu {
+    display: none;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e5edf5;
+    border-radius: 20px;
+    padding: 14px;
+    min-width: 200px;
+    z-index: 150;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .advanced-filter-menu.open {
+    display: flex;
+  }
+
+  .filter-section-title {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #50617a;
+    margin: 14px 0 6px;
+  }
+
+  .filter-section-title:first-child {
+    margin-top: 0;
+  }
+
+  .filter-sort-options {
+    display: flex;
+    gap: 6px;
+  }
+
+  .filter-sort-btn {
+    flex: 1;
+    padding: 7px 8px;
+    border: 2px solid #e5edf5;
+    background: #fbfcfe;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748d;
+  }
+
+  .filter-sort-btn.selected {
+    background: #533afd;
+    border-color: #533afd;
+    color: #ffffff;
+  }
+
+  .filter-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .filter-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #061b31;
+    cursor: pointer;
+  }
+
+  .filter-checkbox-row input {
+    width: 16px;
+    height: 16px;
+    accent-color: #533afd;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .filter-empty-note {
+    font-size: 12px;
+    color: #839bc8;
+  }
+
+  .filter-clear-btn {
+    background: none;
+    border: none;
+    color: #839bc8;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    padding: 10px 0 0;
+    margin-top: 6px;
+    border-top: 1px solid #e5edf5;
+  }
+
+  .filter-clear-btn:hover {
+    color: #061b31;
   }
 
   /* --- Rýchle nápady (quick-add chipy) --- */
@@ -332,6 +491,7 @@
 
   .task-text {
     flex: 1;
+    min-width: 90px;
     font-size: 14px;
     word-break: break-word;
     color: #061b31;
@@ -1376,8 +1536,19 @@
   .task-main-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     width: 100%;
+  }
+
+  /* Zoskupené akčné tlačidlá - na úzkych obrazovkách (dlhý text + tag) sa presunú
+     spolu na ďalší riadok namiesto toho, aby sa rozdelili alebo pretiekli mimo karty */
+  .task-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+    flex-shrink: 0;
   }
 
   .task-tag {

@@ -20,6 +20,14 @@
       menuLogout: 'Odhlásiť sa',
       toastLoggedOut: 'Odhlásené',
       welcomeBackText: 'Vitaj späť, {name}! 👋',
+      advancedFilterTitle: 'Ďalšie filtre',
+      filterSortLabel: 'Zoradenie',
+      sortNewest: 'Najnovšie',
+      sortOldest: 'Najstaršie',
+      filterPriorityLabel: 'Priorita',
+      filterTagsLabel: 'Tagy',
+      clearFiltersBtn: 'Zrušiť filtre',
+      noTagsYet: 'Zatiaľ žiadne tagy',
       greetingHi: 'Ahoj,',
       appTitle: 'Môj To-Do zoznam',
       tabList: 'Zoznam',
@@ -119,6 +127,14 @@
       menuLogout: 'Log out',
       toastLoggedOut: 'Logged out',
       welcomeBackText: 'Welcome back, {name}! 👋',
+      advancedFilterTitle: 'More filters',
+      filterSortLabel: 'Sort',
+      sortNewest: 'Newest first',
+      sortOldest: 'Oldest first',
+      filterPriorityLabel: 'Priority',
+      filterTagsLabel: 'Tags',
+      clearFiltersBtn: 'Clear filters',
+      noTagsYet: 'No tags yet',
       greetingHi: 'Hi,',
       appTitle: 'My To-Do List',
       tabList: 'List',
@@ -329,6 +345,10 @@
 
   let tasks = safeParse('tasks:' + profileStorageKey(profile ? profile.nickname : ''), []);
   let currentFilter = 'all';
+  // Doplnkový filter (zoradenie, priorita, tagy) - nezávislý od Všetky/Aktívne/Hotové vyššie
+  let sortOrder = null; // null (bez zmeny poradia) | 'newest' | 'oldest'
+  let tagFilterSet = new Set();
+  let priorityFilterSet = new Set();
   let calDate = new Date();
   let calPreviewDate = null; // ktorý deň má práve otvorený náhľad úloh v Calendar view
 
@@ -762,7 +782,24 @@
     if (currentFilter === 'active') list = list.filter(t => !t.done);
     if (currentFilter === 'done') list = list.filter(t => t.done);
 
+    if (priorityFilterSet.size > 0) list = list.filter(tk => priorityFilterSet.has(tk.priority || 'medium'));
+    if (tagFilterSet.size > 0) list = list.filter(tk => tagFilterSet.has((tk.tag || '').trim()));
+
+    if (sortOrder === 'newest') list = [...list].sort((a, b) => b.id - a.id);
+    else if (sortOrder === 'oldest') list = [...list].sort((a, b) => a.id - b.id);
+
     return list;
+  }
+
+  // Zoznam unikátnych, neprázdnych tagov naprieč všetkými úlohami (nielen aktuálny deň) -
+  // nech je filter podľa tagu stabilný bez ohľadu na to, ktorý deň práve prezeráš
+  function getAllTags() {
+    const tagSet = new Set();
+    tasks.forEach(tk => {
+      const tag = (tk.tag || '').trim();
+      if (tag) tagSet.add(tag);
+    });
+    return Array.from(tagSet).sort((a, b) => a.localeCompare(b));
   }
 
   const expandedTaskIds = new Set(); // ktoré úlohy majú práve rozbalené detaily (poznámka/podúlohy)
@@ -836,9 +873,11 @@
             <input type="checkbox" class="checkbox" ${task.done ? 'checked' : ''}>
             <span class="task-text">${escapeHtml(task.text)}</span>
             ${task.tag ? `<span class="task-tag">${escapeHtml(task.tag)}</span>` : ''}
-            <button class="edit-btn" title="${t('editTitle')}">${editIconSvg}</button>
-            <button class="task-expand-btn" title="${isExpanded ? t('collapseTitle') : t('expandTitle')}">${expandIconHtml}</button>
-            <button class="delete-btn" title="${t('deleteTitle')}">${trashIconSvg}</button>
+            <div class="task-actions">
+              <button class="edit-btn" title="${t('editTitle')}">${editIconSvg}</button>
+              <button class="task-expand-btn" title="${isExpanded ? t('collapseTitle') : t('expandTitle')}">${expandIconHtml}</button>
+              <button class="delete-btn" title="${t('deleteTitle')}">${trashIconSvg}</button>
+            </div>
           </div>
           <div class="task-details ${(isExpanded || isEditing) ? 'visible' : ''}">
             ${detailsContent}
@@ -1311,6 +1350,94 @@
       currentFilter = btn.dataset.filter;
       render();
     });
+  });
+
+  // --- Doplnkový filter (zoradenie, priorita, tagy) ---
+  const advancedFilterBtn = document.getElementById('advancedFilterBtn');
+  const advancedFilterMenu = document.getElementById('advancedFilterMenu');
+  const filterBadgeCount = document.getElementById('filterBadgeCount');
+  const filterTagOptions = document.getElementById('filterTagOptions');
+
+  function activeFilterCount() {
+    return tagFilterSet.size + priorityFilterSet.size + (sortOrder ? 1 : 0);
+  }
+
+  function updateFilterBadge() {
+    const count = activeFilterCount();
+    advancedFilterBtn.classList.toggle('has-active', count > 0);
+    filterBadgeCount.style.display = count > 0 ? 'flex' : 'none';
+    filterBadgeCount.textContent = count;
+  }
+
+  // Znova vykreslí obsah dropdownu (najmä zoznam tagov, ktorý sa môže časom meniť)
+  // a zachová aktuálne zaškrtnuté/zvolené stavy
+  function renderAdvancedFilterMenu() {
+    document.querySelectorAll('.filter-sort-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.sort === sortOrder);
+    });
+    document.querySelectorAll('#filterPriorityOptions input').forEach(cb => {
+      cb.checked = priorityFilterSet.has(cb.value);
+    });
+
+    const tags = getAllTags();
+    filterTagOptions.innerHTML = '';
+    if (tags.length === 0) {
+      filterTagOptions.innerHTML = `<div class="filter-empty-note">${t('noTagsYet')}</div>`;
+    } else {
+      tags.forEach(tag => {
+        const label = document.createElement('label');
+        label.className = 'filter-checkbox-row';
+        label.innerHTML = `<input type="checkbox" value="${escapeHtml(tag)}" ${tagFilterSet.has(tag) ? 'checked' : ''}><span>${escapeHtml(tag)}</span>`;
+        label.querySelector('input').addEventListener('change', (e) => {
+          if (e.target.checked) tagFilterSet.add(tag);
+          else tagFilterSet.delete(tag);
+          updateFilterBadge();
+          render();
+        });
+        filterTagOptions.appendChild(label);
+      });
+    }
+
+    updateFilterBadge();
+  }
+
+  advancedFilterBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const willOpen = !advancedFilterMenu.classList.contains('open');
+    if (willOpen) renderAdvancedFilterMenu();
+    advancedFilterMenu.classList.toggle('open', willOpen);
+  });
+
+  document.querySelectorAll('.filter-sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      sortOrder = sortOrder === btn.dataset.sort ? null : btn.dataset.sort;
+      document.querySelectorAll('.filter-sort-btn').forEach(b => b.classList.toggle('selected', b.dataset.sort === sortOrder));
+      updateFilterBadge();
+      render();
+    });
+  });
+
+  document.querySelectorAll('#filterPriorityOptions input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) priorityFilterSet.add(cb.value);
+      else priorityFilterSet.delete(cb.value);
+      updateFilterBadge();
+      render();
+    });
+  });
+
+  document.getElementById('filterClearBtn').addEventListener('click', () => {
+    sortOrder = null;
+    tagFilterSet.clear();
+    priorityFilterSet.clear();
+    renderAdvancedFilterMenu();
+    render();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (advancedFilterMenu.classList.contains('open') && !advancedFilterMenu.contains(e.target) && e.target !== advancedFilterBtn && !advancedFilterBtn.contains(e.target)) {
+      advancedFilterMenu.classList.remove('open');
+    }
   });
 
   generateRecurringInstances();
