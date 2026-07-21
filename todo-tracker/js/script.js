@@ -19,6 +19,7 @@
       menuMyProfile: 'Môj profil',
       menuLogout: 'Odhlásiť sa',
       toastLoggedOut: 'Odhlásené',
+      welcomeBackText: 'Vitaj späť, {name}! 👋',
       greetingHi: 'Ahoj,',
       appTitle: 'Môj To-Do zoznam',
       tabList: 'Zoznam',
@@ -117,6 +118,7 @@
       menuMyProfile: 'My Profile',
       menuLogout: 'Log out',
       toastLoggedOut: 'Logged out',
+      welcomeBackText: 'Welcome back, {name}! 👋',
       greetingHi: 'Hi,',
       appTitle: 'My To-Do List',
       tabList: 'List',
@@ -283,6 +285,21 @@
       toast.classList.remove('visible');
       setTimeout(() => toast.remove(), 300);
     }, 2200);
+  }
+
+  // Mini animovaný pozdrav, keď sa niekto prihlási späť na už známy profil (nie prvé prihlásenie)
+  let welcomeBackTimeoutId = null;
+  function showWelcomeBackGreeting(nickname, avatarId) {
+    const banner = document.getElementById('welcomeBackBanner');
+    const avatarEl = document.getElementById('welcomeBackAvatar');
+    const textEl = document.getElementById('welcomeBackText');
+
+    setAvatarPreview(avatarEl, avatarId, nickname);
+    textEl.textContent = t('welcomeBackText').replace('{name}', nickname);
+    banner.classList.add('visible');
+
+    clearTimeout(welcomeBackTimeoutId);
+    welcomeBackTimeoutId = setTimeout(() => banner.classList.remove('visible'), 2200);
   }
 
   // Vracia kľúč, pod ktorým sú v localStorage uložené úlohy/šablóny/odznaky patriace
@@ -1523,6 +1540,7 @@
       item.addEventListener('click', () => {
         saveProfile({ nickname: p.nickname, email: p.email || '', avatarId: p.avatarId });
         closeWelcome();
+        showWelcomeBackGreeting(profile.nickname, profile.avatarId);
       });
 
       list.appendChild(item);
@@ -1550,8 +1568,13 @@
   }
 
   document.getElementById('welcomeContinueBtn').addEventListener('click', () => {
+    const typedNickname = welcomeNickname.value.trim();
+    // "Vitaj späť" má zmysel len pre už známe meno (existuje v posledných prihláseniach) -
+    // nie pre úplne nový profil, ktorý sa práve prvýkrát vytvára
+    const isReturning = typedNickname !== '' && profiles.some(p => p.nickname.toLowerCase() === typedNickname.toLowerCase());
     saveProfile({ nickname: welcomeNickname.value, email: welcomeEmail.value, avatarId: welcomeSelectedAvatar });
     closeWelcome();
+    if (isReturning) showWelcomeBackGreeting(profile.nickname, profile.avatarId);
   });
 
   document.getElementById('welcomeSkipBtn').addEventListener('click', () => {
