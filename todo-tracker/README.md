@@ -1,4 +1,4 @@
-# To-Do Tracker
+# To-Do List
 
 A to-do list app built with plain HTML, CSS, and JavaScript (no frameworks, no build step).
 

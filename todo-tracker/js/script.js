@@ -1,7 +1,7 @@
   // --- Preklady (SK/EN) ---
   const translations = {
     sk: {
-      welcomeTitle: 'Vitaj v To-Do Trackeri',
+      welcomeTitle: 'Vitaj v To-Do zozname',
       welcomeSubtitle: 'Ako ťa mám volať?',
       recentLogins: 'Posledné prihlásenia',
       fieldNickname: 'Prezývka',
@@ -20,7 +20,7 @@
       menuLogout: 'Odhlásiť sa',
       toastLoggedOut: 'Odhlásené',
       greetingHi: 'Ahoj,',
-      appTitle: 'Môj To-Do Tracker',
+      appTitle: 'Môj To-Do zoznam',
       tabList: 'Zoznam',
       tabCalendar: 'Kalendár',
       tabBadges: 'Prehľad',
@@ -96,7 +96,7 @@
       speechLang: 'sk-SK'
     },
     en: {
-      welcomeTitle: 'Welcome to your To-Do Tracker',
+      welcomeTitle: 'Welcome to your To-Do List',
       welcomeSubtitle: 'What should I call you?',
       recentLogins: 'Recent logins',
       fieldNickname: 'Nickname',
@@ -115,7 +115,7 @@
       menuLogout: 'Log out',
       toastLoggedOut: 'Logged out',
       greetingHi: 'Hi,',
-      appTitle: 'My To-Do Tracker',
+      appTitle: 'My To-Do List',
       tabList: 'List',
       tabCalendar: 'Calendar',
       tabBadges: 'Overview',
@@ -854,13 +854,15 @@
           const saveEdit = () => {
             const newText = li.querySelector('.edit-text-input').value.trim();
             if (!newText) return; // prázdny názov úlohy neuložíme
+            // editingTaskId musí byť vynulované PRED updateTask() - tá vnútri volá render(),
+            // ktoré by inak (so starým editingTaskId) znova vykreslilo editačný formulár namiesto jeho zatvorenia.
+            editingTaskId = null;
             updateTask(task.id, {
               text: newText,
               priority: li.querySelector('.edit-priority-select').value,
               tag: li.querySelector('.edit-tag-input').value.trim(),
               notes: li.querySelector('.edit-notes-textarea').value.trim()
             });
-            editingTaskId = null;
             showToast(t('toastChangesSaved'));
           };
           li.querySelector('.edit-save-btn').addEventListener('click', saveEdit);
