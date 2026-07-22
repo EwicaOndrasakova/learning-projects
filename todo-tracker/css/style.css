@@ -391,6 +391,82 @@
     background: #e5edf5;
   }
 
+  .quick-chip-add {
+    background: #f8f7ff;
+    border-style: dashed;
+    border-color: #c9c2fb;
+    color: #533afd;
+  }
+
+  .quick-chip-add:hover {
+    background: #e8e9ff;
+  }
+
+  /* Vlastný nápad - obal drží pilulkový vzhľad ako .quick-chip, vnútri je klikateľný
+     text (pridá úlohu) a samostatné ✕ tlačidlo (zmaže nápad) - nie je to button v buttone. */
+  .quick-chip-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f8fafd;
+    border: 1px solid #e5edf5;
+    border-radius: 20px;
+    padding: 6px 6px 6px 10px;
+  }
+
+  .quick-chip-wrap:hover {
+    background: #e5edf5;
+  }
+
+  .quick-chip-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #50617a;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .quick-chip-delete {
+    background: none;
+    border: none;
+    color: #839bc8;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 50%;
+  }
+
+  .quick-chip-delete:hover {
+    background: #ffe1e6;
+    color: #d64550;
+  }
+
+  .custom-chip-form {
+    display: none;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .custom-chip-form.visible {
+    display: flex;
+  }
+
+  .custom-chip-form .subtask-add-input {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .custom-chip-form .edit-priority-select {
+    flex: 0 1 auto;
+  }
+
+  .custom-chip-cancel-btn {
+    margin-top: 0;
+  }
+
   /* --- Opakovanie úlohy --- */
   .recurrence-row {
     display: flex;

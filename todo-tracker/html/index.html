@@ -114,6 +114,17 @@
 
     <div class="quick-suggestions" id="quickSuggestions"></div>
 
+    <div class="custom-chip-form" id="customChipForm">
+      <input type="text" class="subtask-add-input" id="customChipInput" data-i18n-placeholder="customChipPlaceholder" placeholder="napr. Zalej kvety">
+      <select class="edit-priority-select" id="customChipPrioritySelect">
+        <option value="low" data-i18n="priorityLow">Nízka priorita</option>
+        <option value="medium" selected data-i18n="priorityMedium">Stredná priorita</option>
+        <option value="high" data-i18n="priorityHigh">Vysoká priorita</option>
+      </select>
+      <button type="button" class="subtask-add-btn" id="customChipSaveBtn" data-i18n="subtaskAdd">Pridať</button>
+      <button type="button" class="text-link-btn custom-chip-cancel-btn" id="customChipCancelBtn" data-i18n="cancelBtn">Zrušiť</button>
+    </div>
+
     <div class="search-row">
       <input type="text" class="search-input" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Hľadať v úlohách...">
     </div>

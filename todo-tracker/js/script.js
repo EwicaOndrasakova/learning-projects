@@ -96,6 +96,10 @@
         { text: '🚶 Prechádzka von', priority: 'low' },
         { text: '🧘 Meditácia 10 min', priority: 'medium' }
       ],
+      addCustomChip: 'Pridať vlastný',
+      customChipPlaceholder: 'napr. Zalej kvety',
+      deleteCustomChipTitle: 'Zmazať vlastný nápad',
+      toastCustomChipAdded: 'Vlastný nápad pridaný',
       badgeNames: {
         streak3: '3 dni v rade', streak7: 'Celý týždeň', streak14: 'Dva týždne', streak30: 'Mesačná séria',
         ten: 'Rozbeh', fifty: 'Výkonná séria', hundred: 'Storka', twohund: 'Majster úloh'
@@ -201,6 +205,10 @@
         { text: '🚶 Go for a walk', priority: 'low' },
         { text: '🧘 Meditate 10 min', priority: 'medium' }
       ],
+      addCustomChip: 'Add custom',
+      customChipPlaceholder: 'e.g. Water the plants',
+      deleteCustomChipTitle: 'Delete custom suggestion',
+      toastCustomChipAdded: 'Custom suggestion added',
       badgeNames: {
         streak3: '3 days in a row', streak7: 'Full week', streak14: 'Two weeks', streak30: 'Monthly streak',
         ten: 'Getting started', fifty: 'Strong streak', hundred: 'Century', twohund: 'Task master'
@@ -550,6 +558,14 @@
     safeSetItem('tasks:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(tasks));
   }
 
+  // Vlastné rýchle nápady - vedľa preddefinovaných (Cvičenie, Upratať izbu...), ktoré si vie
+  // používateľ/ka pridať sám/sama. Ukladajú sa per profil, rovnako ako úlohy.
+  let customChips = safeParse('customChips:' + profileStorageKey(profile ? profile.nickname : ''), []);
+
+  function saveCustomChips() {
+    safeSetItem('customChips:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(customChips));
+  }
+
   // --- Opakovanie úloh (šablóny) ---
 
   let recurringTemplates = safeParse('recurringTemplates:' + profileStorageKey(profile ? profile.nickname : ''), []);
@@ -716,6 +732,7 @@
 
   function buildQuickSuggestions() {
     quickSuggestionsBox.innerHTML = '';
+
     t('quickSuggestions').forEach(item => {
       const chip = document.createElement('button');
       chip.type = 'button';
@@ -725,8 +742,76 @@
       chip.addEventListener('click', () => quickAddTask(item.text, item.priority));
       quickSuggestionsBox.appendChild(chip);
     });
+
+    // Vlastné nápady - rovnaký klik-a-pridaj ako preddefinované, navyše s ✕ na zmazanie
+    customChips.forEach(item => {
+      const wrap = document.createElement('div');
+      wrap.className = 'quick-chip-wrap';
+
+      const label = document.createElement('span');
+      label.className = 'quick-chip-label';
+      label.textContent = '+ ' + item.text;
+      label.title = t('priority' + item.priority.charAt(0).toUpperCase() + item.priority.slice(1));
+      label.addEventListener('click', () => quickAddTask(item.text, item.priority));
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'quick-chip-delete';
+      deleteBtn.title = t('deleteCustomChipTitle');
+      deleteBtn.textContent = '✕';
+      deleteBtn.addEventListener('click', () => {
+        customChips = customChips.filter(c => c.id !== item.id);
+        saveCustomChips();
+        buildQuickSuggestions();
+      });
+
+      wrap.appendChild(label);
+      wrap.appendChild(deleteBtn);
+      quickSuggestionsBox.appendChild(wrap);
+    });
+
+    const addChipBtn = document.createElement('button');
+    addChipBtn.type = 'button';
+    addChipBtn.className = 'quick-chip quick-chip-add';
+    addChipBtn.textContent = '+ ' + t('addCustomChip');
+    addChipBtn.addEventListener('click', openCustomChipForm);
+    quickSuggestionsBox.appendChild(addChipBtn);
   }
   buildQuickSuggestions();
+
+  // --- Formulár na pridanie vlastného rýchleho nápadu ---
+  const customChipForm = document.getElementById('customChipForm');
+  const customChipInput = document.getElementById('customChipInput');
+  const customChipPrioritySelect = document.getElementById('customChipPrioritySelect');
+  const customChipSaveBtn = document.getElementById('customChipSaveBtn');
+  const customChipCancelBtn = document.getElementById('customChipCancelBtn');
+
+  function openCustomChipForm() {
+    customChipForm.classList.add('visible');
+    customChipInput.value = '';
+    customChipPrioritySelect.value = 'medium';
+    customChipInput.focus();
+  }
+
+  function closeCustomChipForm() {
+    customChipForm.classList.remove('visible');
+  }
+
+  function saveCustomChip() {
+    const text = customChipInput.value.trim();
+    if (!text) return;
+    customChips.push({ id: generateId(), text: text, priority: customChipPrioritySelect.value });
+    saveCustomChips();
+    closeCustomChipForm();
+    buildQuickSuggestions();
+    showToast(t('toastCustomChipAdded'));
+  }
+
+  customChipSaveBtn.addEventListener('click', saveCustomChip);
+  customChipCancelBtn.addEventListener('click', closeCustomChipForm);
+  customChipInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveCustomChip();
+  });
 
   function toggleTask(id) {
     tasks = tasks.map(task =>
@@ -1644,10 +1729,12 @@
     recurringTemplates = safeParse('recurringTemplates:' + key, []);
     recurringExclusions = safeParse('recurringExclusions:' + key, []);
     previouslyUnlockedBadges = safeParse('unlockedBadges:' + key, []);
+    customChips = safeParse('customChips:' + key, []);
     generateRecurringInstances();
     render();
     renderCalendar();
     renderBadges();
+    buildQuickSuggestions();
   }
 
   // --- Welcome obrazovka: zobrazuje sa vždy pri otvorení appky ---
