@@ -911,8 +911,17 @@
     if (priorityFilterSet.size > 0) list = list.filter(tk => priorityFilterSet.has(tk.priority || 'medium'));
     if (tagFilterSet.size > 0) list = list.filter(tk => tagFilterSet.has((tk.tag || '').trim()));
 
-    if (sortOrder === 'newest') list = [...list].sort((a, b) => b.id - a.id);
-    else if (sortOrder === 'oldest') list = [...list].sort((a, b) => a.id - b.id);
+    // Úlohy sú vždy zoradené podľa priority (Vysoká → Stredná → Nízka). Ak je navyše zvolené
+    // Najnovšie/Najstaršie (doplnkový filter), použije sa to len ako sekundárne kritérium
+    // v rámci rovnakej priority - nie namiesto zoradenia podľa priority.
+    const priorityRank = { high: 0, medium: 1, low: 2 };
+    list = [...list].sort((a, b) => {
+      const rankDiff = priorityRank[a.priority || 'medium'] - priorityRank[b.priority || 'medium'];
+      if (rankDiff !== 0) return rankDiff;
+      if (sortOrder === 'newest') return b.id - a.id;
+      if (sortOrder === 'oldest') return a.id - b.id;
+      return 0;
+    });
 
     return list;
   }
