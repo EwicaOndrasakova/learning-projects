@@ -836,33 +836,36 @@
   }
 
   // --- Podúlohy (checklist v rámci jednej úlohy) ---
-  function addSubtask(taskId, text) {
+  // `editUpdates` prenáša ešte neuložené zmeny z otvoreného edit formulára (text/priorita/tag/poznámka) -
+  // bez toho by ich render() vyvolaný podúlohovou akciou prepísal späť na naposledy uložené hodnoty,
+  // keďže formulár sa vždy vykresľuje z `task` objektu, nie zo svojho aktuálneho DOM stavu.
+  function addSubtask(taskId, text, editUpdates) {
     if (!text.trim()) return;
     tasks = tasks.map(task => {
       if (task.id !== taskId) return task;
       const subtasks = task.subtasks || [];
-      return { ...task, subtasks: [...subtasks, { id: generateId(), text: text.trim(), done: false }] };
+      return { ...task, ...editUpdates, subtasks: [...subtasks, { id: generateId(), text: text.trim(), done: false }] };
     });
     saveTasks();
     render();
   }
 
-  function toggleSubtask(taskId, subtaskId) {
+  function toggleSubtask(taskId, subtaskId, editUpdates) {
     tasks = tasks.map(task => {
       if (task.id !== taskId) return task;
       const subtasks = (task.subtasks || []).map(st =>
         st.id === subtaskId ? { ...st, done: !st.done } : st
       );
-      return { ...task, subtasks };
+      return { ...task, ...editUpdates, subtasks };
     });
     saveTasks();
     render();
   }
 
-  function deleteSubtask(taskId, subtaskId) {
+  function deleteSubtask(taskId, subtaskId, editUpdates) {
     tasks = tasks.map(task => {
       if (task.id !== taskId) return task;
-      return { ...task, subtasks: (task.subtasks || []).filter(st => st.id !== subtaskId) };
+      return { ...task, ...editUpdates, subtasks: (task.subtasks || []).filter(st => st.id !== subtaskId) };
     });
     saveTasks();
     render();
@@ -1055,20 +1058,29 @@
           });
         }
 
+        // Zachytí ešte neuložené hodnoty z otvoreného edit formulára, nech ich podúlohová akcia
+        // (pridanie/odškrtnutie/zmazanie) nezahodí pri svojom render() - pozri komentár pri addSubtask().
+        const captureEditFields = () => isEditing ? {
+          text: li.querySelector('.edit-text-input').value.trim() || task.text,
+          priority: li.querySelector('.edit-priority-select').value,
+          tag: li.querySelector('.edit-tag-input').value.trim(),
+          notes: li.querySelector('.edit-notes-textarea').value.trim()
+        } : undefined;
+
         li.querySelectorAll('.subtask-checkbox').forEach(cb => {
           const stId = Number(cb.closest('.subtask-item').dataset.subtaskId) || cb.closest('.subtask-item').dataset.subtaskId;
-          cb.addEventListener('change', () => toggleSubtask(task.id, stId));
+          cb.addEventListener('change', () => toggleSubtask(task.id, stId, captureEditFields()));
         });
 
         li.querySelectorAll('.subtask-delete').forEach(btn => {
           const stId = Number(btn.closest('.subtask-item').dataset.subtaskId) || btn.closest('.subtask-item').dataset.subtaskId;
-          btn.addEventListener('click', () => deleteSubtask(task.id, stId));
+          btn.addEventListener('click', () => deleteSubtask(task.id, stId, captureEditFields()));
         });
 
         const subtaskInput = li.querySelector('.subtask-add-input');
         const subtaskAddBtn = li.querySelector('.subtask-add-btn');
         const submitSubtask = () => {
-          addSubtask(task.id, subtaskInput.value);
+          addSubtask(task.id, subtaskInput.value, captureEditFields());
         };
         subtaskAddBtn.addEventListener('click', submitSubtask);
         subtaskInput.addEventListener('keydown', (e) => {
