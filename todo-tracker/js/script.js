@@ -59,6 +59,7 @@
       emptyList: 'Žiadne úlohy tu nie sú',
       calLegendFull: 'Celý deň splnený',
       calLegendPartial: 'Čiastočne splnený',
+      calAddTask: '+ Pridať úlohu',
       ringsToday: 'Dnešné úlohy',
       ringsStreak: 'Séria dní v rade',
       ringsTotal: 'Splnené spolu',
@@ -169,6 +170,7 @@
       emptyList: 'No tasks here',
       calLegendFull: 'Fully completed day',
       calLegendPartial: 'Partially completed',
+      calAddTask: '+ Add task',
       ringsToday: "Today's tasks",
       ringsStreak: 'Streak in a row',
       ringsTotal: 'Completed total',
@@ -1214,6 +1216,17 @@
       list.appendChild(li);
     });
   }
+
+  // Prenesie do Zoznamu (List view) na deň práve vybraný v kalendári a rovno zaostrí na
+  // pole na písanie úlohy - rovnaká navigácia ako klik na existujúcu úlohu v náhľade vyššie.
+  document.getElementById('calDayAddBtn').addEventListener('click', () => {
+    viewDate = calPreviewDate;
+    updateDayNav();
+    dateInput.value = calPreviewDate;
+    activateTab('list');
+    render();
+    taskInput.focus();
+  });
 
   document.getElementById('prevMonth').addEventListener('click', () => {
     calDate.setMonth(calDate.getMonth() - 1);

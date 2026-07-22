@@ -769,11 +769,34 @@
     display: block;
   }
 
+  .cal-day-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
   .cal-day-preview-label {
     font-size: 13px;
     font-weight: 700;
     color: #64748d;
-    margin-bottom: 8px;
+  }
+
+  .cal-day-add-btn {
+    background: #533afd;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .cal-day-add-btn:hover {
+    background: #4930d1;
   }
 
   .cal-day-preview-list {
