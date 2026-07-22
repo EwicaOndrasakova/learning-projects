@@ -238,7 +238,52 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === currentLang);
     });
+
+    updateAllSegmentPills();
   }
+
+  // --- Posuvná "pilulka" pri prepínaní medzi tlačidlami v skupine (tabs, filter, jazyk, pohlavie) ---
+  // Namiesto okamžitého skoku farby na dvoch rôznych tlačidlách naraz sa farebné pozadie
+  // plynulo presunie/zmení veľkosť z pôvodne aktívneho na novo aktívne tlačidlo.
+  function createSegmentPill(container) {
+    if (!container) return () => {};
+    const pill = document.createElement('div');
+    pill.className = 'segment-pill';
+    container.insertBefore(pill, container.firstChild);
+    return function updatePill(activeBtn, snapInstantly) {
+      if (!activeBtn) {
+        pill.style.opacity = '0';
+        return;
+      }
+      // `snapInstantly` sa použije pri prvom zobrazení skrytého kontajnera (napr. otvorenie
+      // My Profile) - bez toho by pilulka "priletela" zo zabudnutej starej/nulovej pozície.
+      if (snapInstantly) pill.style.transition = 'none';
+      pill.style.opacity = '1';
+      pill.style.width = activeBtn.offsetWidth + 'px';
+      pill.style.height = activeBtn.offsetHeight + 'px';
+      pill.style.transform = `translate(${activeBtn.offsetLeft}px, ${activeBtn.offsetTop}px)`;
+      if (snapInstantly) {
+        pill.offsetHeight; // vynúti reflow pred návratom k plynulému prechodu
+        pill.style.transition = '';
+      }
+    };
+  }
+
+  const updateTabsPill = createSegmentPill(document.querySelector('.tabs'));
+  const updateFiltersPill = createSegmentPill(document.querySelector('.filters'));
+  const updateGenderPill = createSegmentPill(document.getElementById('settingsGenderOptions'));
+  const langTogglePillUpdaters = Array.from(document.querySelectorAll('.lang-toggle')).map(createSegmentPill);
+
+  function updateAllSegmentPills() {
+    updateTabsPill(document.querySelector('.tab-btn.active'));
+    updateFiltersPill(document.querySelector('.filter-btn.active'));
+    updateGenderPill(document.querySelector('#settingsGenderOptions .gender-btn.selected'));
+    document.querySelectorAll('.lang-toggle').forEach((el, i) => {
+      langTogglePillUpdaters[i](el.querySelector('.lang-btn.active'));
+    });
+  }
+
+  window.addEventListener('resize', updateAllSegmentPills);
 
   function setLanguage(lang) {
     currentLang = lang;
@@ -1076,6 +1121,7 @@
     tabBtns.forEach(b => b.classList.remove('active'));
     const targetBtn = Array.from(tabBtns).find(b => b.dataset.tab === tabName);
     if (targetBtn) targetBtn.classList.add('active');
+    updateTabsPill(targetBtn);
 
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + tabName).classList.add('active');
@@ -1314,6 +1360,7 @@
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      updateFiltersPill(btn);
       currentFilter = btn.dataset.filter;
       render();
     });
@@ -1515,6 +1562,7 @@
       settingsGenderOptions.querySelectorAll('.gender-btn').forEach(b => {
         b.classList.toggle('selected', b.dataset.gender === settingsSelectedGender);
       });
+      updateGenderPill(settingsGenderOptions.querySelector('.gender-btn.selected'));
     });
   });
 
@@ -1700,6 +1748,7 @@
     });
 
     settingsOverlay.classList.add('open');
+    updateGenderPill(settingsGenderOptions.querySelector('.gender-btn.selected'), true);
   }
 
   function closeSettings() {

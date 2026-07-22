@@ -81,8 +81,9 @@
   }
 
   .tabs {
+    position: relative;
     display: flex;
-    gap: 8px;
+    gap: 4px;
     margin-bottom: 20px;
     background: #f8fafd;
     padding: 4px;
@@ -90,21 +91,54 @@
   }
 
   .tab-btn {
+    position: relative;
+    z-index: 1;
     flex: 1;
-    padding: 10px;
+    min-width: 0;
+    padding: 10px 4px;
     border: none;
     background: transparent;
     border-radius: 999px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #64748d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: all 0.2s;
   }
 
+  @media (max-width: 360px) {
+    .tab-btn {
+      font-size: 12px;
+    }
+  }
+
   .tab-btn.active {
-    background: #533afd;
     color: white;
+  }
+
+  /* Posuvná "pilulka" - animovaný farebný podklad, ktorý sa pri prepnutí plynulo
+     presunie/zmení veľkosť na novo aktívne tlačidlo namiesto okamžitého skoku farby
+     na dvoch rôznych tlačidlách naraz. Pozícia/veľkosť sa nastavuje z JS (script.js). */
+  .segment-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    border-radius: 999px;
+    background: #533afd;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.15s ease;
+  }
+
+  .filters .segment-pill {
+    background: #ffd6e0;
   }
 
   .view { display: none; }
@@ -175,6 +209,7 @@
   }
 
   .filters {
+    position: relative;
     display: flex;
     gap: 8px;
     flex: 1;
@@ -408,6 +443,8 @@
   }
 
   .filter-btn {
+    position: relative;
+    z-index: 1;
     flex: 1;
     padding: 8px;
     border: 2px solid #e5edf5;
@@ -420,9 +457,9 @@
   }
 
   .filter-btn.active {
-    background: #ffd6e0;
+    background: transparent;
     color: #b5495b;
-    border-color: #ffd6e0;
+    border-color: transparent;
   }
 
   /* --- Hromadné označenie/zrušenie zobrazených úloh --- */
@@ -699,9 +736,9 @@
     background: #c7d2e0;
   }
 
-  .cal-day-preview-item.priority-high::before { background: #7f71e6; }
-  .cal-day-preview-item.priority-medium::before { background: #b9b9f9; }
-  .cal-day-preview-item.priority-low::before { background: #d6d9fc; }
+  .cal-day-preview-item.priority-high::before { background: #7c3aed; }
+  .cal-day-preview-item.priority-medium::before { background: #a78bfa; }
+  .cal-day-preview-item.priority-low::before { background: #ddd6fe; }
 
   .cal-day-preview-item.done {
     text-decoration: line-through;
@@ -1090,12 +1127,15 @@
 
   /* --- Výber pohlavia v My Profile --- */
   .gender-options {
+    position: relative;
     display: flex;
     gap: 8px;
     margin-top: 8px;
   }
 
   .gender-btn {
+    position: relative;
+    z-index: 1;
     flex: 1;
     padding: 10px;
     border: 2px solid #e5edf5;
@@ -1108,13 +1148,14 @@
   }
 
   .gender-btn.selected {
-    background: #533afd;
-    border-color: #533afd;
+    background: transparent;
+    border-color: transparent;
     color: #ffffff;
   }
 
   /* --- Prepínač jazyka SK/EN --- */
   .lang-toggle {
+    position: relative;
     display: flex;
     background: #f8fafd;
     border-radius: 999px;
@@ -1124,6 +1165,8 @@
   }
 
   .lang-btn {
+    position: relative;
+    z-index: 1;
     border: none;
     background: transparent;
     color: #64748d;
@@ -1140,7 +1183,6 @@
   }
 
   .lang-btn.active {
-    background: #533afd;
     color: #ffffff;
   }
 
@@ -1526,9 +1568,9 @@
     background: #c7d2e0;
   }
 
-  li.task.priority-high::before { background: #7f71e6; }
-  li.task.priority-medium::before { background: #b9b9f9; }
-  li.task.priority-low::before { background: #d6d9fc; }
+  li.task.priority-high::before { background: #7c3aed; }
+  li.task.priority-medium::before { background: #a78bfa; }
+  li.task.priority-low::before { background: #ddd6fe; }
 
   li.task.priority-high:not(.done) { background: #f1effc; }
   li.task.priority-medium:not(.done) { background: #f4f4fe; }
