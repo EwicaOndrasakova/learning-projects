@@ -1008,6 +1008,11 @@
     margin: 0 0 22px;
   }
 
+  /* Kým si nevyberieš postavičku, kruh sa vôbec nezobrazuje - žiadne "TY" naprázdno */
+  .welcome-avatar-preview.empty {
+    display: none;
+  }
+
   .welcome-avatar-preview {
     width: 64px;
     height: 64px;

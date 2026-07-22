@@ -1732,10 +1732,10 @@
     welcomeSelectedAvatar = null;
     welcomeNickname.value = '';
     welcomeEmail.value = '';
-    setAvatarPreview(welcomeAvatarPreview, null, '');
+    updateWelcomeAvatarPreview();
     buildAvatarPicker(welcomeAvatarOptions, null, (id) => {
       welcomeSelectedAvatar = id;
-      setAvatarPreview(welcomeAvatarPreview, id, welcomeNickname.value);
+      updateWelcomeAvatarPreview();
     });
     renderRecentLogins();
 
@@ -1797,11 +1797,18 @@
     });
   }
 
+  // Kruh s postavičkou na uvítacej obrazovke sa zobrazí až po výbere postavičky - kým nič
+  // nie je vybrané, nemá zmysel ukazovať prázdne "TY" iniciály.
+  function updateWelcomeAvatarPreview() {
+    welcomeAvatarPreview.classList.toggle('empty', !welcomeSelectedAvatar);
+    if (welcomeSelectedAvatar) setAvatarPreview(welcomeAvatarPreview, welcomeSelectedAvatar, welcomeNickname.value);
+  }
+
   buildAvatarPicker(welcomeAvatarOptions, welcomeSelectedAvatar, (id) => {
     welcomeSelectedAvatar = id;
-    setAvatarPreview(welcomeAvatarPreview, id, welcomeNickname.value);
+    updateWelcomeAvatarPreview();
   });
-  setAvatarPreview(welcomeAvatarPreview, welcomeSelectedAvatar, profile ? profile.nickname : '');
+  updateWelcomeAvatarPreview();
 
   // Predvyplníme meno posledného použitého profilu, nech ho netreba znova prepisovať
   if (profile && profile.nickname) {
@@ -1809,9 +1816,7 @@
     welcomeEmail.value = profile.email || '';
   }
 
-  welcomeNickname.addEventListener('input', () => {
-    setAvatarPreview(welcomeAvatarPreview, welcomeSelectedAvatar, welcomeNickname.value);
-  });
+  welcomeNickname.addEventListener('input', updateWelcomeAvatarPreview);
 
   function closeWelcome() {
     welcomeOverlay.style.display = 'none';
