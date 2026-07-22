@@ -185,16 +185,18 @@
   }
 
   #addBtn {
-    height: 42px;
+    display: block;
+    width: 100%;
+    height: 46px;
     background: #a8e6c9;
     color: #1f9d6c;
     border: none;
     padding: 0 18px;
     border-radius: 999px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    flex-shrink: 0;
+    margin: 14px 0 16px;
   }
 
   #addBtn:hover {
