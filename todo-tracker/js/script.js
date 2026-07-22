@@ -81,6 +81,7 @@
       toastTaskDeleted: 'Úloha zmazaná',
       toastChangesSaved: 'Zmeny uložené',
       toastProfileSaved: 'Profil uložený',
+      toastLoginRequired: 'Vyplň prezývku a vyber si postavičku',
       today: 'Dnes', tomorrow: 'Zajtra', yesterday: 'Včera',
       dowFull: ['Nedeľa', 'Pondelok', 'Utorok', 'Streda', 'Štvrtok', 'Piatok', 'Sobota'],
       dowShort: ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'],
@@ -190,6 +191,7 @@
       toastTaskDeleted: 'Task deleted',
       toastChangesSaved: 'Changes saved',
       toastProfileSaved: 'Profile saved',
+      toastLoginRequired: 'Please enter a nickname and pick an avatar',
       today: 'Today', tomorrow: 'Tomorrow', yesterday: 'Yesterday',
       dowFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       dowShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -1824,9 +1826,13 @@
 
   document.getElementById('welcomeContinueBtn').addEventListener('click', () => {
     const typedNickname = welcomeNickname.value.trim();
+    if (!typedNickname || !welcomeSelectedAvatar) {
+      showToast(t('toastLoginRequired'));
+      return;
+    }
     // "Vitaj späť" má zmysel len pre už známe meno (existuje v posledných prihláseniach) -
     // nie pre úplne nový profil, ktorý sa práve prvýkrát vytvára
-    const isReturning = typedNickname !== '' && profiles.some(p => p.nickname.toLowerCase() === typedNickname.toLowerCase());
+    const isReturning = profiles.some(p => p.nickname.toLowerCase() === typedNickname.toLowerCase());
     saveProfile({ nickname: welcomeNickname.value, email: welcomeEmail.value, avatarId: welcomeSelectedAvatar });
     closeWelcome();
     if (isReturning) showWelcomeBackGreeting(profile.nickname, profile.avatarId);
