@@ -839,7 +839,18 @@
     }
 
     clearTimeout(toggleRenderTimeoutId);
-    toggleRenderTimeoutId = setTimeout(render, 700);
+    toggleRenderTimeoutId = setTimeout(() => {
+      // Ak úloha po prekreslení už nebude vo filtrovanom zozname (napr. filter Aktívne/Hotové ju
+      // vyradí), necháme ju najprv plynulo "zmrštiť" - inak by render() nahradil celý <ul> a
+      // zmiznutie by pôsobilo ako náhle preblikutie namiesto plynulého prechodu.
+      const stillVisible = li && getFilteredTasks().some(tk => tk.id === id);
+      if (li && !stillVisible) {
+        li.classList.add('removing');
+        setTimeout(render, 300);
+      } else {
+        render();
+      }
+    }, 700);
   }
 
   // Označí/zruší ako hotové len úlohy, ktoré sú práve zobrazené (rešpektuje

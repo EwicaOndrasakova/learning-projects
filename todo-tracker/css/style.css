@@ -622,6 +622,23 @@
     margin-bottom: 8px;
     background: #f8fafd;
     border: 1px solid #e5edf5;
+    overflow: hidden;
+    max-height: 1000px;
+    transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.3s ease,
+                margin-bottom 0.3s ease, padding 0.3s ease, border-width 0.3s ease,
+                background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  /* Plynulé zmiznutie úlohy, ktorú po zaškrtnutí (splnená/nesplnená) filter Aktívne/Hotové
+     vyradí zo zoznamu - namiesto toho, aby ju nahradilo prekreslenie znenazdajky. */
+  li.task.removing {
+    opacity: 0;
+    transform: translateY(-6px);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-width: 0;
   }
 
   li.task.done {
