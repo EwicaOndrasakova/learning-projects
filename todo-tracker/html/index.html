@@ -85,7 +85,7 @@
       <input type="date" id="dateInput">
     </div>
 
-    <button type="button" class="more-options-toggle" id="moreOptionsToggle" data-i18n="moreOptionsShow">+ Priorita, tag, poznámka</button>
+    <button type="button" class="more-options-toggle" id="moreOptionsToggle" data-i18n="moreOptionsShow">+ Priorita, kategória, poznámka</button>
 
     <div class="more-options" id="moreOptionsBox">
       <div class="more-options-row">
@@ -94,7 +94,16 @@
           <option value="medium" selected data-i18n="priorityMedium">Stredná priorita</option>
           <option value="high" data-i18n="priorityHigh">Vysoká priorita</option>
         </select>
-        <input type="text" class="tag-input" id="tagInput" data-i18n-placeholder="tagPlaceholder" placeholder="Tag (napr. práca)">
+        <select class="category-select" id="categorySelect">
+          <option value="" data-i18n="categoryPlaceholder">Bez kategórie</option>
+          <option value="work" data-i18n="categoryWork">💼 Práca</option>
+          <option value="household" data-i18n="categoryHousehold">🏠 Domácnosť</option>
+          <option value="health" data-i18n="categoryHealth">❤️ Zdravie</option>
+          <option value="family" data-i18n="categoryFamily">👨‍👩‍👧 Rodina</option>
+          <option value="personal" data-i18n="categoryPersonal">🧘 Osobné</option>
+          <option value="finance" data-i18n="categoryFinance">💰 Financie</option>
+          <option value="shopping" data-i18n="categoryShopping">🛒 Nákupy</option>
+        </select>
       </div>
       <textarea class="notes-textarea" id="notesInput" data-i18n-placeholder="notesPlaceholder" placeholder="Poznámka k úlohe (voliteľné)"></textarea>
     </div>
@@ -174,8 +183,16 @@
             <label class="filter-checkbox-row"><input type="checkbox" value="low"><span data-i18n="priorityLow">Nízka priorita</span></label>
           </div>
 
-          <div class="filter-section-title" data-i18n="filterTagsLabel">Tagy</div>
-          <div class="filter-checkbox-list" id="filterTagOptions"></div>
+          <div class="filter-section-title" data-i18n="filterCategoryLabel">Kategória</div>
+          <div class="filter-checkbox-list" id="filterCategoryOptions">
+            <label class="filter-checkbox-row"><input type="checkbox" value="work"><span data-i18n="categoryWork">💼 Práca</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="household"><span data-i18n="categoryHousehold">🏠 Domácnosť</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="health"><span data-i18n="categoryHealth">❤️ Zdravie</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="family"><span data-i18n="categoryFamily">👨‍👩‍👧 Rodina</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="personal"><span data-i18n="categoryPersonal">🧘 Osobné</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="finance"><span data-i18n="categoryFinance">💰 Financie</span></label>
+            <label class="filter-checkbox-row"><input type="checkbox" value="shopping"><span data-i18n="categoryShopping">🛒 Nákupy</span></label>
+          </div>
 
           <button type="button" class="filter-clear-btn" id="filterClearBtn" data-i18n="clearFiltersBtn">Zrušiť filtre</button>
         </div>

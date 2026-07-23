@@ -25,9 +25,8 @@
       sortNewest: 'Najnovšie',
       sortOldest: 'Najstaršie',
       filterPriorityLabel: 'Priorita',
-      filterTagsLabel: 'Tagy',
+      filterCategoryLabel: 'Kategória',
       clearFiltersBtn: 'Zrušiť filtre',
-      noTagsYet: 'Zatiaľ žiadne tagy',
       greetingHi: 'Ahoj,',
       appTitle: 'Môj To-Do zoznam',
       tabList: 'Zoznam',
@@ -36,12 +35,19 @@
       taskInputPlaceholder: 'Napíš novú úlohu...',
       micTitle: 'Hlasové pridanie úlohy',
       addBtn: 'Pridať',
-      moreOptionsShow: '+ Priorita, tag, poznámka',
+      moreOptionsShow: '+ Priorita, kategória, poznámka',
       moreOptionsHide: '– Skryť možnosti',
       priorityLow: 'Nízka priorita',
       priorityMedium: 'Stredná priorita',
       priorityHigh: 'Vysoká priorita',
-      tagPlaceholder: 'Tag (voliteľné, napr. práca)',
+      categoryPlaceholder: 'Bez kategórie',
+      categoryWork: '💼 Práca',
+      categoryHousehold: '🏠 Domácnosť',
+      categoryHealth: '❤️ Zdravie',
+      categoryFamily: '👨‍👩‍👧 Rodina',
+      categoryPersonal: '🧘 Osobné',
+      categoryFinance: '💰 Financie',
+      categoryShopping: '🛒 Nákupy',
       notesPlaceholder: 'Poznámka k úlohe (voliteľné)',
       recurrenceNone: 'Bez opakovania',
       recurrenceDaily: 'Každý deň',
@@ -136,9 +142,8 @@
       sortNewest: 'Newest first',
       sortOldest: 'Oldest first',
       filterPriorityLabel: 'Priority',
-      filterTagsLabel: 'Tags',
+      filterCategoryLabel: 'Category',
       clearFiltersBtn: 'Clear filters',
-      noTagsYet: 'No tags yet',
       greetingHi: 'Hi,',
       appTitle: 'My To-Do List',
       tabList: 'List',
@@ -147,12 +152,19 @@
       taskInputPlaceholder: 'Write a new task...',
       micTitle: 'Add task by voice',
       addBtn: 'Add',
-      moreOptionsShow: '+ Priority, tag, note',
+      moreOptionsShow: '+ Priority, category, note',
       moreOptionsHide: '– Hide options',
       priorityLow: 'Low priority',
       priorityMedium: 'Medium priority',
       priorityHigh: 'High priority',
-      tagPlaceholder: 'Tag (optional, e.g. work)',
+      categoryPlaceholder: 'No category',
+      categoryWork: '💼 Work',
+      categoryHousehold: '🏠 Household',
+      categoryHealth: '❤️ Health',
+      categoryFamily: '👨‍👩‍👧 Family',
+      categoryPersonal: '🧘 Personal',
+      categoryFinance: '💰 Finance',
+      categoryShopping: '🛒 Shopping',
       notesPlaceholder: 'Note for the task (optional)',
       recurrenceNone: 'No repeat',
       recurrenceDaily: 'Every day',
@@ -228,6 +240,20 @@
 
   function t(key) {
     return translations[currentLang][key] || translations.sk[key] || key;
+  }
+
+  // Pevný zoznam kategórií úloh (nahrádza predošlé voľné tagy) - id sa mapuje na preklad
+  // cez `category<Id s veľkým prvým písmenom>` (napr. 'work' -> 'categoryWork').
+  const categoryList = ['work', 'household', 'health', 'family', 'personal', 'finance', 'shopping'];
+
+  function categoryLabel(id) {
+    if (!id) return '';
+    return t('category' + id.charAt(0).toUpperCase() + id.slice(1));
+  }
+
+  function categoryOptionsHtml(selectedId) {
+    return `<option value="" ${!selectedId ? 'selected' : ''}>${t('categoryPlaceholder')}</option>` +
+      categoryList.map(id => `<option value="${id}" ${selectedId === id ? 'selected' : ''}>${categoryLabel(id)}</option>`).join('');
   }
 
   // Nastaví text/placeholder/title/aria-label na všetkých prvkoch s data-i18n atribútmi
@@ -398,9 +424,9 @@
 
   let tasks = safeParse('tasks:' + profileStorageKey(profile ? profile.nickname : ''), []);
   let currentFilter = 'all';
-  // Doplnkový filter (zoradenie, priorita, tagy) - nezávislý od Všetky/Aktívne/Hotové vyššie
+  // Doplnkový filter (zoradenie, priorita, kategória) - nezávislý od Všetky/Aktívne/Hotové vyššie
   let sortOrder = null; // null (bez zmeny poradia) | 'newest' | 'oldest'
-  let tagFilterSet = new Set();
+  let categoryFilterSet = new Set();
   let priorityFilterSet = new Set();
   let calDate = new Date();
   let calPreviewDate = null; // ktorý deň má práve otvorený náhľad úloh v Calendar view
@@ -418,12 +444,12 @@
         updated = { ...updated, date: fallbackKey };
       }
       // Doplníme defaultné hodnoty pre polia, ktoré staršie úlohy nemuseli mať
-      if (updated.priority === undefined || updated.tag === undefined || updated.notes === undefined || updated.subtasks === undefined) {
+      if (updated.priority === undefined || updated.category === undefined || updated.notes === undefined || updated.subtasks === undefined) {
         changed = true;
         updated = {
           ...updated,
           priority: updated.priority || 'medium',
-          tag: updated.tag || '',
+          category: updated.category || '',
           notes: updated.notes || '',
           subtasks: updated.subtasks || []
         };
@@ -448,7 +474,7 @@
   const moreOptionsToggle = document.getElementById('moreOptionsToggle');
   const moreOptionsBox = document.getElementById('moreOptionsBox');
   const prioritySelect = document.getElementById('prioritySelect');
-  const tagInput = document.getElementById('tagInput');
+  const categorySelect = document.getElementById('categorySelect');
   const notesInput = document.getElementById('notesInput');
   const searchInput = document.getElementById('searchInput');
   const micBtn = document.getElementById('micBtn');
@@ -637,7 +663,7 @@
               date: key,
               templateId: tpl.id,
               priority: tpl.priority || 'medium',
-              tag: tpl.tag || '',
+              category: tpl.category || '',
               notes: tpl.notes || '',
               subtasks: []
             });
@@ -658,7 +684,7 @@
     const recurrenceType = recurrenceSelect.value;
     const startDate = dateInput.value || todayStr();
     const priority = prioritySelect.value;
-    const tag = tagInput.value.trim();
+    const category = categorySelect.value;
     const notes = notesInput.value.trim();
 
     if (recurrenceType === 'none') {
@@ -668,7 +694,7 @@
         done: false,
         date: startDate,
         priority: priority,
-        tag: tag,
+        category: category,
         notes: notes,
         subtasks: []
       });
@@ -683,13 +709,13 @@
         days: recurrenceType === 'weekly' ? [startDow] : (recurrenceType === 'custom' ? selectedCustomDays.slice() : []),
         startDate: startDate,
         priority: priority,
-        tag: tag,
+        category: category,
         notes: notes
       };
 
       // Pri "Vlastné dni" bez zvolenia žiadneho dňa to berieme ako jednorazovú úlohu
       if (recurrenceType === 'custom' && template.days.length === 0) {
-        tasks.push({ id: generateId(), text: text, done: false, date: startDate, priority: priority, tag: tag, notes: notes, subtasks: [] });
+        tasks.push({ id: generateId(), text: text, done: false, date: startDate, priority: priority, category: category, notes: notes, subtasks: [] });
         saveTasks();
       } else {
         recurringTemplates.push(template);
@@ -705,7 +731,7 @@
     selectedCustomDays = [];
     document.querySelectorAll('.day-chip').forEach(c => c.classList.remove('selected'));
     prioritySelect.value = 'medium';
-    tagInput.value = '';
+    categorySelect.value = '';
     notesInput.value = '';
     moreOptionsBox.classList.remove('visible');
     moreOptionsToggle.textContent = t('moreOptionsShow');
@@ -724,7 +750,7 @@
       done: false,
       date: dateInput.value || todayStr(),
       priority: priority || 'medium',
-      tag: '',
+      category: '',
       notes: '',
       subtasks: []
     });
@@ -866,7 +892,7 @@
   }
 
   // --- Podúlohy (checklist v rámci jednej úlohy) ---
-  // `editUpdates` prenáša ešte neuložené zmeny z otvoreného edit formulára (text/priorita/tag/poznámka) -
+  // `editUpdates` prenáša ešte neuložené zmeny z otvoreného edit formulára (text/priorita/kategória/poznámka) -
   // bez toho by ich render() vyvolaný podúlohovou akciou prepísal späť na naposledy uložené hodnoty,
   // keďže formulár sa vždy vykresľuje z `task` objektu, nie zo svojho aktuálneho DOM stavu.
   function addSubtask(taskId, text, editUpdates) {
@@ -930,7 +956,7 @@
       // Pri hľadaní prehľadávame úplne všetky dni, nie len vybraný deň
       list = list.filter(tk =>
         tk.text.toLowerCase().includes(searchQuery) ||
-        (tk.tag || '').toLowerCase().includes(searchQuery) ||
+        categoryLabel(tk.category).toLowerCase().includes(searchQuery) ||
         (tk.notes || '').toLowerCase().includes(searchQuery)
       );
     } else {
@@ -942,7 +968,7 @@
     if (currentFilter === 'done') list = list.filter(t => t.done);
 
     if (priorityFilterSet.size > 0) list = list.filter(tk => priorityFilterSet.has(tk.priority || 'medium'));
-    if (tagFilterSet.size > 0) list = list.filter(tk => tagFilterSet.has((tk.tag || '').trim()));
+    if (categoryFilterSet.size > 0) list = list.filter(tk => categoryFilterSet.has(tk.category || ''));
 
     return sortByPriority(list);
   }
@@ -962,20 +988,9 @@
     });
   }
 
-  // Zoznam unikátnych, neprázdnych tagov naprieč všetkými úlohami (nielen aktuálny deň) -
-  // nech je filter podľa tagu stabilný bez ohľadu na to, ktorý deň práve prezeráš
-  function getAllTags() {
-    const tagSet = new Set();
-    tasks.forEach(tk => {
-      const tag = (tk.tag || '').trim();
-      if (tag) tagSet.add(tag);
-    });
-    return Array.from(tagSet).sort((a, b) => a.localeCompare(b));
-  }
-
   let editingTaskId = null; // ktorá úloha sa práve upravuje (naraz len jedna) - detail (poznámka/podúlohy) je vidno len počas úpravy
 
-  // Aktualizuje ľubovoľné polia existujúcej úlohy (text, prioritu, tag, poznámku...)
+  // Aktualizuje ľubovoľné polia existujúcej úlohy (text, prioritu, kategóriu, poznámku...)
   function updateTask(id, updates) {
     tasks = tasks.map(task =>
       task.id === id ? { ...task, ...updates } : task
@@ -1019,7 +1034,9 @@
                   <option value="medium" ${priority === 'medium' ? 'selected' : ''}>${t('priorityMedium')}</option>
                   <option value="high" ${priority === 'high' ? 'selected' : ''}>${t('priorityHigh')}</option>
                 </select>
-                <input type="text" class="edit-tag-input" value="${escapeHtml(task.tag || '')}" placeholder="${t('tagPlaceholder')}">
+                <select class="edit-category-select">
+                  ${categoryOptionsHtml(task.category)}
+                </select>
               </div>
               <textarea class="edit-notes-textarea" placeholder="${t('notesPlaceholder')}">${escapeHtml(task.notes || '')}</textarea>
             </div>
@@ -1029,7 +1046,7 @@
           <div class="task-main-row">
             <input type="checkbox" class="checkbox" ${task.done ? 'checked' : ''}>
             <span class="task-text">${escapeHtml(task.text)}</span>
-            ${task.tag ? `<span class="task-tag">${escapeHtml(task.tag)}</span>` : ''}
+            ${task.category ? `<span class="task-category task-category-${task.category}">${categoryLabel(task.category)}</span>` : ''}
             <div class="task-actions">
               <button class="edit-btn" title="${t('editTitle')}">${editIconSvg}</button>
               <button class="delete-btn" title="${t('deleteTitle')}">${trashIconSvg}</button>
@@ -1077,7 +1094,7 @@
             updateTask(task.id, {
               text: newText,
               priority: li.querySelector('.edit-priority-select').value,
-              tag: li.querySelector('.edit-tag-input').value.trim(),
+              category: li.querySelector('.edit-category-select').value,
               notes: li.querySelector('.edit-notes-textarea').value.trim()
             });
             showToast(t('toastChangesSaved'));
@@ -1097,7 +1114,7 @@
         const captureEditFields = () => isEditing ? {
           text: li.querySelector('.edit-text-input').value.trim() || task.text,
           priority: li.querySelector('.edit-priority-select').value,
-          tag: li.querySelector('.edit-tag-input').value.trim(),
+          category: li.querySelector('.edit-category-select').value,
           notes: li.querySelector('.edit-notes-textarea').value.trim()
         } : undefined;
 
@@ -1517,14 +1534,13 @@
     });
   });
 
-  // --- Doplnkový filter (zoradenie, priorita, tagy) ---
+  // --- Doplnkový filter (zoradenie, priorita, kategória) ---
   const advancedFilterBtn = document.getElementById('advancedFilterBtn');
   const advancedFilterMenu = document.getElementById('advancedFilterMenu');
   const filterBadgeCount = document.getElementById('filterBadgeCount');
-  const filterTagOptions = document.getElementById('filterTagOptions');
 
   function activeFilterCount() {
-    return tagFilterSet.size + priorityFilterSet.size + (sortOrder ? 1 : 0);
+    return categoryFilterSet.size + priorityFilterSet.size + (sortOrder ? 1 : 0);
   }
 
   function updateFilterBadge() {
@@ -1534,8 +1550,8 @@
     filterBadgeCount.textContent = count;
   }
 
-  // Znova vykreslí obsah dropdownu (najmä zoznam tagov, ktorý sa môže časom meniť)
-  // a zachová aktuálne zaškrtnuté/zvolené stavy
+  // Znova zosynchronizuje zaškrtnuté stavy v dropdowne (kategórie sú pevný zoznam,
+  // netreba ich znova generovať ako predtým pri voľných tagoch)
   function renderAdvancedFilterMenu() {
     document.querySelectorAll('.filter-sort-btn').forEach(b => {
       b.classList.toggle('selected', b.dataset.sort === sortOrder);
@@ -1543,25 +1559,9 @@
     document.querySelectorAll('#filterPriorityOptions input').forEach(cb => {
       cb.checked = priorityFilterSet.has(cb.value);
     });
-
-    const tags = getAllTags();
-    filterTagOptions.innerHTML = '';
-    if (tags.length === 0) {
-      filterTagOptions.innerHTML = `<div class="filter-empty-note">${t('noTagsYet')}</div>`;
-    } else {
-      tags.forEach(tag => {
-        const label = document.createElement('label');
-        label.className = 'filter-checkbox-row';
-        label.innerHTML = `<input type="checkbox" value="${escapeHtml(tag)}" ${tagFilterSet.has(tag) ? 'checked' : ''}><span>${escapeHtml(tag)}</span>`;
-        label.querySelector('input').addEventListener('change', (e) => {
-          if (e.target.checked) tagFilterSet.add(tag);
-          else tagFilterSet.delete(tag);
-          updateFilterBadge();
-          render();
-        });
-        filterTagOptions.appendChild(label);
-      });
-    }
+    document.querySelectorAll('#filterCategoryOptions input').forEach(cb => {
+      cb.checked = categoryFilterSet.has(cb.value);
+    });
 
     updateFilterBadge();
   }
@@ -1591,9 +1591,18 @@
     });
   });
 
+  document.querySelectorAll('#filterCategoryOptions input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) categoryFilterSet.add(cb.value);
+      else categoryFilterSet.delete(cb.value);
+      updateFilterBadge();
+      render();
+    });
+  });
+
   document.getElementById('filterClearBtn').addEventListener('click', () => {
     sortOrder = null;
-    tagFilterSet.clear();
+    categoryFilterSet.clear();
     priorityFilterSet.clear();
     renderAdvancedFilterMenu();
     render();

@@ -14,7 +14,7 @@
      Zámerne krátke (120-180ms) a bez "odrazu", nech appka pôsobí plynulo, nie hravo-prehnane. */
   button, .quick-chip, .day-chip, .filter-btn, .tab-btn, .avatar-option,
   .badge, li.task, .cal-day, .success-card, .recent-login-item,
-  .text-field, .search-input, .priority-select, .tag-input, .notes-textarea,
+  .text-field, .search-input, .priority-select, .category-select, .notes-textarea,
   .recurrence-select {
     transition: background-color 0.15s ease, border-color 0.15s ease,
                 color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
@@ -226,7 +226,7 @@
     min-width: 0;
   }
 
-  /* --- Doplnkový filter (zoradenie, priorita, tagy) --- */
+  /* --- Doplnkový filter (zoradenie, priorita, kategória) --- */
   .advanced-filter-wrap {
     position: relative;
     flex-shrink: 0;
@@ -1553,7 +1553,7 @@
     white-space: nowrap;
   }
 
-  /* --- Rozšírené možnosti pri pridávaní úlohy (priorita, tag, poznámka) --- */
+  /* --- Rozšírené možnosti pri pridávaní úlohy (priorita, kategória, poznámka) --- */
   .more-options-toggle {
     background: none;
     border: none;
@@ -1580,7 +1580,7 @@
     margin-bottom: 8px;
   }
 
-  .priority-select, .tag-input {
+  .priority-select, .category-select {
     flex: 1 1 50%;
     min-width: 0;
     padding: 9px 10px;
@@ -1591,7 +1591,7 @@
     color: #061b31;
   }
 
-  .priority-select:focus, .tag-input:focus, .notes-textarea:focus {
+  .priority-select:focus, .category-select:focus, .notes-textarea:focus {
     outline: none;
     border-color: #533afd;
   }
@@ -1702,7 +1702,7 @@
     color: #64748d;
   }
 
-  /* --- Priorita a tag na položke úlohy --- */
+  /* --- Priorita a kategória na položke úlohy --- */
   li.task {
     position: relative;
     padding-left: 18px;
@@ -1736,7 +1736,7 @@
     width: 100%;
   }
 
-  /* Zoskupené akčné tlačidlá - na úzkych obrazovkách (dlhý text + tag) sa presunú
+  /* Zoskupené akčné tlačidlá - na úzkych obrazovkách (dlhý text + kategória) sa presunú
      spolu na ďalší riadok namiesto toho, aby sa rozdelili alebo pretiekli mimo karty */
   .task-actions {
     display: flex;
@@ -1746,7 +1746,7 @@
     flex-shrink: 0;
   }
 
-  .task-tag {
+  .task-category {
     font-size: 10px;
     font-weight: 700;
     color: #533afd;
@@ -1755,6 +1755,15 @@
     border-radius: 10px;
     white-space: nowrap;
   }
+
+  /* Každá kategória má vlastnú farbu, nech sú v zozname na prvý pohľad rozlíšiteľné */
+  .task-category-work { color: #2568c9; background: #e3f0ff; }
+  .task-category-household { color: #22935a; background: #e3f7ea; }
+  .task-category-health { color: #d6437a; background: #ffe3ea; }
+  .task-category-family { color: #c07a1e; background: #fff1de; }
+  .task-category-personal { color: #6b46c1; background: #efeafd; }
+  .task-category-finance { color: #0f8a7c; background: #e0f7f5; }
+  .task-category-shopping { color: #a3821e; background: #fef9e0; }
 
   .edit-btn {
     background: none;
@@ -1801,7 +1810,7 @@
     gap: 8px;
   }
 
-  .edit-priority-select, .edit-tag-input {
+  .edit-priority-select, .edit-category-select {
     flex: 1 1 50%;
     min-width: 0;
     padding: 7px 8px;
@@ -1815,7 +1824,8 @@
   /* Natívny <select> vie na rôznych prehliadačoch/OS (najmä Safari) ignorovať border-radius
      alebo si dokresliť vlastný rámik - vypneme predvolený vzhľad a nahradíme ho vlastnou
      šípkou, nech je zaoblenie vždy rovnaké ako pri ostatných poliach. */
-  .recurrence-select, .priority-select, .edit-priority-select {
+  .recurrence-select, .priority-select, .edit-priority-select,
+  .category-select, .edit-category-select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
