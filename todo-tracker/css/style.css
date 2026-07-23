@@ -446,9 +446,8 @@
 
   .custom-chip-form {
     display: none;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-direction: column;
+    gap: 8px;
     margin-bottom: 14px;
   }
 
@@ -456,17 +455,40 @@
     display: flex;
   }
 
-  .custom-chip-form .subtask-add-input {
+  .custom-chip-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .custom-chip-form-row .subtask-add-input {
     flex: 1;
     min-width: 140px;
   }
 
-  .custom-chip-form .edit-priority-select {
+  .custom-chip-form-row .edit-priority-select {
     flex: 0 1 auto;
   }
 
-  .custom-chip-cancel-btn {
-    margin-top: 0;
+  .custom-chip-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .custom-chip-save-btn {
+    background: #a8e6c9;
+    color: #1f9d6c;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .custom-chip-save-btn:hover {
+    background: #8fdbb8;
   }
 
   /* --- Opakovanie úlohy --- */
