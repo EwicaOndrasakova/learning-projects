@@ -699,7 +699,7 @@
     }
 
     taskInput.value = '';
-    dateInput.value = todayStr();
+    dateInput.value = viewDate; // ostaneme na prezeranom dni, nech ďalšia (aj rýchlo pridaná) úloha ide na ten istý deň
     recurrenceSelect.value = 'none';
     customDaysRow.classList.remove('visible');
     selectedCustomDays = [];
@@ -817,14 +817,29 @@
     if (e.key === 'Enter') saveCustomChip();
   });
 
+  let toggleRenderTimeoutId = null;
+
   function toggleTask(id) {
     tasks = tasks.map(task =>
       task.id === id ? { ...task, done: !task.done } : task
     );
     saveTasks();
-    render();
     renderCalendar();
     renderBadges();
+
+    // Rovno ukážeme zaškrtnutie/preškrtnutý štýl priamo na existujúcom elemente - keby render()
+    // prebehol okamžite, filter Aktívne/Hotové by úlohu mohol rovno odfiltrovať a vyzeralo by to,
+    // akoby zmizla bez toho, aby bolo vidno, že sa vôbec označila ako hotová.
+    const updatedTask = tasks.find(tk => tk.id === id);
+    const li = taskList.querySelector(`li.task[data-task-id="${id}"]`);
+    if (li && updatedTask) {
+      li.classList.toggle('done', updatedTask.done);
+      const checkbox = li.querySelector('.checkbox');
+      if (checkbox) checkbox.checked = updatedTask.done;
+    }
+
+    clearTimeout(toggleRenderTimeoutId);
+    toggleRenderTimeoutId = setTimeout(render, 700);
   }
 
   // Označí/zruší ako hotové len úlohy, ktoré sú práve zobrazené (rešpektuje
@@ -918,19 +933,22 @@
     if (priorityFilterSet.size > 0) list = list.filter(tk => priorityFilterSet.has(tk.priority || 'medium'));
     if (tagFilterSet.size > 0) list = list.filter(tk => tagFilterSet.has((tk.tag || '').trim()));
 
-    // Úlohy sú vždy zoradené podľa priority (Vysoká → Stredná → Nízka). Ak je navyše zvolené
-    // Najnovšie/Najstaršie (doplnkový filter), použije sa to len ako sekundárne kritérium
-    // v rámci rovnakej priority - nie namiesto zoradenia podľa priority.
-    const priorityRank = { high: 0, medium: 1, low: 2 };
-    list = [...list].sort((a, b) => {
+    return sortByPriority(list);
+  }
+
+  // Úlohy sú vždy zoradené podľa priority (Vysoká → Stredná → Nízka) - používa sa všade, kde sa
+  // zobrazuje zoznam úloh (Zoznam aj náhľad dňa v kalendári), nech je poradie konzistentné naprieč
+  // appkou. Ak je navyše zvolené Najnovšie/Najstaršie (doplnkový filter), použije sa to len ako
+  // sekundárne kritérium v rámci rovnakej priority - nie namiesto zoradenia podľa priority.
+  const priorityRank = { high: 0, medium: 1, low: 2 };
+  function sortByPriority(list) {
+    return [...list].sort((a, b) => {
       const rankDiff = priorityRank[a.priority || 'medium'] - priorityRank[b.priority || 'medium'];
       if (rankDiff !== 0) return rankDiff;
       if (sortOrder === 'newest') return b.id - a.id;
       if (sortOrder === 'oldest') return a.id - b.id;
       return 0;
     });
-
-    return list;
   }
 
   // Zoznam unikátnych, neprázdnych tagov naprieč všetkými úlohami (nielen aktuálny deň) -
@@ -976,6 +994,7 @@
         const li = document.createElement('li');
         const priority = task.priority || 'medium';
         li.className = 'task priority-' + priority + (task.done ? ' done' : '');
+        li.dataset.taskId = task.id;
 
         const subtasks = task.subtasks || [];
         const isEditing = editingTaskId === task.id;
@@ -1194,7 +1213,7 @@
     box.classList.add('visible');
     label.textContent = formatDayLabel(dateKey);
 
-    const dayTasks = tasks.filter(tk => tk.date === dateKey);
+    const dayTasks = sortByPriority(tasks.filter(tk => tk.date === dateKey));
     list.innerHTML = '';
 
     if (dayTasks.length === 0) {
