@@ -708,6 +708,19 @@
     gap: 6px;
   }
 
+  /* Bez kategórie (nič na ukázanie pod textom) sa vrátime na jeden kompaktný riadok -
+     text + Edit/Delete vedľa seba, vertikálne vycentrované, rovnako ako pri krátkej úlohe
+     bez akýchkoľvek extra informácií. */
+  .task-body.task-body-compact {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .task-body.task-body-compact .task-text {
+    flex: 1;
+    min-width: 0;
+  }
+
   .task-text {
     font-size: 14px;
     word-break: break-word;

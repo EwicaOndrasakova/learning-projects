@@ -1063,10 +1063,15 @@
             </div>
           ` : '';
 
+        // Bez kategórie (zatiaľ jediné, čo sa v zbalenom pohľade ukazuje popri texte) nemá úloha
+        // čo dávať do samostatného riadku pod textom - nech je karta kompaktná, text+tlačidlá v
+        // jednom riadku. Len čo kategória pribudne, riadok sa "natiahne" a kategória/tlačidlá idú pod text.
+        const hasMeta = !!task.category;
+
         li.innerHTML = `
           <div class="task-main-row">
             <input type="checkbox" class="checkbox" ${task.done ? 'checked' : ''}>
-            <div class="task-body">
+            <div class="task-body ${hasMeta ? '' : 'task-body-compact'}">
               <span class="task-text">${escapeHtml(task.text)}</span>
               <div class="task-meta-row">
                 ${task.category ? `<span class="task-category task-category-${task.category}">${categoryLabel(task.category)}</span>` : ''}
