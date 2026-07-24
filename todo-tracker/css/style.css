@@ -172,12 +172,29 @@
     background: #e8e9ff;
   }
 
+  /* Plynulé rozbalenie/zbalenie namiesto okamžitého skoku display:none/block. Obsah má premenlivú
+     (a niekedy sa ešte meniacu - vnorené "+ Priorita, kategória, poznámka" atď.) výšku, takže
+     namiesto hádania pevného max-height (to by pri oveľa nižšom reálnom obsahu spôsobilo, že
+     väčšina prechodu "nič nerobí" a skutočné zbalenie by pôsobilo uponáhľane až na konci) používame
+     CSS grid trik s `grid-template-rows: 0fr → 1fr` - ten vie plynulo animovať do/z prirodzenej
+     výšky obsahu bez potreby poznať jej presnú hodnotu. */
   .create-new-box {
-    display: none;
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin-bottom: 0;
+    transition: grid-template-rows 0.35s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
   }
 
   .create-new-box.visible {
-    display: block;
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-bottom: 16px;
+  }
+
+  .create-new-inner {
+    overflow: hidden;
+    min-height: 0;
   }
 
   .input-row {
