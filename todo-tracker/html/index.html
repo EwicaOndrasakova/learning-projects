@@ -77,72 +77,76 @@
   </div>
 
   <div class="view active" id="view-list">
-    <div class="input-row">
-      <input type="text" id="taskInput" data-i18n-placeholder="taskInputPlaceholder" placeholder="Napíš novú úlohu...">
-      <button type="button" class="mic-btn" id="micBtn" data-i18n-title="micTitle" title="Hlasové pridanie úlohy">
-        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
-      </button>
-      <input type="date" id="dateInput">
-    </div>
+    <button type="button" class="create-new-toggle" id="createNewToggle">+ Vytvoriť novú</button>
 
-    <button type="button" class="more-options-toggle" id="moreOptionsToggle" data-i18n="moreOptionsShow">+ Priorita, kategória, poznámka</button>
+    <div class="create-new-box" id="createNewBox">
+      <div class="input-row">
+        <input type="text" id="taskInput" data-i18n-placeholder="taskInputPlaceholder" placeholder="Napíš novú úlohu...">
+        <button type="button" class="mic-btn" id="micBtn" data-i18n-title="micTitle" title="Hlasové pridanie úlohy">
+          <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+        </button>
+        <input type="date" id="dateInput">
+      </div>
 
-    <div class="more-options" id="moreOptionsBox">
-      <div class="more-options-row">
-        <select class="priority-select" id="prioritySelect">
-          <option value="low" data-i18n="priorityLow">Nízka priorita</option>
-          <option value="medium" selected data-i18n="priorityMedium">Stredná priorita</option>
-          <option value="high" data-i18n="priorityHigh">Vysoká priorita</option>
-        </select>
-        <select class="category-select" id="categorySelect">
-          <option value="" data-i18n="categoryPlaceholder">Bez kategórie</option>
-          <option value="work" data-i18n="categoryWork">💼 Práca</option>
-          <option value="household" data-i18n="categoryHousehold">🏠 Domácnosť</option>
-          <option value="health" data-i18n="categoryHealth">❤️ Zdravie</option>
-          <option value="family" data-i18n="categoryFamily">👨‍👩‍👧 Rodina</option>
-          <option value="personal" data-i18n="categoryPersonal">🧘 Osobné</option>
-          <option value="finance" data-i18n="categoryFinance">💰 Financie</option>
-          <option value="shopping" data-i18n="categoryShopping">🛒 Nákupy</option>
+      <button type="button" class="more-options-toggle" id="moreOptionsToggle">+ Priorita, kategória, poznámka</button>
+
+      <div class="more-options" id="moreOptionsBox">
+        <div class="more-options-row">
+          <select class="priority-select" id="prioritySelect">
+            <option value="low" data-i18n="priorityLow">Nízka priorita</option>
+            <option value="medium" selected data-i18n="priorityMedium">Stredná priorita</option>
+            <option value="high" data-i18n="priorityHigh">Vysoká priorita</option>
+          </select>
+          <select class="category-select" id="categorySelect">
+            <option value="" data-i18n="categoryPlaceholder">Bez kategórie</option>
+            <option value="work" data-i18n="categoryWork">💼 Práca</option>
+            <option value="household" data-i18n="categoryHousehold">🏠 Domácnosť</option>
+            <option value="health" data-i18n="categoryHealth">❤️ Zdravie</option>
+            <option value="family" data-i18n="categoryFamily">👨‍👩‍👧 Rodina</option>
+            <option value="personal" data-i18n="categoryPersonal">🧘 Osobné</option>
+            <option value="finance" data-i18n="categoryFinance">💰 Financie</option>
+            <option value="shopping" data-i18n="categoryShopping">🛒 Nákupy</option>
+          </select>
+        </div>
+        <textarea class="notes-textarea" id="notesInput" data-i18n-placeholder="notesPlaceholder" placeholder="Poznámka k úlohe (voliteľné)"></textarea>
+      </div>
+
+      <div class="recurrence-row">
+        <select class="recurrence-select" id="recurrenceSelect">
+          <option value="none" data-i18n="recurrenceNone">Bez opakovania</option>
+          <option value="daily" data-i18n="recurrenceDaily">Každý deň</option>
+          <option value="weekly" data-i18n="recurrenceWeekly">Raz týždenne (rovnaký deň)</option>
+          <option value="custom" data-i18n="recurrenceCustom">Vlastné dni</option>
         </select>
       </div>
-      <textarea class="notes-textarea" id="notesInput" data-i18n-placeholder="notesPlaceholder" placeholder="Poznámka k úlohe (voliteľné)"></textarea>
-    </div>
 
-    <div class="recurrence-row">
-      <select class="recurrence-select" id="recurrenceSelect">
-        <option value="none" data-i18n="recurrenceNone">Bez opakovania</option>
-        <option value="daily" data-i18n="recurrenceDaily">Každý deň</option>
-        <option value="weekly" data-i18n="recurrenceWeekly">Raz týždenne (rovnaký deň)</option>
-        <option value="custom" data-i18n="recurrenceCustom">Vlastné dni</option>
-      </select>
-    </div>
-
-    <div class="custom-days-row" id="customDaysRow">
-      <button type="button" class="day-chip" data-day="1" data-i18n="dayMon">Po</button>
-      <button type="button" class="day-chip" data-day="2" data-i18n="dayTue">Ut</button>
-      <button type="button" class="day-chip" data-day="3" data-i18n="dayWed">St</button>
-      <button type="button" class="day-chip" data-day="4" data-i18n="dayThu">Št</button>
-      <button type="button" class="day-chip" data-day="5" data-i18n="dayFri">Pi</button>
-      <button type="button" class="day-chip" data-day="6" data-i18n="daySat">So</button>
-      <button type="button" class="day-chip" data-day="0" data-i18n="daySun">Ne</button>
-    </div>
-
-    <button id="addBtn" data-i18n="addBtn">Pridať</button>
-
-    <div class="quick-suggestions" id="quickSuggestions"></div>
-
-    <div class="custom-chip-form" id="customChipForm">
-      <div class="custom-chip-form-row">
-        <input type="text" class="subtask-add-input" id="customChipInput" data-i18n-placeholder="customChipPlaceholder" placeholder="napr. Zalej kvety">
-        <select class="edit-priority-select" id="customChipPrioritySelect">
-          <option value="low" data-i18n="priorityLow">Nízka priorita</option>
-          <option value="medium" selected data-i18n="priorityMedium">Stredná priorita</option>
-          <option value="high" data-i18n="priorityHigh">Vysoká priorita</option>
-        </select>
+      <div class="custom-days-row" id="customDaysRow">
+        <button type="button" class="day-chip" data-day="1" data-i18n="dayMon">Po</button>
+        <button type="button" class="day-chip" data-day="2" data-i18n="dayTue">Ut</button>
+        <button type="button" class="day-chip" data-day="3" data-i18n="dayWed">St</button>
+        <button type="button" class="day-chip" data-day="4" data-i18n="dayThu">Št</button>
+        <button type="button" class="day-chip" data-day="5" data-i18n="dayFri">Pi</button>
+        <button type="button" class="day-chip" data-day="6" data-i18n="daySat">So</button>
+        <button type="button" class="day-chip" data-day="0" data-i18n="daySun">Ne</button>
       </div>
-      <div class="custom-chip-form-actions">
-        <button type="button" class="edit-cancel-btn" id="customChipCancelBtn" data-i18n="cancelBtn">Zrušiť</button>
-        <button type="button" class="custom-chip-save-btn" id="customChipSaveBtn" data-i18n="subtaskAdd">Pridať</button>
+
+      <button id="addBtn" data-i18n="addBtn">Pridať</button>
+
+      <div class="quick-suggestions" id="quickSuggestions"></div>
+
+      <div class="custom-chip-form" id="customChipForm">
+        <div class="custom-chip-form-row">
+          <input type="text" class="subtask-add-input" id="customChipInput" data-i18n-placeholder="customChipPlaceholder" placeholder="napr. Zalej kvety">
+          <select class="edit-priority-select" id="customChipPrioritySelect">
+            <option value="low" data-i18n="priorityLow">Nízka priorita</option>
+            <option value="medium" selected data-i18n="priorityMedium">Stredná priorita</option>
+            <option value="high" data-i18n="priorityHigh">Vysoká priorita</option>
+          </select>
+        </div>
+        <div class="custom-chip-form-actions">
+          <button type="button" class="edit-cancel-btn" id="customChipCancelBtn" data-i18n="cancelBtn">Zrušiť</button>
+          <button type="button" class="custom-chip-save-btn" id="customChipSaveBtn" data-i18n="subtaskAdd">Pridať</button>
+        </div>
       </div>
     </div>
 

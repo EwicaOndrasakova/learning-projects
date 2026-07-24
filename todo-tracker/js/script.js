@@ -35,6 +35,8 @@
       taskInputPlaceholder: 'Napíš novú úlohu...',
       micTitle: 'Hlasové pridanie úlohy',
       addBtn: 'Pridať',
+      createNewShow: '+ Vytvoriť novú',
+      createNewHide: '– Skryť',
       moreOptionsShow: '+ Priorita, kategória, poznámka',
       moreOptionsHide: '– Skryť možnosti',
       priorityLow: 'Nízka priorita',
@@ -152,6 +154,8 @@
       taskInputPlaceholder: 'Write a new task...',
       micTitle: 'Add task by voice',
       addBtn: 'Add',
+      createNewShow: '+ Create new',
+      createNewHide: '– Hide',
       moreOptionsShow: '+ Priority, category, note',
       moreOptionsHide: '– Hide options',
       priorityLow: 'Low priority',
@@ -276,6 +280,12 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === currentLang);
     });
+
+    // Tieto dve tlačidlá menia text podľa toho, či je ich sekcia práve rozbalená/zbalená -
+    // nemajú preto statický data-i18n atribút (ten by pri každom prepnutí jazyka text vrátil
+    // späť na "zbalený" stav bez ohľadu na to, čo je v skutočnosti vidno).
+    createNewToggle.textContent = createNewBox.classList.contains('visible') ? t('createNewHide') : t('createNewShow');
+    moreOptionsToggle.textContent = moreOptionsBox.classList.contains('visible') ? t('moreOptionsHide') : t('moreOptionsShow');
 
     updateAllSegmentPills();
   }
@@ -473,6 +483,8 @@
   const quickSuggestionsBox = document.getElementById('quickSuggestions');
   const moreOptionsToggle = document.getElementById('moreOptionsToggle');
   const moreOptionsBox = document.getElementById('moreOptionsBox');
+  const createNewToggle = document.getElementById('createNewToggle');
+  const createNewBox = document.getElementById('createNewBox');
   const prioritySelect = document.getElementById('prioritySelect');
   const categorySelect = document.getElementById('categorySelect');
   const notesInput = document.getElementById('notesInput');
@@ -482,6 +494,15 @@
   moreOptionsToggle.addEventListener('click', () => {
     const isOpen = moreOptionsBox.classList.toggle('visible');
     moreOptionsToggle.textContent = isOpen ? t('moreOptionsHide') : t('moreOptionsShow');
+  });
+
+  // Celá "vytvoriť novú úlohu" sekcia (textové pole, priorita/kategória/poznámka, opakovanie,
+  // rýchle nápady, vlastný čip) je schovaná, kým sa nerozhodneš niečo pridať - List view tak
+  // ukazuje hlavne tvoj zoznam úloh, nie formulár na pridávanie.
+  createNewToggle.addEventListener('click', () => {
+    const isOpen = createNewBox.classList.toggle('visible');
+    createNewToggle.textContent = isOpen ? t('createNewHide') : t('createNewShow');
+    if (isOpen) taskInput.focus();
   });
 
   let searchQuery = '';
@@ -1272,6 +1293,8 @@
     dateInput.value = calPreviewDate;
     activateTab('list');
     render();
+    createNewBox.classList.add('visible');
+    createNewToggle.textContent = t('createNewHide');
     taskInput.focus();
   });
 
