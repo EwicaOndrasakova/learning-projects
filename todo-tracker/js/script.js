@@ -1066,11 +1066,15 @@
         li.innerHTML = `
           <div class="task-main-row">
             <input type="checkbox" class="checkbox" ${task.done ? 'checked' : ''}>
-            <span class="task-text">${escapeHtml(task.text)}</span>
-            ${task.category ? `<span class="task-category task-category-${task.category}">${categoryLabel(task.category)}</span>` : ''}
-            <div class="task-actions">
-              <button class="edit-btn" title="${t('editTitle')}">${editIconSvg}</button>
-              <button class="delete-btn" title="${t('deleteTitle')}">${trashIconSvg}</button>
+            <div class="task-body">
+              <span class="task-text">${escapeHtml(task.text)}</span>
+              <div class="task-meta-row">
+                ${task.category ? `<span class="task-category task-category-${task.category}">${categoryLabel(task.category)}</span>` : ''}
+                <div class="task-actions">
+                  <button class="edit-btn" title="${t('editTitle')}">${editIconSvg}</button>
+                  <button class="delete-btn" title="${t('deleteTitle')}">${trashIconSvg}</button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="task-details ${isEditing ? 'visible' : ''}">
