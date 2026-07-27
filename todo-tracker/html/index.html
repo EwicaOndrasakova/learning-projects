@@ -71,12 +71,33 @@
   <h1 data-i18n="appTitle">Môj To-Do zoznam</h1>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="list" data-i18n="tabList">Zoznam</button>
-    <button class="tab-btn" data-tab="calendar" data-i18n="tabCalendar">Kalendár</button>
+    <button class="tab-btn active" data-tab="calendar" data-i18n="tabCalendar">Kalendár</button>
+    <button class="tab-btn" data-tab="list" data-i18n="tabList">Zoznam</button>
     <button class="tab-btn" data-tab="badges" data-i18n="tabBadges">Prehľad</button>
   </div>
 
-  <div class="view active" id="view-list">
+  <div class="view active" id="view-calendar">
+    <div class="cal-header">
+      <button id="prevMonth">‹</button>
+      <span id="calMonthLabel"></span>
+      <button id="nextMonth">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-legend">
+      <span><span class="legend-dot" style="background:#a8e6c9;"></span><span data-i18n="calLegendFull">Celý deň splnený</span></span>
+      <span><span class="legend-dot" style="background:#e8e9ff;"></span><span data-i18n="calLegendPartial">Čiastočne splnený</span></span>
+    </div>
+
+    <div class="cal-day-preview" id="calDayPreview">
+      <div class="cal-day-preview-header">
+        <div class="cal-day-preview-label" id="calDayPreviewLabel"></div>
+        <button type="button" class="cal-day-add-btn" id="calDayAddBtn" data-i18n="calAddTask">+ Pridať úlohu</button>
+      </div>
+      <ul class="cal-day-preview-list" id="calDayPreviewList"></ul>
+    </div>
+  </div>
+
+  <div class="view" id="view-list">
     <button type="button" class="create-new-toggle" id="createNewToggle">+ Vytvoriť novú</button>
 
     <div class="create-new-box" id="createNewBox">
@@ -214,27 +235,6 @@
     <ul id="taskList"></ul>
 
     <div class="stats" id="stats"></div>
-  </div>
-
-  <div class="view" id="view-calendar">
-    <div class="cal-header">
-      <button id="prevMonth">‹</button>
-      <span id="calMonthLabel"></span>
-      <button id="nextMonth">›</button>
-    </div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div class="cal-legend">
-      <span><span class="legend-dot" style="background:#a8e6c9;"></span><span data-i18n="calLegendFull">Celý deň splnený</span></span>
-      <span><span class="legend-dot" style="background:#e8e9ff;"></span><span data-i18n="calLegendPartial">Čiastočne splnený</span></span>
-    </div>
-
-    <div class="cal-day-preview" id="calDayPreview">
-      <div class="cal-day-preview-header">
-        <div class="cal-day-preview-label" id="calDayPreviewLabel"></div>
-        <button type="button" class="cal-day-add-btn" id="calDayAddBtn" data-i18n="calAddTask">+ Pridať úlohu</button>
-      </div>
-      <ul class="cal-day-preview-list" id="calDayPreviewList"></ul>
-    </div>
   </div>
 
   <div class="view" id="view-badges">

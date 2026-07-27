@@ -439,7 +439,7 @@
   let categoryFilterSet = new Set();
   let priorityFilterSet = new Set();
   let calDate = new Date();
-  let calPreviewDate = null; // ktorý deň má práve otvorený náhľad úloh v Calendar view
+  let calPreviewDate = todayStr(); // ktorý deň má práve otvorený náhľad úloh v Calendar view
 
   // Migrácia: staršie úlohy (vytvorené pred pridaním dátumového políčka)
   // nemuseli mať uložený dátum – bez neho by ich kalendár nevedel priradiť k žiadnemu dňu.
