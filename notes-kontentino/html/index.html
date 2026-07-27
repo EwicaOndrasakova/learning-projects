@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kontentino – Personal Notes prototype</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">🗓️ Kontentino</div>
+    <div class="profile-selector" id="profileSelector">
+      <button class="profile-btn active" data-profile="fb">📘 Facebook</button>
+      <button class="profile-btn" data-profile="ig">📸 Instagram</button>
+    </div>
+    <div class="calendar-nav">
+      <button id="prevMonth">‹</button>
+      <span id="monthLabel"></span>
+      <button id="nextMonth">›</button>
+      <button id="todayBtn">Today</button>
+    </div>
+    <button class="notes-icon-btn" id="notesToggle" title="My notes">
+      🗒️<span class="badge hidden" id="notesBadge">0</span>
+    </button>
+  </header>
+
+  <main class="calendar-wrap">
+    <div class="weekdays">
+      <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </main>
+
+  <div class="overlay hidden" id="overlay"></div>
+
+  <aside class="notes-panel" id="notesPanel">
+    <div class="notes-header">
+      <div>
+        <h3>My notes</h3>
+        <span class="lock">🔒 private, just for you</span>
+      </div>
+      <button id="closeNotes">✕</button>
+    </div>
+
+    <div class="new-note">
+      <textarea id="noteInput" placeholder="e.g. edit this post, prepare new photos…"></textarea>
+      <div class="link-row">
+        <label>
+          <input type="checkbox" id="linkToDay" />
+          link to selected day
+        </label>
+        <span id="linkedDayLabel"></span>
+      </div>
+      <button id="addNoteBtn">+ Add note</button>
+    </div>
+
+    <ul class="notes-list" id="notesList"></ul>
+  </aside>
+</div>
+
+<script src="../js/script.js"></script>
+</body>
+</html>
