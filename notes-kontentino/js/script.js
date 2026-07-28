@@ -6,9 +6,14 @@
   var selectedDayKey = null; // "YYYY-M-D"
   var activeProfile = 'fb';
   var editingId = null; // id of the note currently being edited
+  var deletingId = null; // id of the note pending delete confirmation
+  var expandedIds = {}; // ids of notes expanded past the clamp
 
   var STORAGE_KEY = 'kontentino_personal_notes_v1';
   var notes = loadNotes();
+
+  var ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+  var ICON_DELETE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
 
   // small hardcoded sample posts just for visual context (not functional)
   var samplePosts = {
@@ -36,6 +41,29 @@
   }
   function saveNotes(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+  }
+
+  var URL_PATTERN = /(https?:\/\/[^\s]+)/g;
+  function renderNoteText(container, text){
+    var lastIndex = 0;
+    var match;
+    URL_PATTERN.lastIndex = 0;
+    while ((match = URL_PATTERN.exec(text))){
+      if (match.index > lastIndex){
+        container.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+      }
+      var link = document.createElement('a');
+      link.className = 'note-link';
+      link.href = match[0];
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = match[0];
+      container.appendChild(link);
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length){
+      container.appendChild(document.createTextNode(text.slice(lastIndex)));
+    }
   }
   var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -135,6 +163,226 @@
     }
   }
 
+  var EMOJI_DATA = [
+    {e:'😀', k:'grinning happy smile'},
+    {e:'😂', k:'joy laugh tears funny'},
+    {e:'😅', k:'sweat smile relief'},
+    {e:'😉', k:'wink'},
+    {e:'😊', k:'blush smile happy'},
+    {e:'😍', k:'heart eyes love'},
+    {e:'🥳', k:'party celebrate'},
+    {e:'😢', k:'cry sad'},
+    {e:'😴', k:'sleep tired'},
+    {e:'😎', k:'cool sunglasses'},
+    {e:'🙄', k:'eyeroll'},
+    {e:'🤔', k:'thinking'},
+    {e:'👍', k:'thumbs up like approve yes'},
+    {e:'👎', k:'thumbs down dislike no'},
+    {e:'👏', k:'clap applause'},
+    {e:'🙌', k:'raised hands celebrate'},
+    {e:'🙏', k:'pray thanks please'},
+    {e:'👀', k:'eyes look watch'},
+    {e:'💪', k:'muscle strong'},
+    {e:'🤝', k:'handshake deal'},
+    {e:'✅', k:'check done complete yes'},
+    {e:'❌', k:'x cancel wrong no'},
+    {e:'❤️', k:'heart love'},
+    {e:'🔥', k:'fire hot lit'},
+    {e:'✨', k:'sparkles new'},
+    {e:'🎉', k:'party celebrate confetti'},
+    {e:'🎯', k:'target goal'},
+    {e:'🚀', k:'rocket launch fast'},
+    {e:'💡', k:'idea light bulb'},
+    {e:'📅', k:'calendar date schedule'},
+    {e:'⏰', k:'alarm clock time reminder'},
+    {e:'📌', k:'pin important'},
+    {e:'📸', k:'camera photo picture'},
+    {e:'💬', k:'speech chat comment'},
+    {e:'📈', k:'chart growth stats'},
+    {e:'📉', k:'chart down decline'},
+    {e:'⚠️', k:'warning alert'},
+    {e:'🎨', k:'art design paint'},
+    {e:'🛠️', k:'tools fix build'},
+    {e:'📝', k:'note memo write'},
+    {e:'🗓️', k:'calendar schedule'}
+  ];
+
+  var EMOJI_RECENT_KEY = 'kontentino_recent_emoji_v1';
+  function loadRecentEmoji(){
+    try{
+      var raw = localStorage.getItem(EMOJI_RECENT_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function rememberEmoji(emoji){
+    var recent = loadRecentEmoji().filter(function(e){ return e !== emoji; });
+    recent.unshift(emoji);
+    if (recent.length > 8) recent = recent.slice(0, 8);
+    localStorage.setItem(EMOJI_RECENT_KEY, JSON.stringify(recent));
+  }
+
+  function insertAtCursor(textarea, str){
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var value = textarea.value;
+    textarea.value = value.slice(0, start) + str + value.slice(end);
+    var pos = start + str.length;
+    textarea.focus();
+    textarea.setSelectionRange(pos, pos);
+  }
+
+  function buildEmojiGrid(container, emojiList, textarea, pickerEl){
+    emojiList.forEach(function(emoji){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = emoji;
+      btn.addEventListener('click', function(){
+        insertAtCursor(textarea, emoji);
+        rememberEmoji(emoji);
+        pickerEl.classList.add('hidden');
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function populateEmojiPicker(pickerEl, textarea){
+    var searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.className = 'emoji-search';
+    searchInput.placeholder = 'Search emoji…';
+    pickerEl.appendChild(searchInput);
+
+    var resultsWrap = document.createElement('div');
+    pickerEl.appendChild(resultsWrap);
+
+    function renderResults(query){
+      resultsWrap.innerHTML = '';
+      query = query.trim().toLowerCase();
+
+      if (!query){
+        var recent = loadRecentEmoji();
+        if (recent.length){
+          var recentLabel = document.createElement('div');
+          recentLabel.className = 'emoji-section-label';
+          recentLabel.textContent = 'Frequently used';
+          resultsWrap.appendChild(recentLabel);
+          var recentGrid = document.createElement('div');
+          recentGrid.className = 'emoji-grid';
+          buildEmojiGrid(recentGrid, recent, textarea, pickerEl);
+          resultsWrap.appendChild(recentGrid);
+        }
+
+        var allLabel = document.createElement('div');
+        allLabel.className = 'emoji-section-label';
+        allLabel.textContent = 'Smileys & People';
+        resultsWrap.appendChild(allLabel);
+        var allGrid = document.createElement('div');
+        allGrid.className = 'emoji-grid';
+        buildEmojiGrid(allGrid, EMOJI_DATA.map(function(item){ return item.e; }), textarea, pickerEl);
+        resultsWrap.appendChild(allGrid);
+        return;
+      }
+
+      var matches = EMOJI_DATA.filter(function(item){
+        return item.k.indexOf(query) !== -1;
+      }).map(function(item){ return item.e; });
+
+      if (!matches.length){
+        var empty = document.createElement('div');
+        empty.className = 'emoji-empty';
+        empty.textContent = 'No emoji found';
+        resultsWrap.appendChild(empty);
+        return;
+      }
+
+      var grid = document.createElement('div');
+      grid.className = 'emoji-grid';
+      buildEmojiGrid(grid, matches, textarea, pickerEl);
+      resultsWrap.appendChild(grid);
+    }
+
+    searchInput.addEventListener('input', function(){ renderResults(searchInput.value); });
+    searchInput.addEventListener('click', function(e){ e.stopPropagation(); });
+    renderResults('');
+
+    pickerEl._resetEmojiSearch = function(){
+      searchInput.value = '';
+      renderResults('');
+    };
+  }
+
+  function shouldFlipUp(toggleBtn){
+    var list = document.getElementById('notesList');
+    var boundary = list.contains(toggleBtn) ? list.getBoundingClientRect() : {top:0, bottom:window.innerHeight};
+    var toggleRect = toggleBtn.getBoundingClientRect();
+    var spaceBelow = boundary.bottom - toggleRect.bottom;
+    var spaceAbove = toggleRect.top - boundary.top;
+    return spaceBelow < 260 && spaceAbove > spaceBelow;
+  }
+
+  function setupEmojiToggle(toggleBtn, pickerEl){
+    toggleBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      document.querySelectorAll('.emoji-picker').forEach(function(p){
+        if (p !== pickerEl) p.classList.add('hidden');
+      });
+      var wasHidden = pickerEl.classList.contains('hidden');
+      pickerEl.classList.toggle('hidden');
+      if (wasHidden){
+        if (pickerEl._resetEmojiSearch) pickerEl._resetEmojiSearch();
+        pickerEl.classList.toggle('flip-up', shouldFlipUp(toggleBtn));
+      }
+    });
+  }
+
+  document.addEventListener('click', function(e){
+    if (e.target.closest('.note-input-toolbar')) return;
+    document.querySelectorAll('.emoji-picker').forEach(function(p){ p.classList.add('hidden'); });
+  });
+
+  var ICON_UNDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>';
+  var ICON_REDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
+
+  function createToolbarIconButton(iconSvg, title, onClick){
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'input-icon-btn';
+    btn.innerHTML = iconSvg;
+    btn.title = title;
+    btn.addEventListener('click', onClick);
+    return btn;
+  }
+
+  function addUndoRedoButtons(toolbar, textarea, beforeEl){
+    var undoBtn = createToolbarIconButton(ICON_UNDO, 'Undo', function(){
+      textarea.focus();
+      document.execCommand('undo');
+      refreshUndoRedoState();
+    });
+    var redoBtn = createToolbarIconButton(ICON_REDO, 'Redo', function(){
+      textarea.focus();
+      document.execCommand('redo');
+      refreshUndoRedoState();
+    });
+
+    function refreshUndoRedoState(){
+      undoBtn.disabled = !document.queryCommandEnabled('undo');
+      redoBtn.disabled = !document.queryCommandEnabled('redo');
+    }
+    undoBtn.disabled = true;
+    redoBtn.disabled = true;
+    textarea.addEventListener('input', refreshUndoRedoState);
+    textarea.addEventListener('focus', refreshUndoRedoState);
+
+    if (beforeEl){
+      toolbar.insertBefore(undoBtn, beforeEl);
+      toolbar.insertBefore(redoBtn, beforeEl);
+    } else {
+      toolbar.appendChild(undoBtn);
+      toolbar.appendChild(redoBtn);
+    }
+  }
+
   function renderNotes(){
     var list = document.getElementById('notesList');
     list.innerHTML = '';
@@ -162,10 +410,30 @@
           var editBody = document.createElement('div');
           editBody.className = 'note-body';
 
+          var editInputBox = document.createElement('div');
+          editInputBox.className = 'note-edit-input-box';
+
           var editArea = document.createElement('textarea');
-          editArea.className = 'note-edit-input';
           editArea.value = note.text;
-          editBody.appendChild(editArea);
+          editInputBox.appendChild(editArea);
+
+          var editToolbar = document.createElement('div');
+          editToolbar.className = 'note-input-toolbar';
+          addUndoRedoButtons(editToolbar, editArea);
+          var editEmojiToggle = document.createElement('button');
+          editEmojiToggle.type = 'button';
+          editEmojiToggle.className = 'input-icon-btn';
+          editEmojiToggle.textContent = '🙂';
+          editEmojiToggle.title = 'Emoji';
+          var editEmojiPicker = document.createElement('div');
+          editEmojiPicker.className = 'emoji-picker hidden';
+          populateEmojiPicker(editEmojiPicker, editArea);
+          setupEmojiToggle(editEmojiToggle, editEmojiPicker);
+          editToolbar.appendChild(editEmojiToggle);
+          editToolbar.appendChild(editEmojiPicker);
+          editInputBox.appendChild(editToolbar);
+
+          editBody.appendChild(editInputBox);
 
           var actions = document.createElement('div');
           actions.className = 'note-edit-actions';
@@ -189,8 +457,8 @@
             renderNotes();
           });
 
-          actions.appendChild(saveBtn);
           actions.appendChild(cancelBtn);
+          actions.appendChild(saveBtn);
           editBody.appendChild(actions);
 
           li.appendChild(editBody);
@@ -212,8 +480,23 @@
 
         var text = document.createElement('div');
         text.className = 'note-text';
-        text.textContent = note.text;
+        renderNoteText(text, note.text);
+
+        var isLongNote = note.text.length > 160 || (note.text.match(/\n/g) || []).length >= 4;
+        if (isLongNote && !expandedIds[note.id]) text.classList.add('clamped');
         body.appendChild(text);
+
+        if (isLongNote){
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'note-toggle-text';
+          toggleBtn.textContent = expandedIds[note.id] ? 'Show less' : 'Show more';
+          toggleBtn.addEventListener('click', function(){
+            if (expandedIds[note.id]) delete expandedIds[note.id];
+            else expandedIds[note.id] = true;
+            renderNotes();
+          });
+          body.appendChild(toggleBtn);
+        }
 
         if (note.day){
           var chip = document.createElement('span');
@@ -222,27 +505,68 @@
           body.appendChild(chip);
         }
 
+        if (deletingId === note.id){
+          li.classList.add('confirming-delete');
+
+          var confirmRow = document.createElement('div');
+          confirmRow.className = 'note-delete-confirm';
+
+          var confirmText = document.createElement('span');
+          confirmText.className = 'note-delete-confirm-text';
+          confirmText.textContent = 'Delete this note?';
+
+          var confirmBtn = document.createElement('button');
+          confirmBtn.className = 'note-confirm-delete-btn';
+          confirmBtn.textContent = 'Delete';
+          confirmBtn.addEventListener('click', function(){
+            notes = notes.filter(function(n){ return n.id !== note.id; });
+            delete expandedIds[note.id];
+            deletingId = null;
+            saveNotes();
+            renderNotes();
+            renderCalendar();
+          });
+
+          var cancelDeleteBtn = document.createElement('button');
+          cancelDeleteBtn.className = 'note-cancel-btn';
+          cancelDeleteBtn.textContent = 'Cancel';
+          cancelDeleteBtn.addEventListener('click', function(){
+            deletingId = null;
+            renderNotes();
+          });
+
+          confirmRow.appendChild(confirmText);
+          confirmRow.appendChild(confirmBtn);
+          confirmRow.appendChild(cancelDeleteBtn);
+          body.appendChild(confirmRow);
+
+          li.appendChild(checkbox);
+          li.appendChild(body);
+          list.appendChild(li);
+          return;
+        }
+
         var actionsWrap = document.createElement('div');
         actionsWrap.className = 'note-actions';
 
         var editBtn = document.createElement('button');
         editBtn.className = 'note-edit';
-        editBtn.textContent = '✎';
+        editBtn.innerHTML = ICON_EDIT;
         editBtn.title = 'Edit note';
         editBtn.addEventListener('click', function(){
           editingId = note.id;
+          deletingId = null;
           renderNotes();
         });
 
         var del = document.createElement('button');
         del.className = 'note-delete';
-        del.textContent = '✕';
+        del.innerHTML = ICON_DELETE;
         del.title = 'Delete note';
         del.addEventListener('click', function(){
-          notes = notes.filter(function(n){ return n.id !== note.id; });
-          saveNotes();
+          deletingId = note.id;
+          editingId = null;
           renderNotes();
-          renderCalendar();
         });
 
         actionsWrap.appendChild(editBtn);
@@ -256,6 +580,20 @@
     }
 
     updateBadge();
+    updateListFade();
+  }
+
+  function updateListFade(){
+    var list = document.getElementById('notesList');
+    var fade = document.getElementById('notesListFade');
+    fade.classList.toggle('visible', list.scrollTop > 4);
+  }
+
+  function cancelInlineNoteState(){
+    if (editingId === null && deletingId === null) return;
+    editingId = null;
+    deletingId = null;
+    renderNotes();
   }
 
   function updateBadge(){
@@ -338,11 +676,26 @@
   document.getElementById('closeNotes').addEventListener('click', closePanel);
   document.getElementById('overlay').addEventListener('click', closePanel);
 
+  document.getElementById('notesList').addEventListener('scroll', updateListFade);
   document.getElementById('linkToDay').addEventListener('change', updateLinkedDayLabel);
   document.getElementById('addNoteBtn').addEventListener('click', addNote);
   document.getElementById('noteInput').addEventListener('keydown', function(e){
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) addNote();
   });
+
+  populateEmojiPicker(document.getElementById('emojiPicker'), document.getElementById('noteInput'));
+  setupEmojiToggle(document.getElementById('emojiToggle'), document.getElementById('emojiPicker'));
+
+  addUndoRedoButtons(document.getElementById('noteToolbar'), document.getElementById('noteInput'), document.getElementById('emojiToggle'));
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') cancelInlineNoteState();
+  });
+  document.addEventListener('click', function(e){
+    if (editingId === null && deletingId === null) return;
+    var activeLi = document.querySelector('.note-item.editing, .note-item.confirming-delete');
+    if (activeLi && !activeLi.contains(e.target)) cancelInlineNoteState();
+  }, true);
 
   // ---------- init ----------
   renderCalendar();

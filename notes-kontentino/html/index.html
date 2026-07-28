@@ -45,7 +45,13 @@
     </div>
 
     <div class="new-note">
-      <textarea id="noteInput" placeholder="e.g. edit this post, prepare new photos…"></textarea>
+      <div class="note-input-box">
+        <textarea id="noteInput" placeholder="e.g. edit this post, prepare new photos…"></textarea>
+        <div class="note-input-toolbar" id="noteToolbar">
+          <button type="button" id="emojiToggle" class="input-icon-btn" title="Emoji">🙂</button>
+          <div class="emoji-picker hidden" id="emojiPicker"></div>
+        </div>
+      </div>
       <div class="link-row">
         <label>
           <input type="checkbox" id="linkToDay" />
@@ -56,7 +62,10 @@
       <button id="addNoteBtn">+ Add note</button>
     </div>
 
-    <ul class="notes-list" id="notesList"></ul>
+    <div class="notes-list-wrap">
+      <div class="notes-list-fade" id="notesListFade"></div>
+      <ul class="notes-list" id="notesList"></ul>
+    </div>
   </aside>
 </div>
 
