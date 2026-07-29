@@ -1091,14 +1091,10 @@
     justify-content: center;
   }
 
-  .check-icon {
+  .unlocked-badge-icon {
     width: 16px;
     height: 16px;
-    fill: none;
-    stroke: #ffffff;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    fill: #ffffff;
   }
 
   .badge-name {
@@ -1919,6 +1915,7 @@
     color: #061b31;
     resize: vertical;
     min-height: 40px;
+    overflow: hidden;
   }
 
   .edit-form-actions {
@@ -1961,7 +1958,7 @@
   }
 
   .task-details.visible {
-    max-height: 600px;
+    max-height: 2000px;
     opacity: 1;
     margin-top: 8px;
   }

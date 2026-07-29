@@ -1137,6 +1137,19 @@
           li.querySelector('.edit-text-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') saveEdit();
           });
+
+          // Dlhšia poznámka sa do fixnej výšky nezmestí a jej úprava (najmä
+          // presúvanie kurzora) je potom nepohodlná - pole nech sa teda pri
+          // otvorení a ďalej priebežne pri písaní nafukuje podľa obsahu.
+          // scrollHeight sa dá spoľahlivo prečítať až keď je <li> pripojené
+          // do dokumentu (dovtedy je bez layoutu), preto sa prvotné nastavenie
+          // volá až po taskList.appendChild(li) nižšie.
+          const notesTextarea = li.querySelector('.edit-notes-textarea');
+          const autosizeNotes = () => {
+            notesTextarea.style.height = 'auto';
+            notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
+          };
+          notesTextarea.addEventListener('input', autosizeNotes);
         }
 
         // Zachytí ešte neuložené hodnoty z otvoreného edit formulára, nech ich podúlohová akcia
@@ -1169,6 +1182,11 @@
         });
 
         taskList.appendChild(li);
+        if (isEditing) {
+          const notesTextarea = li.querySelector('.edit-notes-textarea');
+          notesTextarea.style.height = 'auto';
+          notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
+        }
       });
     }
 
@@ -1382,7 +1400,9 @@
     circleEl.style.strokeDashoffset = circumference * (1 - Math.min(progress, 1));
   }
 
-  const checkIconSvg = '<svg class="check-icon" viewBox="0 0 24 24"><polyline points="4,13 9,18 20,6"/></svg>';
+  // Odomknutý odznak dostane hviezdičku namiesto fajočky - tá vyzerala ako bežné
+  // odškrtnutie úlohy a nebolo z nej jasné, že ide o ocenenie.
+  const unlockedBadgeIconSvg = '<svg class="unlocked-badge-icon" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>';
 
   // Míľniky, ku ktorým sa jednotlivé odznaky viažu
   const streakMilestones = [3, 7, 14, 30];
@@ -1478,7 +1498,7 @@
             <circle class="ring-track" cx="27" cy="27" r="23" stroke="#f0e9fa" />
             <circle class="ring-progress badge-ring-circle" cx="27" cy="27" r="23" stroke="${b.color}" />
           </svg>
-          <div class="badge-ring-value">${unlocked ? `<span class="ring-check-circle" style="background:${b.color}">${checkIconSvg}</span>` : Math.min(value, b.goal) + '/' + b.goal}</div>
+          <div class="badge-ring-value">${unlocked ? `<span class="ring-check-circle" style="background:${b.color}">${unlockedBadgeIconSvg}</span>` : Math.min(value, b.goal) + '/' + b.goal}</div>
         </div>
         <div class="badge-name">${t('badgeNames')[b.id]}</div>
         <div class="badge-desc">${unlocked ? t('badgeDone') : (b.category === 'streak' ? t('badgeGoalStreak').replace('{n}', b.goal) : t('badgeGoalTotal').replace('{n}', b.goal))}</div>
