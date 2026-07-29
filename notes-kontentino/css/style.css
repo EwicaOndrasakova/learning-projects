@@ -9,12 +9,16 @@
   --gray-bg:#F7F7FA;
   --gray-border:#E7E7EE;
   --text:#2B2B36;
-  --text-muted:#8A8A99;
+  --text-muted:#6E6E7C;
   --white:#fff;
   --radius:10px;
   --shadow:0 8px 24px rgba(30,20,60,0.12);
 }
 *{box-sizing:border-box;}
+:focus-visible{
+  outline:2px solid var(--purple);
+  outline-offset:2px;
+}
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -270,6 +274,10 @@ body{
 .note-input-box{
   border:1px solid var(--gray-border);
   border-radius:8px;
+}
+.note-input-box:focus-within{
+  border-color:var(--purple);
+  box-shadow:0 0 0 3px var(--purple-light);
 }
 .note-input-box textarea{
   display:block;
@@ -532,6 +540,9 @@ body{
   border:1px solid var(--purple);
   border-radius:8px;
 }
+.note-edit-input-box:focus-within{
+  box-shadow:0 0 0 3px var(--purple-light);
+}
 .note-edit-input-box textarea{
   display:block;
   width:100%;
@@ -595,4 +606,13 @@ body{
   color:var(--text-muted);
   font-size:12.5px;
   padding:30px 20px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
 }

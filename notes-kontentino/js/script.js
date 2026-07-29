@@ -696,7 +696,10 @@
       li.classList.add('note-flash');
       setTimeout(function(){ li.classList.remove('note-flash'); }, 1600);
     });
-    if (firstLi) firstLi.scrollIntoView({behavior:'smooth', block:'center'});
+    if (firstLi){
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      firstLi.scrollIntoView({behavior: prefersReducedMotion ? 'auto' : 'smooth', block:'center'});
+    }
   }
 
   // ---------- events ----------
