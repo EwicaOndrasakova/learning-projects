@@ -1,6 +1,6 @@
 {
-  "name": "To-Do List",
-  "short_name": "To-Do List",
+  "name": "My Day",
+  "short_name": "My Day",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f8fafd",

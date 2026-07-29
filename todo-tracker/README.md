@@ -1,6 +1,6 @@
-# To-Do List
+# My Day
 
-A to-do list app built with plain HTML, CSS, and JavaScript (no frameworks, no build step).
+A daily task & habit tracker built with plain HTML, CSS, and JavaScript (no frameworks, no build step).
 
 [Live demo](https://ewicaondrasakova.github.io/learning-projects/todo-tracker/html/index.html)
 

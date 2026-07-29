@@ -1,7 +1,7 @@
   // --- Preklady (SK/EN) ---
   const translations = {
     sk: {
-      welcomeTitle: 'Vitaj v To-Do zozname',
+      welcomeTitle: 'Vitaj v aplikácii Môj deň',
       welcomeSubtitle: 'Ako ťa mám volať?',
       recentLogins: 'Posledné prihlásenia',
       fieldNickname: 'Prezývka',
@@ -28,7 +28,7 @@
       filterCategoryLabel: 'Kategória',
       clearFiltersBtn: 'Zrušiť filtre',
       greetingHi: 'Ahoj,',
-      appTitle: 'Môj To-Do zoznam',
+      appTitle: 'Môj deň',
       tabList: 'Zoznam',
       tabCalendar: 'Kalendár',
       tabBadges: 'Prehľad',
@@ -120,7 +120,7 @@
       speechLang: 'sk-SK'
     },
     en: {
-      welcomeTitle: 'Welcome to your To-Do List',
+      welcomeTitle: 'Welcome to My Day',
       welcomeSubtitle: 'What should I call you?',
       recentLogins: 'Recent logins',
       fieldNickname: 'Nickname',
@@ -147,7 +147,7 @@
       filterCategoryLabel: 'Category',
       clearFiltersBtn: 'Clear filters',
       greetingHi: 'Hi,',
-      appTitle: 'My To-Do List',
+      appTitle: 'My Day',
       tabList: 'List',
       tabCalendar: 'Calendar',
       tabBadges: 'Overview',
@@ -1359,6 +1359,12 @@
       renderCalendar();
     }
     if (tabName === 'badges') renderBadges();
+    if (tabName === 'list') {
+      // #view-list je do tohto momentu display:none, takže pilulka filtra "Všetky"
+      // spočítaná pri načítaní stránky vyšla nulová/zle umiestnená - treba ju
+      // prepočítať teraz, keď je kontajner konečne viditeľný a má reálny layout.
+      updateFiltersPill(document.querySelector('.filter-btn.active'), true);
+    }
   }
 
   tabBtns.forEach(btn => {
@@ -1418,14 +1424,14 @@
   const totalMilestones = [10, 50, 100, 200];
 
   const badgeDefs = [
-    { id: 'streak3',  goal: 3,   category: 'streak', color: '#f5a25a', getValue: (d, s) => s },
-    { id: 'streak7',  goal: 7,   category: 'streak', color: '#f5a25a', getValue: (d, s) => s },
-    { id: 'streak14', goal: 14,  category: 'streak', color: '#f5a25a', getValue: (d, s) => s },
-    { id: 'streak30', goal: 30,  category: 'streak', color: '#f5a25a', getValue: (d, s) => s },
-    { id: 'ten',      goal: 10,  category: 'total',  color: '#a98be0', getValue: (d, s) => d },
-    { id: 'fifty',    goal: 50,  category: 'total',  color: '#a98be0', getValue: (d, s) => d },
-    { id: 'hundred',  goal: 100, category: 'total',  color: '#a98be0', getValue: (d, s) => d },
-    { id: 'twohund',  goal: 200, category: 'total',  color: '#a98be0', getValue: (d, s) => d },
+    { id: 'streak3',  goal: 3,   category: 'streak', color: '#ff8a3d', getValue: (d, s) => s },
+    { id: 'streak7',  goal: 7,   category: 'streak', color: '#ff8a3d', getValue: (d, s) => s },
+    { id: 'streak14', goal: 14,  category: 'streak', color: '#ff8a3d', getValue: (d, s) => s },
+    { id: 'streak30', goal: 30,  category: 'streak', color: '#ff8a3d', getValue: (d, s) => s },
+    { id: 'ten',      goal: 10,  category: 'total',  color: '#7c3aed', getValue: (d, s) => d },
+    { id: 'fifty',    goal: 50,  category: 'total',  color: '#7c3aed', getValue: (d, s) => d },
+    { id: 'hundred',  goal: 100, category: 'total',  color: '#7c3aed', getValue: (d, s) => d },
+    { id: 'twohund',  goal: 200, category: 'total',  color: '#7c3aed', getValue: (d, s) => d },
   ];
 
   // Vypočíta percento dní za posledných N dní, kedy boli splnené úplne všetky úlohy
@@ -1487,40 +1493,69 @@
     document.getElementById('weeklySuccessValue').textContent = weekly === null ? '–' : weekly + '%';
     document.getElementById('monthlySuccessValue').textContent = monthly === null ? '–' : monthly + '%';
 
-    // --- Jednotlivé odznaky, každý ako vlastný malý prstenec smerujúci k cieľu ---
-    const grid = document.getElementById('badgesGrid');
-    grid.innerHTML = '';
+    // --- Odznaky ako cesta míľnikov: každá kategória je vodorovná trasa,
+    // po ktorej "prejdená" časť sa vyfarbí farbou kategórie - poradie odznakov
+    // je totiž skutočná rastúca postupnosť cieľov, nie len dekorácia.
     const currentlyUnlockedIds = [];
-
-    badgeDefs.forEach(b => {
-      const value = b.getValue(doneCount, streak);
-      const progress = value / b.goal;
-      const unlocked = value >= b.goal;
-      const justUnlocked = unlocked && !previouslyUnlockedBadges.includes(b.id);
-      if (unlocked) currentlyUnlockedIds.push(b.id);
-
-      const div = document.createElement('div');
-      div.className = 'badge' + (unlocked ? ' unlocked' : '') + (justUnlocked ? ' just-unlocked' : '');
-      div.innerHTML = `
-        <div class="badge-ring">
-          <svg viewBox="0 0 54 54">
-            <circle class="ring-track" cx="27" cy="27" r="23" stroke="#f0e9fa" />
-            <circle class="ring-progress badge-ring-circle" cx="27" cy="27" r="23" stroke="${b.color}" />
-          </svg>
-          <div class="badge-ring-value">${unlocked ? `<span class="ring-check-circle" style="background:${b.color}">${unlockedBadgeIconSvg}</span>` : Math.min(value, b.goal) + '/' + b.goal}</div>
-        </div>
-        <div class="badge-name">${t('badgeNames')[b.id]}</div>
-        <div class="badge-desc">${unlocked ? t('badgeDone') : (b.category === 'streak' ? t('badgeGoalStreak').replace('{n}', b.goal) : t('badgeGoalTotal').replace('{n}', b.goal))}</div>
-      `;
-
-      setRingProgress(div.querySelector('.badge-ring-circle'), progress);
-      grid.appendChild(div);
-    });
+    currentlyUnlockedIds.push(...renderBadgeTrack('badgeTrackStreak', 'streak', doneCount, streak));
+    currentlyUnlockedIds.push(...renderBadgeTrack('badgeTrackTotal', 'total', doneCount, streak));
 
     previouslyUnlockedBadges = currentlyUnlockedIds;
     safeSetItem('unlockedBadges:' + profileStorageKey(profile ? profile.nickname : ''), JSON.stringify(currentlyUnlockedIds));
 
     renderHeatmap();
+  }
+
+  // Vykreslí jednu kategóriu odznakov ako vodorovnú trasu s míľnikmi a vráti
+  // zoznam id odznakov, ktoré sú práve odomknuté (na sledovanie "just unlocked").
+  function renderBadgeTrack(trackId, category, doneCount, streak) {
+    const defs = badgeDefs.filter(b => b.category === category);
+    const track = document.getElementById(trackId);
+    track.innerHTML = '';
+    const unlockedIds = [];
+
+    const fill = document.createElement('div');
+    fill.className = 'badge-path-fill';
+    fill.style.background = defs[0].color;
+    track.appendChild(fill);
+
+    let unlockedCount = 0;
+    defs.forEach(b => {
+      const value = b.getValue(doneCount, streak);
+      const unlocked = value >= b.goal;
+      if (unlocked) {
+        unlockedCount++;
+        unlockedIds.push(b.id);
+      }
+    });
+
+    defs.forEach((b, i) => {
+      const value = b.getValue(doneCount, streak);
+      const unlocked = value >= b.goal;
+      const isCurrent = !unlocked && i === unlockedCount;
+      const justUnlocked = unlocked && !previouslyUnlockedBadges.includes(b.id);
+
+      const node = document.createElement('div');
+      node.className = 'badge-node' + (unlocked ? ' unlocked' : '') + (justUnlocked ? ' just-unlocked' : '');
+      node.title = unlocked ? t('badgeDone') : (category === 'streak' ? t('badgeGoalStreak') : t('badgeGoalTotal')).replace('{n}', b.goal);
+      node.innerHTML = `
+        <div class="badge-node-dot" style="${unlocked ? `background:${b.color}` : ''}">
+          ${unlocked ? unlockedBadgeIconSvg : (isCurrent ? `<span class="badge-node-fraction">${Math.min(value, b.goal)}/${b.goal}</span>` : '')}
+        </div>
+        <div class="badge-node-name">${t('badgeNames')[b.id]}</div>
+      `;
+      track.appendChild(node);
+    });
+
+    // Prejdená časť trasy = počet odomknutých + rozostavaný postup smerom k ďalšiemu (ak nejaký zostáva)
+    let fraction = unlockedCount / defs.length;
+    if (unlockedCount < defs.length) {
+      const next = defs[unlockedCount];
+      fraction += (next.getValue(doneCount, streak) / next.goal) / defs.length;
+    }
+    fill.style.width = `calc((100% - 32px) * ${Math.min(fraction, 1)})`;
+
+    return unlockedIds;
   }
 
   // --- Heatmapa aktivity (GitHub-style) - posledných ~17 týždňov ---

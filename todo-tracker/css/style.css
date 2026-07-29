@@ -13,7 +13,7 @@
   /* Jemné, rýchle prechody na všetkých interaktívnych a kartových prvkoch.
      Zámerne krátke (120-180ms) a bez "odrazu", nech appka pôsobí plynulo, nie hravo-prehnane. */
   button, .quick-chip, .day-chip, .filter-btn, .tab-btn, .avatar-option,
-  .badge, li.task, .cal-day, .success-card, .recent-login-item,
+  .badge-node, li.task, .cal-day, .success-card, .recent-login-item,
   .text-field, .search-input, .priority-select, .category-select, .notes-textarea,
   .recurrence-select {
     transition: background-color 0.15s ease, border-color 0.15s ease,
@@ -974,20 +974,20 @@
     padding: 10px 0;
   }
 
-  /* --- Odznaky: kruhové "rings" v štýle Activity --- */
+  /* --- Prehľad: hero s prstencami dnešného stavu --- */
 
-  .rings-summary {
+  .overview-hero {
     display: flex;
     align-items: center;
     gap: 20px;
-    background: #f8fafd;
+    background: radial-gradient(120% 140% at 20% 15%, #fdf2f8 0%, #f4f4fe 45%, #f8fafd 100%);
     border: 1px solid #e5edf5;
     border-radius: 24px;
     padding: 20px;
     margin-bottom: 22px;
   }
 
-  .rings-summary svg {
+  .hero-rings {
     width: 96px;
     height: 96px;
     flex-shrink: 0;
@@ -1006,14 +1006,14 @@
     transition: stroke-dashoffset 0.6s ease;
   }
 
-  .rings-legend {
+  .hero-stats {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 9px;
     font-size: 12px;
   }
 
-  .rings-legend-item {
+  .hero-stat-row {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1021,74 +1021,87 @@
     font-weight: 600;
   }
 
-  .rings-legend-dot {
+  .hero-dot {
     width: 9px;
     height: 9px;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
-  .rings-legend-value {
+  .hero-stat-value {
     margin-left: auto;
-    color: #64748d;
+    color: #061b31;
     font-weight: 700;
   }
 
-  .badges-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
+  /* --- Odznaky ako "cesta" míľnikov - poradie je skutočná rastúca postupnosť
+     cieľov (3 -> 7 -> 14 -> 30 dní; 10 -> 50 -> 100 -> 200 úloh), takže dáva
+     zmysel ju zobraziť ako trasu s prejdenou a nadchádzajúcou časťou, nie ako
+     rovnocennú mriežku dlaždíc. --- */
+
+  .badge-path {
+    margin-bottom: 22px;
   }
 
-  .badge {
-    background: #f8fafd;
-    border: 1px solid #e5edf5;
-    border-radius: 20px;
-    padding: 14px 6px 12px;
-    text-align: center;
-  }
-
-  .badge.unlocked {
-    background: #fffdfa;
-    border-color: #e5edf5;
-  }
-
-  .badge-ring {
-    width: 54px;
-    height: 54px;
-    margin: 0 auto 8px;
-    position: relative;
-  }
-
-  .badge-ring svg {
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-  }
-
-  .badge-ring-value {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .badge-path-label {
     font-size: 12px;
-    font-weight: 800;
-    color: #50617a;
+    font-weight: 700;
+    color: #64748d;
+    margin-bottom: 12px;
   }
 
-  .badge.unlocked .badge-ring-value {
-    color: #ffffff;
+  .badge-path-track {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
   }
 
-  .ring-check-circle {
+  .badge-path-track::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 16px;
+    height: 3px;
+    background: #eef1f6;
+    border-radius: 3px;
+  }
+
+  .badge-path-fill {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    height: 3px;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .badge-node {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .badge-node-dot {
     width: 34px;
     height: 34px;
     border-radius: 50%;
+    background: #ffffff;
+    border: 2px dashed #d9dfe9;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .badge-node.unlocked .badge-node-dot {
+    border-style: solid;
+    border-color: transparent;
   }
 
   .unlocked-badge-icon {
@@ -1097,20 +1110,26 @@
     fill: #ffffff;
   }
 
-  .badge-name {
-    font-size: 11px;
-    font-weight: 700;
-    color: #64748d;
-  }
-
-  .badge:not(.unlocked) .badge-name {
+  .badge-node-fraction {
+    font-size: 9px;
+    font-weight: 800;
     color: #839bc8;
   }
 
-  .badge-desc {
+  .badge-node-name {
     font-size: 10px;
+    font-weight: 700;
+    color: #839bc8;
+    text-align: center;
+    line-height: 1.25;
+  }
+
+  .badge-node.unlocked .badge-node-name {
     color: #64748d;
-    margin-top: 2px;
+  }
+
+  .badge-node.just-unlocked .badge-node-dot {
+    animation: badgePop 0.5s ease;
   }
 
   /* --- Welcome obrazovka --- */
@@ -1523,10 +1542,6 @@
     0%   { transform: scale(0.85); }
     50%  { transform: scale(1.15); }
     100% { transform: scale(1); }
-  }
-
-  .badge.just-unlocked {
-    animation: badgePop 0.5s ease;
   }
 
   /* --- Avatar postavičky na výber --- */

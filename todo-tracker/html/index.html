@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>To-Do List</title>
+<title>My Day</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -11,7 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="To-Do List">
+<meta name="apple-mobile-web-app-title" content="My Day">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
       <button type="button" class="lang-btn active" data-lang="en">EN</button>
     </div>
     <div class="welcome-avatar-preview empty" id="welcomeAvatarPreview"></div>
-    <h2 data-i18n="welcomeTitle">Vitaj v To-Do zozname</h2>
+    <h2 data-i18n="welcomeTitle">Vitaj v aplikácii Môj deň</h2>
     <p data-i18n="welcomeSubtitle">Ako ťa mám volať?</p>
 
     <div class="recent-logins" id="recentLoginsBox" style="display:none;">
@@ -68,7 +68,7 @@
     </div>
   </div>
 
-  <h1 data-i18n="appTitle">Môj To-Do zoznam</h1>
+  <h1 data-i18n="appTitle">Môj deň</h1>
 
   <div class="tabs">
     <button class="tab-btn active" data-tab="calendar" data-i18n="tabCalendar">Kalendár</button>
@@ -238,30 +238,30 @@
   </div>
 
   <div class="view" id="view-badges">
-    <div class="rings-summary">
-      <svg viewBox="0 0 96 96">
+    <div class="overview-hero">
+      <svg class="hero-rings" viewBox="0 0 96 96">
         <circle class="ring-track" cx="48" cy="48" r="42" stroke="#d7f5e6" />
         <circle class="ring-progress" id="ringToday" cx="48" cy="48" r="42" stroke="#2ecc82" />
         <circle class="ring-track" cx="48" cy="48" r="30" stroke="#ffe9d6" />
-        <circle class="ring-progress" id="ringStreak" cx="48" cy="48" r="30" stroke="#f5a25a" />
-        <circle class="ring-track" cx="48" cy="48" r="18" stroke="#e6ddfa" />
-        <circle class="ring-progress" id="ringTotal" cx="48" cy="48" r="18" stroke="#a98be0" />
+        <circle class="ring-progress" id="ringStreak" cx="48" cy="48" r="30" stroke="#ff8a3d" />
+        <circle class="ring-track" cx="48" cy="48" r="18" stroke="#efeafd" />
+        <circle class="ring-progress" id="ringTotal" cx="48" cy="48" r="18" stroke="#7c3aed" />
       </svg>
-      <div class="rings-legend">
-        <div class="rings-legend-item">
-          <span class="rings-legend-dot" style="background:#2ecc82;"></span>
+      <div class="hero-stats">
+        <div class="hero-stat-row">
+          <span class="hero-dot" style="background:#2ecc82;"></span>
           <span data-i18n="ringsToday">Dnešné úlohy</span>
-          <span class="rings-legend-value" id="legendToday">0/0</span>
+          <span class="hero-stat-value" id="legendToday">0/0</span>
         </div>
-        <div class="rings-legend-item">
-          <span class="rings-legend-dot" style="background:#f5a25a;"></span>
+        <div class="hero-stat-row">
+          <span class="hero-dot" style="background:#ff8a3d;"></span>
           <span data-i18n="ringsStreak">Séria dní v rade</span>
-          <span class="rings-legend-value" id="legendStreak">0</span>
+          <span class="hero-stat-value" id="legendStreak">0</span>
         </div>
-        <div class="rings-legend-item">
-          <span class="rings-legend-dot" style="background:#a98be0;"></span>
+        <div class="hero-stat-row">
+          <span class="hero-dot" style="background:#7c3aed;"></span>
           <span data-i18n="ringsTotal">Splnené spolu</span>
-          <span class="rings-legend-value" id="legendTotal">0</span>
+          <span class="hero-stat-value" id="legendTotal">0</span>
         </div>
       </div>
     </div>
@@ -278,7 +278,14 @@
       </div>
     </div>
 
-    <div class="badges-grid" id="badgesGrid"></div>
+    <div class="badge-path">
+      <div class="badge-path-label" data-i18n="ringsStreak">Séria dní v rade</div>
+      <div class="badge-path-track" id="badgeTrackStreak"></div>
+    </div>
+    <div class="badge-path">
+      <div class="badge-path-label" data-i18n="ringsTotal">Splnené spolu</div>
+      <div class="badge-path-track" id="badgeTrackTotal"></div>
+    </div>
 
     <div class="heatmap-section">
       <div class="heatmap-title" data-i18n="heatmapTitle">Aktivita za posledných 14 dní</div>
