@@ -1869,9 +1869,12 @@
     border: 2px solid #e5edf5;
     border-radius: 14px;
     font-size: 13px;
+    font-family: inherit;
     background: #ffffff;
     color: #061b31;
     font-weight: 600;
+    resize: none;
+    overflow: hidden;
   }
 
   .edit-form-row {

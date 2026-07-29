@@ -1048,7 +1048,7 @@
 
         const editFieldsHtml = isEditing ? `
             <div class="edit-form">
-              <input type="text" class="edit-text-input" value="${escapeHtml(task.text)}">
+              <textarea class="edit-text-input" rows="1">${escapeHtml(task.text)}</textarea>
               <div class="edit-form-row">
                 <select class="edit-priority-select">
                   <option value="low" ${priority === 'low' ? 'selected' : ''}>${t('priorityLow')}</option>
@@ -1134,22 +1134,30 @@
             editingTaskId = null;
             render();
           });
-          li.querySelector('.edit-text-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') saveEdit();
+          const textInput = li.querySelector('.edit-text-input');
+          textInput.addEventListener('keydown', (e) => {
+            // Text úlohy je (na rozdiel od poznámky) jednoriadkový - Enter ukladá,
+            // nie vkladá nový riadok do textarey.
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              saveEdit();
+            }
           });
 
-          // Dlhšia poznámka sa do fixnej výšky nezmestí a jej úprava (najmä
-          // presúvanie kurzora) je potom nepohodlná - pole nech sa teda pri
-          // otvorení a ďalej priebežne pri písaní nafukuje podľa obsahu.
+          // Dlhší text/poznámka sa do fixnej výšky/šírky nezmestí a jeho úprava
+          // (najmä presúvanie kurzora, bez vodorovného scrollovania) je potom
+          // nepohodlná - polia nech sa teda pri otvorení a ďalej priebežne pri
+          // písaní nafukujú podľa obsahu.
           // scrollHeight sa dá spoľahlivo prečítať až keď je <li> pripojené
           // do dokumentu (dovtedy je bez layoutu), preto sa prvotné nastavenie
           // volá až po taskList.appendChild(li) nižšie.
-          const notesTextarea = li.querySelector('.edit-notes-textarea');
-          const autosizeNotes = () => {
-            notesTextarea.style.height = 'auto';
-            notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
+          const autosize = (el) => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
           };
-          notesTextarea.addEventListener('input', autosizeNotes);
+          textInput.addEventListener('input', () => autosize(textInput));
+          const notesTextarea = li.querySelector('.edit-notes-textarea');
+          notesTextarea.addEventListener('input', () => autosize(notesTextarea));
         }
 
         // Zachytí ešte neuložené hodnoty z otvoreného edit formulára, nech ich podúlohová akcia
@@ -1183,9 +1191,10 @@
 
         taskList.appendChild(li);
         if (isEditing) {
-          const notesTextarea = li.querySelector('.edit-notes-textarea');
-          notesTextarea.style.height = 'auto';
-          notesTextarea.style.height = notesTextarea.scrollHeight + 'px';
+          [li.querySelector('.edit-text-input'), li.querySelector('.edit-notes-textarea')].forEach(el => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+          });
         }
       });
     }
