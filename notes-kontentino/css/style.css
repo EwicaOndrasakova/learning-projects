@@ -207,7 +207,9 @@ body{
   height:7px;
   border-radius:999px;
   background:#F0505A;
+  cursor:pointer;
 }
+.note-dot:hover{transform:scale(1.6);}
 
 /* ---------- Notes panel ---------- */
 .overlay{
@@ -425,6 +427,11 @@ body{
   border-radius:8px;
 }
 .note-item:hover{background:var(--gray-bg);}
+.note-item.note-flash{animation:note-flash-anim 1.6s ease;}
+@keyframes note-flash-anim{
+  0%{background:var(--purple-light);}
+  100%{background:transparent;}
+}
 .note-item input[type=checkbox]{
   margin-top:3px;
   accent-color:var(--purple);
@@ -479,6 +486,24 @@ body{
   padding:2px 6px;
   border-radius:999px;
 }
+.edit-day-current{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:6px;
+}
+.edit-day-current .note-day-chip{margin-top:0;}
+.note-body > .note-day-chip:first-child{margin-top:0; margin-bottom:4px;}
+.edit-remove-link-btn{
+  border:none;
+  background:transparent;
+  color:var(--text-muted);
+  font-size:11px;
+  text-decoration:underline;
+  cursor:pointer;
+  padding:0;
+}
+.edit-remove-link-btn:hover{color:#F0505A;}
 .note-actions{
   display:flex;
   flex-direction:row;

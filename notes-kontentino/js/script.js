@@ -129,6 +129,11 @@
       if (hasNote){
         var dot = document.createElement('span');
         dot.className = 'note-dot';
+        dot.title = 'View notes linked to this day';
+        dot.addEventListener('click', function(e){
+          e.stopPropagation();
+          openNotesForDay(key);
+        });
         el.appendChild(dot);
       }
 
@@ -402,6 +407,7 @@
       sorted.forEach(function(note){
         var li = document.createElement('li');
         li.className = 'note-item' + (note.done ? ' done' : '');
+        li.dataset.noteId = note.id;
 
         if (editingId === note.id){
           // ---- edit mode ----
@@ -435,6 +441,41 @@
 
           editBody.appendChild(editInputBox);
 
+          if (note.day){
+            var editDayCurrent = document.createElement('div');
+            editDayCurrent.className = 'edit-day-current';
+            var editDayChip = document.createElement('span');
+            editDayChip.className = 'note-day-chip';
+            editDayChip.textContent = '📅 ' + formatDayKey(note.day);
+            var removeLinkBtn = document.createElement('button');
+            removeLinkBtn.type = 'button';
+            removeLinkBtn.className = 'edit-remove-link-btn';
+            removeLinkBtn.textContent = 'Remove';
+            removeLinkBtn.addEventListener('click', function(){
+              note.day = null;
+              saveNotes();
+              renderNotes();
+            });
+            editDayCurrent.appendChild(editDayChip);
+            editDayCurrent.appendChild(removeLinkBtn);
+            editBody.appendChild(editDayCurrent);
+          }
+
+          var editLinkRow = document.createElement('div');
+          editLinkRow.className = 'link-row';
+          var editLinkLabel = document.createElement('label');
+          var editLinkCheckbox = document.createElement('input');
+          editLinkCheckbox.type = 'checkbox';
+          editLinkLabel.appendChild(editLinkCheckbox);
+          editLinkLabel.appendChild(document.createTextNode(' link to selected day'));
+          var editLinkSelectedLabel = document.createElement('span');
+          editLinkCheckbox.addEventListener('change', function(){
+            editLinkSelectedLabel.textContent = (editLinkCheckbox.checked && selectedDayKey) ? '(' + formatDayKey(selectedDayKey) + ')' : '';
+          });
+          editLinkRow.appendChild(editLinkLabel);
+          editLinkRow.appendChild(editLinkSelectedLabel);
+          editBody.appendChild(editLinkRow);
+
           var actions = document.createElement('div');
           actions.className = 'note-edit-actions';
 
@@ -444,6 +485,7 @@
           saveBtn.addEventListener('click', function(){
             var newText = editArea.value.trim();
             if (newText){ note.text = newText; }
+            if (editLinkCheckbox.checked && selectedDayKey){ note.day = selectedDayKey; }
             editingId = null;
             saveNotes();
             renderNotes();
@@ -478,6 +520,13 @@
         var body = document.createElement('div');
         body.className = 'note-body';
 
+        if (note.day){
+          var chip = document.createElement('span');
+          chip.className = 'note-day-chip';
+          chip.textContent = '📅 ' + formatDayKey(note.day);
+          body.appendChild(chip);
+        }
+
         var text = document.createElement('div');
         text.className = 'note-text';
         renderNoteText(text, note.text);
@@ -496,13 +545,6 @@
             renderNotes();
           });
           body.appendChild(toggleBtn);
-        }
-
-        if (note.day){
-          var chip = document.createElement('span');
-          chip.className = 'note-day-chip';
-          chip.textContent = '📅 ' + formatDayKey(note.day);
-          body.appendChild(chip);
         }
 
         if (deletingId === note.id){
@@ -643,6 +685,20 @@
     document.getElementById('notesToggle').classList.remove('panel-open');
   }
 
+  function openNotesForDay(dayKey){
+    openPanel();
+    var matches = notes.filter(function(n){ return n.day === dayKey; });
+    var firstLi = null;
+    matches.forEach(function(n){
+      var li = document.querySelector('.note-item[data-note-id="' + n.id + '"]');
+      if (!li) return;
+      if (!firstLi) firstLi = li;
+      li.classList.add('note-flash');
+      setTimeout(function(){ li.classList.remove('note-flash'); }, 1600);
+    });
+    if (firstLi) firstLi.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
   // ---------- events ----------
   document.getElementById('prevMonth').addEventListener('click', function(){
     viewMonth--;
@@ -693,6 +749,7 @@
   });
   document.addEventListener('click', function(e){
     if (editingId === null && deletingId === null) return;
+    if (e.target.closest('.day-cell')) return;
     var activeLi = document.querySelector('.note-item.editing, .note-item.confirming-delete');
     if (activeLi && !activeLi.contains(e.target)) cancelInlineNoteState();
   }, true);
