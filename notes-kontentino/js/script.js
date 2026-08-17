@@ -12,8 +12,7 @@
   var STORAGE_KEY = 'kontentino_personal_notes_v1';
   var SORT_MODE_KEY = 'kontentino_notes_sort_mode_v1';
   var notes = loadNotes();
-  var storedSortMode = localStorage.getItem(SORT_MODE_KEY);
-  var sortMode = (storedSortMode === 'newest' || storedSortMode === 'oldest') ? storedSortMode : 'newest';
+  var sortMode = loadSortMode();
 
   var ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
   var ICON_DELETE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
@@ -44,6 +43,10 @@
   }
   function saveNotes(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+  }
+  function loadSortMode(){
+    var stored = localStorage.getItem(SORT_MODE_KEY);
+    return (stored === 'newest' || stored === 'oldest') ? stored : 'newest';
   }
 
   var URL_PATTERN = /(https?:\/\/[^\s]+)/g;
@@ -704,30 +707,13 @@
     }
   }
 
+  var PANEL_TRANSITION_MS = 220; // matches .notes-panel transition duration in style.css
+
   function openNotesForDay(dayKey){
-    var panel = document.getElementById('notesPanel');
-    var alreadyOpen = panel.classList.contains('open');
+    var alreadyOpen = document.getElementById('notesPanel').classList.contains('open');
     openPanel();
-
-    if (alreadyOpen){
-      flashAndScrollToDay(dayKey);
-      return;
-    }
-
-    var done = false;
-    function runOnce(){
-      if (done) return;
-      done = true;
-      panel.removeEventListener('transitionend', onTransitionEnd);
-      clearTimeout(fallbackTimer);
-      flashAndScrollToDay(dayKey);
-    }
-    function onTransitionEnd(e){
-      if (e.target !== panel || e.propertyName !== 'transform') return;
-      runOnce();
-    }
-    panel.addEventListener('transitionend', onTransitionEnd);
-    var fallbackTimer = setTimeout(runOnce, 260);
+    if (alreadyOpen) flashAndScrollToDay(dayKey);
+    else setTimeout(function(){ flashAndScrollToDay(dayKey); }, PANEL_TRANSITION_MS);
   }
 
   // ---------- events ----------
@@ -764,8 +750,9 @@
   document.getElementById('overlay').addEventListener('click', closePanel);
 
   document.getElementById('notesList').addEventListener('scroll', updateListFade);
-  document.getElementById('sortMode').value = sortMode;
-  document.getElementById('sortMode').addEventListener('change', function(e){
+  var sortModeSelect = document.getElementById('sortMode');
+  sortModeSelect.value = sortMode;
+  sortModeSelect.addEventListener('change', function(e){
     sortMode = e.target.value;
     localStorage.setItem(SORT_MODE_KEY, sortMode);
     renderNotes();
